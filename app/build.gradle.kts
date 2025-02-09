@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.dacanay_xyzhie_f.dacanay.ladon_app"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.dacanay_xyzhie_f.dacanay.ladon_app"
