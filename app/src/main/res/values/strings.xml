@@ -11,7 +11,9 @@
     <string name="password">Password</string>
     <string name="passwordInt">Enter your password</string>
 
-    <string name="rememberme">Remember me?</string>
+    <string name="rememberme">Remember me</string>
+    <string name="login">Login</string>
+    <string name="signup">Signup</string>
 
 
 
