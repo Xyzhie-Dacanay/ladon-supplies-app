@@ -1,10 +1,22 @@
 <resources>
     <string name="app_name">ladon-app</string>
+
+
+
+    //FOR LOGIN
     <string name="welcome"> Welcome Back!</string>
     <string name="description_text">Please enter your registered email and password to login.</string>
 
+    //FOR SIGN UP
     <string name="create">Create your account</string>
     <string name="fill">Please fill all the fields and create your own password.</string>
+    <string name="username_des">Enter your username</string>
+    <string name="username">Username</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="confirm_desc">Confirm your password</string>
+
+
+
     <string name="email">Email</string>
     <string name="emailInt">Enter your email</string>
 
@@ -12,6 +24,8 @@
     <string name="passwordInt">Enter your password</string>
 
     <string name="rememberme">Remember me</string>
+
+
     <string name="login">Login</string>
     <string name="signup">Signup</string>
 

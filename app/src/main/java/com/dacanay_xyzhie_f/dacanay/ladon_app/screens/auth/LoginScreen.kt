@@ -9,7 +9,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.*
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
@@ -70,12 +69,12 @@ fun LoginScreen(navController: NavHostController) {
                 painterResource(id = R.drawable.lock_line_icon)
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
 
 
 
-               // 🔹 Remember Me Checkbox
+               // Remember Me Checkbox
                RememberComp(value = stringResource(id = R.string.rememberme))
 
                Spacer(modifier = Modifier.width(20.dp))
@@ -84,8 +83,8 @@ fun LoginScreen(navController: NavHostController) {
 
 
 
-            // 🔹 Login Button
-            ButtonComponent(value = stringResource(id = R.string.login))
+            // Login Button
+            LoginButtonComponent(value = stringResource(id = R.string.login))
 
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -96,7 +95,7 @@ fun LoginScreen(navController: NavHostController) {
                 ForgotComponent()
             }
 
-            // 🔹 Divider + Social Login Buttons
+            // Divider + Social Login Buttons
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -105,7 +104,8 @@ fun LoginScreen(navController: NavHostController) {
                 Spacer(modifier = Modifier.height(16.dp))
                 ButtonComponent()
                 Spacer(modifier = Modifier.height(16.dp))
-                ButtonTextComponent(navController)
+                ButtonTextComponent(navController = navController, isSignUpScreen = false) // ✅ Shows "Don't have an account? Sign Up"
+
             }
         }
     }

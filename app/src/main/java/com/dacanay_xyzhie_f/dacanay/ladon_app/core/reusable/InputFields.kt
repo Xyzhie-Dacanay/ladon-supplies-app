@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -59,7 +60,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
-import com.dacanay_xyzhie_f.dacanay.ladon_app.ui.theme.BlackLa
 import com.dacanay_xyzhie_f.dacanay.ladon_app.ui.theme.BlueLa
 import com.dacanay_xyzhie_f.dacanay.ladon_app.ui.theme.GrayLa
 
@@ -119,12 +119,12 @@ fun LabelText(value:String){
     )}
 
 
-//Password TextFields
+//Password TextField for login
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PassFields(labelValue: String, painterResource: Painter) {
     val password = remember { mutableStateOf("") }
-    val passwordVisible = remember { mutableStateOf(false) } // ✅ Boolean state
+    val passwordVisible = remember { mutableStateOf(false) }
 
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
@@ -172,7 +172,40 @@ fun PassFields(labelValue: String, painterResource: Painter) {
 }
 
 
-//Checkbox
+
+//Password Textfield for signup
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SignUpPasswordField(labelValue: String, painterResource: Painter) {
+    val password = remember { mutableStateOf("") }
+
+    OutlinedTextField(
+        modifier = Modifier.fillMaxWidth(),
+        value = password.value,
+        onValueChange = { password.value = it },
+        placeholder = { Text(text = labelValue, color = Color.Gray) }, // ✅ Placeholder for password
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedBorderColor = Color.Transparent, // ✅ No visible border when focused
+            unfocusedBorderColor = Color.Transparent, // ✅ No border when unfocused
+            cursorColor = colorResource(id = R.color.black),
+            containerColor = colorResource(id = R.color.tfBackground),
+        ),
+        shape = RoundedCornerShape(20.dp), // ✅ Soft rounded corners
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+        leadingIcon = {
+            Icon(
+                painter = painterResource,
+                contentDescription = null,
+                tint = colorResource(id = R.color.primaryColor), // ✅ Primary theme color
+                modifier = Modifier.size(24.dp)
+            )
+        },
+        visualTransformation = PasswordVisualTransformation() // ✅ Always hides password (No eye icon)
+    )
+}
+
+
+
 @Composable
 fun RememberComp(value: String) {
     val checkedState = remember { mutableStateOf(false) }
@@ -186,19 +219,24 @@ fun RememberComp(value: String) {
         Checkbox(
             checked = checkedState.value,
             onCheckedChange = { checkedState.value = !checkedState.value },
-            modifier = Modifier.size(8.dp)
+            modifier = Modifier.size(8.dp),
+            colors = CheckboxDefaults.colors(
+                checkedColor = Color(0xFF35AEFF),
+                uncheckedColor = Color.Gray,
+                checkmarkColor = Color.White
+            )
         )
 
-        Spacer(modifier = Modifier.width(15.dp))
+        Spacer(modifier = Modifier.width(12.dp))
 
         RememberTxt(value)
     }
 }
 
 
-//Button
+// Login Button
 @Composable
-fun ButtonComponent (value: String) {
+fun LoginButtonComponent (value: String) {
     Button(onClick = {},
         modifier = Modifier.fillMaxWidth()
             .heightIn(48.dp),
@@ -225,6 +263,36 @@ fun ButtonComponent (value: String) {
 
     }
 }
+// SignUp Button
+@Composable
+fun SignupButtonComponent (value: String) {
+    Button(onClick = {},
+        modifier = Modifier.fillMaxWidth()
+            .heightIn(48.dp),
+        contentPadding = PaddingValues(),
+        colors = ButtonDefaults.buttonColors(Color.Transparent)
+    ) {
+
+        Box(modifier = Modifier.fillMaxWidth()
+            .heightIn(50.dp).background(
+                color = BlueLa,
+                shape = RoundedCornerShape(50.dp)
+
+            ),
+            contentAlignment = Alignment.Center
+
+        ){
+
+            Text(text=value,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold)
+
+
+        }
+
+    }
+}
+
 
 //Divider
 @Composable
@@ -285,52 +353,72 @@ fun ButtonComponent() {
     }
 }
 
-//Text Button
 @Composable
-fun ButtonTextComponent(navController: NavHostController) {
-    val context = LocalContext.current
-
+fun ButtonTextComponent(navController: NavHostController, isSignUpScreen: Boolean) {
     val annotatedString = buildAnnotatedString {
-        append("Don't have an account? ")
+        if (isSignUpScreen) {
+            // 🔹 Sign-Up Screen: "Already have an account? Log In"
+            append("Already have an account? ")
+            val startIndex = length
+            append("Log In")
+            val endIndex = length
 
+            addStyle(
+                style = SpanStyle(
+                    color = Color(0xFF35AEFF),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                ),
+                start = startIndex,
+                end = endIndex
+            )
 
-        val startIndex = length
-        append("Sign up")
-        val endIndex = length
+            addStringAnnotation(
+                tag = "Navigate",
+                annotation = "login",
+                start = startIndex,
+                end = endIndex
+            )
+        } else {
+            // 🔹 Login Screen: "Don't have an account? Sign Up"
+            append("Don't have an account? ")
+            val startIndex = length
+            append("Sign Up")
+            val endIndex = length
 
+            addStyle(
+                style = SpanStyle(
+                    color = Color(0xFF35AEFF),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium
+                ),
+                start = startIndex,
+                end = endIndex
+            )
 
-        addStyle(
-            style = SpanStyle(
-                color = Color(0xFF35AEFF),
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Medium
-            ),
-            start = startIndex,
-            end = endIndex
-        )
-
-
-        addStringAnnotation(
-            tag = "SignUp",
-            annotation = "sign_up",
-            start = startIndex,
-            end = endIndex
-        )
+            addStringAnnotation(
+                tag = "Navigate",
+                annotation = "signup",
+                start = startIndex,
+                end = endIndex
+            )
+        }
     }
 
     ClickableText(
         text = annotatedString,
         onClick = { offset ->
-            annotatedString.getStringAnnotations(tag = "SignUp", start = offset, end = offset)
+            annotatedString.getStringAnnotations(tag = "Navigate", start = offset, end = offset)
                 .firstOrNull()?.let {
-
-                    navController.navigate("SignupScreen")
+                    if (it.item == "signup") {
+                        navController.navigate("SignupScreen") // ✅ Navigate to Sign-Up
+                    } else if (it.item == "login") {
+                        navController.navigate("LoginScreen") // ✅ Navigate to Login
+                    }
                 }
         }
     )
 }
-
-
 
 
 
