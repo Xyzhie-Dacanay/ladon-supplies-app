@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LogSignScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LoginScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.SignUpScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.HomeScreen
 
 @Composable
 fun AuthNavigation(navController: NavHostController){
@@ -19,10 +20,10 @@ fun AuthNavigation(navController: NavHostController){
         }
 
         composable(Routes.SignUp) {
-            SignUpScreen(navController)
+            SignUpScreen(navController = navController)
         }
         composable(Routes.HomePage) {
-            SignUpScreen(navController)
+            HomeScreen(navController = navController)
         }
 
 

@@ -8,13 +8,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.*
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
+import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
 
 @Composable
-fun LoginScreen(navController: NavHostController) {
+fun LoginScreen(navController: NavHostController, authViewModel: AuthViewModel = viewModel()) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -56,7 +58,11 @@ fun LoginScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(8.dp))
             InputFields(
                 labelValue = stringResource(id = R.string.emailInt),
-                painterResource(id = R.drawable.envelope)
+                painterResource = painterResource(id = R.drawable.envelope),
+                value = authViewModel.email,
+                onValueChange = { authViewModel.email = it },
+                errorMessage = authViewModel.emailError
+
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -66,7 +72,10 @@ fun LoginScreen(navController: NavHostController) {
             Spacer(modifier = Modifier.height(8.dp))
             PassFields(
                 labelValue = stringResource(id = R.string.passwordInt),
-                painterResource(id = R.drawable.lock_line_icon)
+                painterResource = painterResource(id = R.drawable.lock_line_icon),
+                value = authViewModel.password,
+                onValueChange = { authViewModel.password = it },
+                errorMessage = authViewModel.passwordError
             )
 
             Spacer(modifier = Modifier.height(16.dp))

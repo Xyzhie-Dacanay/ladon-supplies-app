@@ -34,16 +34,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -54,12 +50,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
+import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
+import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.ui.theme.BlueLa
 import com.dacanay_xyzhie_f.dacanay.ladon_app.ui.theme.GrayLa
 
@@ -67,8 +63,12 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.ui.theme.GrayLa
 //Email Text Fields
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InputFields(labelValue: String, painterResource: Painter) {
-    val textValue = remember { mutableStateOf("") }
+fun InputFields(labelValue: String,
+                painterResource: Painter,
+                value: String,
+                onValueChange:(String) -> Unit,
+                errorMessage: String? = null) {
+
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.height(8.dp))
@@ -77,8 +77,8 @@ fun InputFields(labelValue: String, painterResource: Painter) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(55.dp),
-            value = textValue.value,
-            onValueChange = { textValue.value = it },
+            value = value,
+            onValueChange = onValueChange,
             placeholder = { Text(text = labelValue, color = Color.Gray) },
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = Color.Transparent,
@@ -97,6 +97,16 @@ fun InputFields(labelValue: String, painterResource: Painter) {
                 )
             }
         )
+
+        if (errorMessage != null) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 8.dp, top=4.dp)
+
+            )
+        }
     }
 }
 
@@ -119,17 +129,23 @@ fun LabelText(value:String){
     )}
 
 
-//Password TextField for login
+//Password TextField for login and Sign up
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PassFields(labelValue: String, painterResource: Painter) {
-    val password = remember { mutableStateOf("") }
+fun PassFields(
+    labelValue: String,
+    painterResource: Painter,
+    value: String,
+    onValueChange: (String) -> Unit,
+    errorMessage: String?
+) {
+
     val passwordVisible = remember { mutableStateOf(false) }
 
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
-        value = password.value,
-        onValueChange = { password.value = it },
+        value = value,
+        onValueChange = onValueChange,
         placeholder = { Text(text = labelValue, color = Color.Gray) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color.Transparent,
@@ -169,20 +185,35 @@ fun PassFields(labelValue: String, painterResource: Painter) {
         },
         visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation()
     )
+    if (errorMessage != null) {
+        Text(
+            text = errorMessage,
+            color = Color.Red,
+            fontSize = 12.sp,
+            modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+        )
+    }
 }
 
 
 
-//Password Textfield for signup
+//Password Textfield for signup confirmation
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SignUpPasswordField(labelValue: String, painterResource: Painter) {
+fun SignUpPasswordField(
+    labelValue: String,
+    painterResource: Painter,
+    value: String,
+    onValueChange: (String) -> Unit,
+    errorMessage: String?
+
+) {
     val password = remember { mutableStateOf("") }
 
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
-        value = password.value,
-        onValueChange = { password.value = it },
+        value = value,
+        onValueChange = onValueChange,
         placeholder = { Text(text = labelValue, color = Color.Gray) }, // ✅ Placeholder for password
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = Color.Transparent, // ✅ No visible border when focused
@@ -202,6 +233,14 @@ fun SignUpPasswordField(labelValue: String, painterResource: Painter) {
         },
         visualTransformation = PasswordVisualTransformation() // ✅ Always hides password (No eye icon)
     )
+    if (errorMessage != null) {
+        Text(
+            text = errorMessage,
+            color = Color.Red,
+            fontSize = 12.sp,
+            modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+        )
+    }
 }
 
 
@@ -236,8 +275,10 @@ fun RememberComp(value: String) {
 
 // Login Button
 @Composable
-fun LoginButtonComponent (value: String) {
-    Button(onClick = {},
+fun LoginButtonComponent (value: String, navController: NavHostController) {
+    Button(onClick = {
+        navController.navigate(Routes.HomePage)
+    },
         modifier = Modifier.fillMaxWidth()
             .heightIn(48.dp),
         contentPadding = PaddingValues(),
@@ -265,8 +306,12 @@ fun LoginButtonComponent (value: String) {
 }
 // SignUp Button
 @Composable
-fun SignupButtonComponent (value: String) {
-    Button(onClick = {},
+fun SignupButtonComponent (value: String, authViewModel: AuthViewModel, navController: NavHostController) {
+    Button(onClick = {
+        if (authViewModel.validateSignUp()) {
+            navController.navigate(Routes.HomePage)
+        }
+    },
         modifier = Modifier.fillMaxWidth()
             .heightIn(48.dp),
         contentPadding = PaddingValues(),
@@ -292,6 +337,10 @@ fun SignupButtonComponent (value: String) {
 
     }
 }
+
+
+
+
 
 
 //Divider
