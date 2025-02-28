@@ -7,16 +7,19 @@ import androidx.navigation.compose.composable
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LogSignScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LoginScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.SignUpScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.favorites.FavoriteScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.HomeScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.OrderScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.ProfileScreen
 
 @Composable
 fun AuthNavigation(navController: NavHostController){
     NavHost(navController = navController, startDestination = Routes.LogSign) {
         composable(Routes.LogSign) {
-            LogSignScreen(navController)
+            LogSignScreen(navController = navController)
     }
         composable(Routes.LogIn) {
-            LoginScreen(navController)
+            LoginScreen(navController = navController)
         }
 
         composable(Routes.SignUp) {
@@ -24,6 +27,15 @@ fun AuthNavigation(navController: NavHostController){
         }
         composable(Routes.HomePage) {
             HomeScreen(navController = navController)
+        }
+        composable(Routes.Favorites) {
+            FavoriteScreen(navController = navController)
+        }
+        composable(Routes.Orders) {
+            OrderScreen(navController = navController)
+        }
+        composable(Routes.Profile) {
+            ProfileScreen(navController = navController)
         }
 
 

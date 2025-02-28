@@ -93,7 +93,8 @@ fun LoginScreen(navController: NavHostController, authViewModel: AuthViewModel =
 
 
             // Login Button
-            LoginButtonComponent(value = stringResource(id = R.string.login))
+            LoginButtonComponent(value = stringResource(id = R.string.login),
+                navController = navController)
 
             Spacer(modifier = Modifier.height(10.dp))
 

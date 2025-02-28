@@ -1,4 +1,5 @@
-package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home
+package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,13 +15,10 @@ import androidx.compose.ui.Modifier
 
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
-
-
+fun ProfileScreen(navController: NavHostController) {
     Scaffold(
-        bottomBar = { NavBar(navController) }
+        bottomBar = { NavBar(navController) } // ✅ Uses the navbar
     ) { paddingValues ->
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -28,7 +26,7 @@ fun HomeScreen(navController: NavHostController) {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Welcome to Home Page", style = MaterialTheme.typography.headlineMedium)
+            Text(text = "Profile daw", style = MaterialTheme.typography.headlineMedium)
         }
     }
 }

@@ -6,4 +6,7 @@ object Routes {
      var LogIn = "LogInScreen"
      var SignUp ="SignUpScreen"
      var HomePage = "HomePageScreen"
+     var Favorites = "FavoriteScreen"
+     var Orders = "OrderScreen"
+     var Profile = "ProfileScreen"
 }

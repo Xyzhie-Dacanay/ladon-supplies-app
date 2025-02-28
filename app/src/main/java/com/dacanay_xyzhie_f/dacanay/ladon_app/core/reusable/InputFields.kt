@@ -277,7 +277,9 @@ fun RememberComp(value: String) {
 @Composable
 fun LoginButtonComponent (value: String, navController: NavHostController) {
     Button(onClick = {
-        navController.navigate(Routes.HomePage)
+
+            navController.navigate(Routes.HomePage)
+
     },
         modifier = Modifier.fillMaxWidth()
             .heightIn(48.dp),
