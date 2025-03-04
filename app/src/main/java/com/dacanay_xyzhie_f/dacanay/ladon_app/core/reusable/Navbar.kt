@@ -9,10 +9,6 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.ShoppingBag
-import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.PersonOutline
-import androidx.compose.material.icons.outlined.ShoppingBag
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.*
@@ -31,17 +27,21 @@ fun NavBar(navController: NavController) {
     )
 
     val currentRoute = navController.currentDestination?.route
-    val primaryColor = Color(0xFF35AEFF) // ✅ Your primary color
+    val primaryColor = Color(0xFF35AEFF)
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-            .background(Color.White, shape = RoundedCornerShape(20.dp)) // ✅ Rounded container
+            .background(Color.White, shape = RoundedCornerShape(20.dp))
+
     ) {
         NavigationBar(
             containerColor = Color.Transparent,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+
+
+
         ) {
             navItemList.forEach { item ->
                 val isSelected = currentRoute == item.route
@@ -52,7 +52,7 @@ fun NavBar(navController: NavController) {
                             modifier = Modifier
                                 .size(40.dp)
                                 .background(
-                                    if (isSelected) primaryColor else Color.Transparent, // ✅ Only primary color appears
+                                    if (isSelected) primaryColor else Color.Transparent,
                                     shape = CircleShape
                                 ),
                             contentAlignment = Alignment.Center
@@ -60,7 +60,7 @@ fun NavBar(navController: NavController) {
                             Icon(
                                 imageVector = item.icon,
                                 contentDescription = item.label,
-                                tint = if (isSelected) Color.White else Color.Gray // ✅ White icon when selected, gray when not
+                                tint = if (isSelected) Color.White else Color.Gray
                             )
                         }
                     },
@@ -76,13 +76,19 @@ fun NavBar(navController: NavController) {
                         }
                     },
                     colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color.Transparent, // ✅ Removes the default ripple background
+                        selectedIconColor = Color.Transparent,
                         unselectedIconColor = Color.Transparent,
                         selectedTextColor = primaryColor,
-                        indicatorColor = Color.Transparent // ✅ Prevents extra color overlay
+                        indicatorColor = Color.Transparent
                     )
                 )
             }
         }
     }
 }
+
+//@Preview (showBackground = true)
+//@Composable
+//fun PreviewNavbar (){
+//    NavBar(  )
+//}

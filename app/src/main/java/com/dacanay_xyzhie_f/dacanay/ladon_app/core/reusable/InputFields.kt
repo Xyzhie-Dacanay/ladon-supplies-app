@@ -63,11 +63,13 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.ui.theme.GrayLa
 //Email Text Fields
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun InputFields(labelValue: String,
-                painterResource: Painter,
-                value: String,
-                onValueChange:(String) -> Unit,
-                errorMessage: String? = null) {
+fun InputFields(
+    labelValue: String,
+    painterResource: Painter,
+    value: String,
+    onValueChange: (String) -> Unit,
+    errorMessage: String? = null
+) {
 
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -92,7 +94,7 @@ fun InputFields(labelValue: String,
                 Icon(
                     painter = painterResource,
                     contentDescription = null,
-                    tint = colorResource(id=R.color.primaryColor),
+                    tint = colorResource(id = R.color.primaryColor),
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -103,7 +105,7 @@ fun InputFields(labelValue: String,
                 text = errorMessage,
                 color = Color.Red,
                 fontSize = 12.sp,
-                modifier = Modifier.padding(start = 8.dp, top=4.dp)
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
 
             )
         }
@@ -113,20 +115,22 @@ fun InputFields(labelValue: String,
 
 //Label
 @Composable
-fun LabelText(value:String){
+fun LabelText(value: String) {
 
     Text(
         text = value,
-        modifier = Modifier.fillMaxWidth().heightIn(min = 10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(min = 10.dp),
         style = TextStyle(
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             fontStyle = FontStyle.Normal
+        ),
+        color = colorResource(id = R.color.black),
+
         )
-
-        ,color = colorResource(id = R.color.black),
-
-    )}
+}
 
 
 //Password TextField for login and Sign up
@@ -156,11 +160,12 @@ fun PassFields(
         shape = RoundedCornerShape(20.dp),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         leadingIcon = {
-            Icon(painter = painterResource,
+            Icon(
+                painter = painterResource,
                 contentDescription = null,
-                tint = colorResource(id=R.color.primaryColor),
+                tint = colorResource(id = R.color.primaryColor),
                 modifier = Modifier.size(24.dp)
-                )
+            )
         },
         trailingIcon = {
             val iconImage = if (passwordVisible.value) {
@@ -176,11 +181,12 @@ fun PassFields(
             }
 
             IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
-                Icon(imageVector = iconImage,
+                Icon(
+                    imageVector = iconImage,
                     contentDescription = description,
-                    tint = colorResource(id=R.color.primaryColor),
+                    tint = colorResource(id = R.color.primaryColor),
                     modifier = Modifier.size(24.dp)
-                    )
+                )
             }
         },
         visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation()
@@ -194,7 +200,6 @@ fun PassFields(
         )
     }
 }
-
 
 
 //Password Textfield for signup confirmation
@@ -244,7 +249,6 @@ fun SignUpPasswordField(
 }
 
 
-
 @Composable
 fun RememberComp(value: String) {
     val checkedState = remember { mutableStateOf(false) }
@@ -275,97 +279,120 @@ fun RememberComp(value: String) {
 
 // Login Button
 @Composable
-fun LoginButtonComponent (value: String, navController: NavHostController) {
-    Button(onClick = {
+fun LoginButtonComponent(value: String, navController: NavHostController) {
+    Button(
+        onClick = {
 
             navController.navigate(Routes.HomePage)
 
-    },
-        modifier = Modifier.fillMaxWidth()
+        },
+        modifier = Modifier
+            .fillMaxWidth()
             .heightIn(48.dp),
         contentPadding = PaddingValues(),
         colors = ButtonDefaults.buttonColors(Color.Transparent)
     ) {
 
-        Box(modifier = Modifier.fillMaxWidth()
-            .heightIn(50.dp).background(
-                color = BlueLa,
-                shape = RoundedCornerShape(50.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(50.dp)
+                .background(
+                    color = BlueLa,
+                    shape = RoundedCornerShape(50.dp)
 
-           ),
+                ),
             contentAlignment = Alignment.Center
 
-        ){
+        ) {
 
-            Text(text=value,
+            Text(
+                text = value,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold)
+                fontWeight = FontWeight.Bold
+            )
 
 
         }
 
     }
 }
+
 // SignUp Button
 @Composable
-fun SignupButtonComponent (value: String, authViewModel: AuthViewModel, navController: NavHostController) {
-    Button(onClick = {
-        if (authViewModel.validateSignUp()) {
-            navController.navigate(Routes.HomePage)
-        }
-    },
-        modifier = Modifier.fillMaxWidth()
+fun SignupButtonComponent(
+    value: String,
+    authViewModel: AuthViewModel,
+    navController: NavHostController
+) {
+    Button(
+        onClick = {
+            if (authViewModel.validateSignUp()) {
+                navController.navigate(Routes.HomePage)
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
             .heightIn(48.dp),
         contentPadding = PaddingValues(),
         colors = ButtonDefaults.buttonColors(Color.Transparent)
     ) {
 
-        Box(modifier = Modifier.fillMaxWidth()
-            .heightIn(50.dp).background(
-                color = BlueLa,
-                shape = RoundedCornerShape(50.dp)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(50.dp)
+                .background(
+                    color = BlueLa,
+                    shape = RoundedCornerShape(50.dp)
 
-            ),
+                ),
             contentAlignment = Alignment.Center
 
-        ){
+        ) {
 
-            Text(text=value,
+            Text(
+                text = value,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold)
+                fontWeight = FontWeight.Bold
+            )
 
 
         }
 
     }
 }
-
-
-
-
 
 
 //Divider
 @Composable
 fun DividerComponent() {
-    Row(modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically)
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    )
     {
-        Divider(modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f),
-            color= GrayLa,
-            thickness = 1.dp)
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            color = GrayLa,
+            thickness = 1.dp
+        )
 
 
-        Text(modifier = Modifier.padding(8.dp),
-            text="or", fontSize = 18.sp, color = GrayLa)
+        Text(
+            modifier = Modifier.padding(8.dp),
+            text = "or", fontSize = 18.sp, color = GrayLa
+        )
 
-        Divider(modifier = Modifier
-            .fillMaxWidth()
-            .weight(1f),
-            color= GrayLa,
-            thickness = 1.dp)
+        Divider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            color = GrayLa,
+            thickness = 1.dp
+        )
 
     }
 

@@ -26,7 +26,6 @@ fun HeadingText(value:String){
 
     Text(
         text = value,
-        modifier = Modifier.fillMaxWidth().heightIn(min = 40.dp),
         style = TextStyle(
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,

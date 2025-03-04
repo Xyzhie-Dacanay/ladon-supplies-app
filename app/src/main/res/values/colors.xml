@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="tfBackground">#FFF2F2F2</color>
     <color name="primaryColor">#FF35AEFF</color>
+    <color name="backgroundColor">#FFE8F3F7</color>
 
 
 </resources>

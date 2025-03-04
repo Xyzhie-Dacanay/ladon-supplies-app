@@ -10,7 +10,12 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.SignUpScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.favorites.FavoriteScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.HomeScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.OrderScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.AboutScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.ProfileScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.HelpScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.PrivacyPolicvScreem
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.ReportScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.SettingsScreen
 
 @Composable
 fun AuthNavigation(navController: NavHostController){
@@ -37,6 +42,35 @@ fun AuthNavigation(navController: NavHostController){
         composable(Routes.Profile) {
             ProfileScreen(navController = navController)
         }
+
+        composable(Routes.HelpCenter) {
+            HelpScreen(navController = navController)
+        }
+        composable(Routes.About) {
+            AboutScreen(navController = navController)
+        }
+
+        composable(Routes.PrivacyPolicy) {
+            PrivacyPolicvScreem(navController = navController)
+        }
+
+        composable(Routes.Report) {
+           ReportScreen(navController = navController)
+        }
+
+        composable(Routes.Settings) {
+            SettingsScreen(navController = navController)
+        }
+
+
+
+
+
+
+
+
+
+
 
 
 }

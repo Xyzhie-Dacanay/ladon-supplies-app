@@ -9,4 +9,9 @@ object Routes {
      var Favorites = "FavoriteScreen"
      var Orders = "OrderScreen"
      var Profile = "ProfileScreen"
+     var HelpCenter = "HelpScreen"
+     var About = "AboutScreen"
+     var PrivacyPolicy = "PrivacyPolicyScreen"
+     var Report = "ReportScreen"
+     var Settings = "SettingsScreen"
 }
