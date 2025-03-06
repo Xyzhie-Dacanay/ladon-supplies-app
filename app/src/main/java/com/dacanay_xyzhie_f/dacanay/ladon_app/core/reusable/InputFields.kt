@@ -435,7 +435,7 @@ fun ButtonComponent() {
 fun ButtonTextComponent(navController: NavHostController, isSignUpScreen: Boolean) {
     val annotatedString = buildAnnotatedString {
         if (isSignUpScreen) {
-            // 🔹 Sign-Up Screen: "Already have an account? Log In"
+            // Sign-Up Screen: "Already have an account? Log In"
             append("Already have an account? ")
             val startIndex = length
             append("Log In")
@@ -489,9 +489,9 @@ fun ButtonTextComponent(navController: NavHostController, isSignUpScreen: Boolea
             annotatedString.getStringAnnotations(tag = "Navigate", start = offset, end = offset)
                 .firstOrNull()?.let {
                     if (it.item == "signup") {
-                        navController.navigate("SignupScreen") // ✅ Navigate to Sign-Up
+                        navController.navigate("SignupScreen")
                     } else if (it.item == "login") {
-                        navController.navigate("LoginScreen") // ✅ Navigate to Login
+                        navController.navigate("LoginScreen")
                     }
                 }
         }

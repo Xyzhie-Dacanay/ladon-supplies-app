@@ -4,11 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LogSignScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LoginScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.SignUpScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.favorites.FavoriteScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.HomeScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductsScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.OrderScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.AboutScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.ProfileScreen
@@ -62,6 +64,12 @@ fun AuthNavigation(navController: NavHostController){
             SettingsScreen(navController = navController)
         }
 
+        composable(Routes.ProductsScreen) {
+            ProductsScreen(navController = navController)
+        }
+
+
+    }
 
 
 
@@ -73,7 +81,13 @@ fun AuthNavigation(navController: NavHostController){
 
 
 
-}
+
+
+
+
+
+
+    }
 
 
 
@@ -83,4 +97,3 @@ fun AuthNavigation(navController: NavHostController){
 
 
 
-}

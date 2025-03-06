@@ -114,7 +114,7 @@ fun LoginScreen(navController: NavHostController, authViewModel: AuthViewModel =
                 Spacer(modifier = Modifier.height(16.dp))
                 ButtonComponent()
                 Spacer(modifier = Modifier.height(16.dp))
-                ButtonTextComponent(navController = navController, isSignUpScreen = false) // ✅ Shows "Don't have an account? Sign Up"
+                ButtonTextComponent(navController = navController, isSignUpScreen = false)
 
             }
         }

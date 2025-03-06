@@ -81,7 +81,7 @@ fun SignUpScreen(
                 Spacer(modifier = Modifier.height(5.dp))
                 InputFields(
                     labelValue = stringResource(id = R.string.emailInt),
-                    painterResource = painterResource(id = R.drawable.envelope),
+                    painterResource = painterResource(id = R.drawable.envelopes),
                     value = authViewModel.email,
                     onValueChange = { authViewModel.email = it },
                     errorMessage = authViewModel.emailError

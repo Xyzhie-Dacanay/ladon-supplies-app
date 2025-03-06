@@ -14,4 +14,6 @@ object Routes {
      var PrivacyPolicy = "PrivacyPolicyScreen"
      var Report = "ReportScreen"
      var Settings = "SettingsScreen"
+     var ProductsScreen = "Products_Screen"
+
 }

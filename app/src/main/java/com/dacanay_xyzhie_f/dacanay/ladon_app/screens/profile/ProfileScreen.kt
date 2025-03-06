@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Edit
@@ -56,13 +55,13 @@ fun ProfileScreen(navController: NavHostController) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFE8F3F7))
+                .background(Color(0xFFE6F8FF))
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp),
+                .padding(horizontal = 18.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(10.dp),
+                modifier = Modifier.fillMaxWidth().padding(6.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -78,7 +77,7 @@ fun ProfileScreen(navController: NavHostController) {
                             imageVector = Icons.Outlined.ShoppingCart,
                             contentDescription = "Cart",
                             modifier = Modifier.size(32.dp),
-                            tint = Color.Gray
+                            tint = Color.Black
                         )
                     }
 
@@ -90,7 +89,7 @@ fun ProfileScreen(navController: NavHostController) {
                             imageVector = Icons.Outlined.Notifications,
                             contentDescription = "Notifications",
                             modifier = Modifier.size(32.dp),
-                            tint = Color.Gray
+                            tint = Color.Black
                         )
                     }
                 }
