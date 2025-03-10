@@ -318,6 +318,43 @@ fun LoginButtonComponent(value: String, navController: NavHostController) {
     }
 }
 
+// Go back to homeButton
+@Composable
+fun HomeButtonComponent(value: String, navController: NavHostController) {
+    Button(
+        onClick = {
+            navController.navigate(Routes.HomePage) {
+                popUpTo(Routes.Favorites) { inclusive = true }
+                launchSingleTop = true
+                restoreState = true
+            }
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .heightIn(48.dp),
+        contentPadding = PaddingValues(),
+        colors = ButtonDefaults.buttonColors(Color.Transparent)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(50.dp)
+                .background(
+                    color = BlueLa,
+                    shape = RoundedCornerShape(50.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = value,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+
 // SignUp Button
 @Composable
 fun SignupButtonComponent(
