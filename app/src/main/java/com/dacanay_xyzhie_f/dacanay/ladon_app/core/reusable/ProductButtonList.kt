@@ -1,4 +1,4 @@
-package com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable
+/*package com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ProductButtonList(
-    productList: List<ProductButtonData> // ✅ Accepts a list of products
+    productList: List<ProductButtonData>
 ) {
     LazyColumn(
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
@@ -23,4 +23,4 @@ fun ProductButtonList(
             )
         }
     }
-}
+}*/

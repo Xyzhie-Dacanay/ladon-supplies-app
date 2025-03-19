@@ -95,23 +95,36 @@ item {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(100.dp))
+
         Image(
-            painter = painterResource(id = R.drawable.submarkfinal),
+            painter = painterResource(id = R.drawable.favs),
             contentDescription = "No Favorites",
-            modifier = Modifier.size(360.dp)
+            modifier = Modifier.size(200.dp)
 
 
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
+
+
         Text(
-            text = "Start adding your favorite products",
+            text = "Your favorites is currently empty",
             fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Text(
+            text = "Start adding your favorite products!",
+            fontSize = 14.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Gray
 
-        )
+            )
 
         Spacer(modifier = Modifier.height(16.dp))
 

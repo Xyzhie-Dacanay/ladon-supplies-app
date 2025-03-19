@@ -141,10 +141,14 @@ fun HomeScreen(navController: NavHostController) {
                         ProductButtons(
                             imageResId = product.imageResId,
                             text = product.text,
-                            onClick = product.onClick
-                        )
+                            onClick = { selectedCategory ->
+                                navController.navigate("products/$selectedCategory")
+                            })
+
+
+
                     }
-                }
+                    }
             }
 
             item {

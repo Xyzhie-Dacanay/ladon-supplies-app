@@ -68,6 +68,12 @@ fun AuthNavigation(navController: NavHostController){
             ProductsScreen(navController = navController)
         }
 
+        composable("products/{category}") { backStackEntry ->
+            val category = backStackEntry.arguments?.getString("category") ?: "All"
+            ProductsScreen(navController, category)
+        }
+
+
 
     }
 

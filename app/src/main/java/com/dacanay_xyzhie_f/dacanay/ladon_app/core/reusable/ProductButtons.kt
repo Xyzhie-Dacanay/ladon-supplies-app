@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 fun ProductButtons(
     imageResId: Int,
     text: String,
-    onClick: () -> Unit
+    onClick: (String) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -35,7 +35,7 @@ fun ProductButtons(
             modifier = Modifier
                 .size(60.dp)
                 .background(Color.White, shape = RoundedCornerShape(12.dp))
-                .clickable { onClick() }
+                .clickable { onClick(text) }
                 .padding(8.dp),
             contentAlignment = Alignment.Center
 
