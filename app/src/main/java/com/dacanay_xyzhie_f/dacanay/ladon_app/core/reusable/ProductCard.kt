@@ -1,116 +1,95 @@
-package com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable
-
-
-
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.StarBorder
-import androidx.compose.material.icons.filled.StarRate
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
 
 @Composable
 fun ProductCard(
     productName: String,
+    productId: Int,
     productPrice: String,
-    productImage: Painter,
-    rating: Float
+    productImage: Int,
+    isFavorite: Boolean,
+    onFavoriteClick: () -> Unit,
+    navController: NavController,
+    modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
-            .width(220.dp)
-            .height(220.dp)
-            .padding(2.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(2.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        modifier = Modifier
+            .width(200.dp)
+            .height(220.dp)
+            .padding(8.dp)
+            .clickable {
+                // ✅ Navigate dynamically to the product checkout or add to cart page
+                navController.navigate("product_details/$productId") // Modify route as needed
+
+            } ) {
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            Image(
-                painter = productImage,
-                contentDescription = productName,
+            // Product Image
+            AsyncImage(
+                model = productImage,
+                contentDescription = "Product Image",
+                contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .size(140.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Fit
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .padding(top = 8.dp)
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            // Favorite Button
+            IconButton(
+                onClick = onFavoriteClick,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+            ) {
+                Icon(
+                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                    contentDescription = "Favorite",
+                    tint = if (isFavorite) Color.Red else Color.Gray
+                )
+            }
 
-            Text(
-                text = productName,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(8.dp)
+            ) {
+                // Product Name
+                Text(
+                    text = productName,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = productPrice,
-                fontSize = 12.sp,
-                color = Color.Black,
-                fontWeight = FontWeight.Bold
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            RatingBar(rating = rating)
-
-        }
-    }
-}
-
-
-
-@Composable
-
-fun RatingBar(rating: Float) {
-    Row (
-        horizontalArrangement = Arrangement.Center
-    )
-
-    {
-        repeat(5) {
-            index ->
-            Icon(
-                imageVector = if (index < rating) Icons.Default.StarRate
-                else Icons.Default.StarBorder,
-                contentDescription = "Rating",
-                tint = Color.Yellow,
-                modifier = Modifier.size(18.dp)
-
-            )
+                // Product Price
+                Text(
+                    text = productPrice,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.Gray
+                )
+            }
         }
     }
 }

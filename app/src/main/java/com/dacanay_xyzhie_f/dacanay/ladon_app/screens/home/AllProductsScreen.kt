@@ -33,7 +33,7 @@ fun ProductsScreen(navController: NavHostController) {
             .padding(top = 64.dp)
             .padding(horizontal = 16.dp)
     ) {
-        // 🔹 Back Button & Title (Manually Positioned)
+        //  Back Button & Title (Manually Positioned)
         Row(
             modifier = Modifier
                 .fillMaxWidth()

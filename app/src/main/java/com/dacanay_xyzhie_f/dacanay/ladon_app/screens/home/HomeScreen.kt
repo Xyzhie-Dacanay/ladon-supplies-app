@@ -39,7 +39,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ProductButtons
-import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ProductCard
+import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.RatingCard
+
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.productButtonList
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 
@@ -170,7 +171,7 @@ fun HomeScreen(navController: NavHostController) {
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(productList) { product ->
-                        ProductCard(
+                        RatingCard(
                             productName = product.name,
                             productPrice = product.price,
                             productImage = painterResource(id = product.imageRes),

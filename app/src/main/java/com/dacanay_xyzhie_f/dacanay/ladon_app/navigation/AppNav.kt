@@ -10,6 +10,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LoginScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.SignUpScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.favorites.FavoriteScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.HomeScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductDetailsScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductsScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.OrderScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.AboutScreen
@@ -70,8 +71,16 @@ fun AuthNavigation(navController: NavHostController){
 
         composable("products/{category}") { backStackEntry ->
             val category = backStackEntry.arguments?.getString("category") ?: "All"
-            ProductsScreen(navController, category)
+            ProductsScreen(navController = navController, category = category)
         }
+
+        composable("product_details/{productId}") { backStackEntry ->
+            val productId = backStackEntry.arguments?.getString("productId")?.toIntOrNull()
+            if (productId != null) {
+                ProductDetailsScreen(navController, productId)
+            }
+        }
+
 
 
 
