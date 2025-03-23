@@ -1,6 +1,8 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,7 +29,8 @@ fun SignUpScreen(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()), // Make it scrollable
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
@@ -52,9 +55,7 @@ fun SignUpScreen(
 
             // Header Section
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 HeadingText(value = stringResource(id = R.string.create))
@@ -63,7 +64,7 @@ fun SignUpScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Username Input
+                // Username
                 LabelText(value = stringResource(id = R.string.username))
                 Spacer(modifier = Modifier.height(5.dp))
                 InputFields(
@@ -74,9 +75,9 @@ fun SignUpScreen(
                     errorMessage = authViewModel.usernameError
                 )
 
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
-                // Email Input
+                // Email
                 LabelText(value = stringResource(id = R.string.email))
                 Spacer(modifier = Modifier.height(5.dp))
                 InputFields(
@@ -87,9 +88,9 @@ fun SignUpScreen(
                     errorMessage = authViewModel.emailError
                 )
 
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
-                //Password Input
+                // Password
                 LabelText(value = stringResource(id = R.string.password))
                 Spacer(modifier = Modifier.height(5.dp))
                 PassFields(
@@ -98,12 +99,11 @@ fun SignUpScreen(
                     value = authViewModel.password,
                     onValueChange = { authViewModel.password = it },
                     errorMessage = authViewModel.passwordError
-
                 )
 
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(14.dp))
 
-                //Confirm Password Input
+                // Confirm Password
                 LabelText(value = stringResource(id = R.string.confirm_password))
                 Spacer(modifier = Modifier.height(5.dp))
                 SignUpPasswordField(
@@ -112,34 +112,41 @@ fun SignUpScreen(
                     value = authViewModel.confirmPassword,
                     onValueChange = { authViewModel.confirmPassword = it },
                     errorMessage = authViewModel.confirmPasswordError
-
                 )
+
+                Spacer(modifier = Modifier.height(14.dp))
+
+                LabelText(value = stringResource(id = R.string.contact))
+                Spacer(modifier = Modifier.height(5.dp))
+                ContactTextField(
+                    value = authViewModel.contactNumber,
+                    onValueChange = { authViewModel.contactNumber = it },
+                    painterResource = painterResource(id = R.drawable.contact),
+                    errorMessage = authViewModel.contactNumberError
+                )
+
+
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Sign-Up Button
-
                 SignupButtonComponent(
                     value = stringResource(id = R.string.signup),
-                    authViewModel = authViewModel, 
+                    authViewModel = authViewModel,
                     navController = navController
                 )
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-
-
                 DividerComponent()
                 Spacer(modifier = Modifier.height(10.dp))
                 ButtonComponent()
                 Spacer(modifier = Modifier.height(10.dp))
-                ButtonTextComponent(navController = navController, isSignUpScreen = true) // ✅ Shows "Already have an account? Log In"
-
+                ButtonTextComponent(navController = navController, isSignUpScreen = true)
             }
-
-
-
-
         }
     }
 }

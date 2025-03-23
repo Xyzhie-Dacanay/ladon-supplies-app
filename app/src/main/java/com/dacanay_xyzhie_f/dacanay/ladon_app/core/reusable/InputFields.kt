@@ -1,5 +1,4 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -47,6 +46,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -58,6 +58,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.ui.theme.BlueLa
 import com.dacanay_xyzhie_f.dacanay.ladon_app.ui.theme.GrayLa
+
 
 
 //Email Text Fields
@@ -232,11 +233,11 @@ fun SignUpPasswordField(
             Icon(
                 painter = painterResource,
                 contentDescription = null,
-                tint = colorResource(id = R.color.primaryColor), // ✅ Primary theme color
+                tint = colorResource(id = R.color.primaryColor),
                 modifier = Modifier.size(24.dp)
             )
         },
-        visualTransformation = PasswordVisualTransformation() // ✅ Always hides password (No eye icon)
+        visualTransformation = PasswordVisualTransformation()
     )
     if (errorMessage != null) {
         Text(
@@ -535,6 +536,57 @@ fun ButtonTextComponent(navController: NavHostController, isSignUpScreen: Boolea
     )
 }
 
-
-
-
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ContactTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    painterResource: Painter,
+    errorMessage: String?,
+    modifier: Modifier = Modifier,
+    label: String = "Phone Number"
+) {
+    Column {
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = value,
+            onValueChange = {
+                if (it.length <= 11 && it.all { char -> char.isDigit() }) {
+                    onValueChange(it)
+                }
+            },
+            leadingIcon = {
+                Icon(
+                    painter = painterResource,
+                    contentDescription = "Phone Icon",
+                    tint = colorResource(id = R.color.primaryColor),
+                    modifier = Modifier.size(24.dp)
+                )
+            },
+            placeholder = { Text(text = label, color = Color.Gray) },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = if (errorMessage == null) Color.Transparent else Color.Red,
+                unfocusedBorderColor = if (errorMessage == null) Color.Transparent else Color.Red,
+                cursorColor = colorResource(id = R.color.black),
+                containerColor = colorResource(id = R.color.tfBackground),
+            ),
+            shape = RoundedCornerShape(20.dp),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ),
+            singleLine = true,
+            modifier = modifier
+                .fillMaxWidth()
+                .height(55.dp)
+        )
+        if (!errorMessage.isNullOrEmpty()) {
+            Text(
+                text = errorMessage,
+                color = Color.Red,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+            )
+        }
+    }
+}

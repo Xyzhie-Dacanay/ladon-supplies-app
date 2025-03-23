@@ -30,6 +30,9 @@
     <string name="signup">Signup</string>
     <string name="homepage">Go back to HomePage</string>
 
+    <string name="contact">Contact Number</string>
+    <string name="contact_label">Enter youContact Number</string>
+
 
 
 

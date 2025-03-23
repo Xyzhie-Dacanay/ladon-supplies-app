@@ -2,11 +2,9 @@ package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,37 +24,39 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddtoCartScreen(navController: NavHostController, cartList: MutableList<CartItem>) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
+
+
+    // Sync initial passed cart items
+
+
     val totalPrice by remember {
         derivedStateOf {
-            cartList.sumOf { (it.product.price.replace("₱", "").trim().toDoubleOrNull() ?: 0.0) * it.quantity }
+            cartList.sumOf {
+                (it.product.price.replace("₱", "").trim().toDoubleOrNull() ?: 0.0) * it.quantity
+            }
         }
     }
 
-    val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = "My Cart",
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
-                    )
+                    Text("My Cart", textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFE6F8FF)
-                )
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFE6F8FF))
             )
         },
         containerColor = Color(0xFFE6F8FF),
-        snackbarHost = { SnackbarHost(snackbarHostState) } // Snackbar integration
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -74,10 +74,10 @@ fun AddtoCartScreen(navController: NavHostController, cartList: MutableList<Cart
                 )
             } else {
                 Column(
-                    modifier = Modifier.weight(1f), // Makes sure the total and button are at the bottom
+                    modifier = Modifier.weight(1f),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    cartList.forEach { cartItem ->
+                    cartList.forEachIndexed { index, cartItem ->
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -90,15 +90,15 @@ fun AddtoCartScreen(navController: NavHostController, cartList: MutableList<Cart
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                // Checkbox
                                 Checkbox(
                                     checked = cartItem.isSelected,
-                                    onCheckedChange = { cartItem.isSelected = it }
+                                    onCheckedChange = {
+                                        cartList[index] = cartItem.copy(isSelected = it)
+                                    }
                                 )
 
                                 Spacer(modifier = Modifier.width(8.dp))
 
-                                // Product Image
                                 Image(
                                     painter = painterResource(id = cartItem.product.imageRes),
                                     contentDescription = "Product Image",
@@ -111,7 +111,6 @@ fun AddtoCartScreen(navController: NavHostController, cartList: MutableList<Cart
 
                                 Spacer(modifier = Modifier.width(12.dp))
 
-                                // Product Info
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
                                         text = cartItem.product.name,
@@ -125,14 +124,14 @@ fun AddtoCartScreen(navController: NavHostController, cartList: MutableList<Cart
                                     )
                                 }
 
-                                // Quantity Controls
                                 Row(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     IconButton(
                                         onClick = {
                                             if (cartItem.quantity > 1) {
-                                                cartItem.quantity--
+                                                cartList[index] =
+                                                    cartItem.copy(quantity = cartItem.quantity - 1)
                                             }
                                         },
                                         modifier = Modifier.size(30.dp)
@@ -144,7 +143,8 @@ fun AddtoCartScreen(navController: NavHostController, cartList: MutableList<Cart
 
                                     IconButton(
                                         onClick = {
-                                            cartItem.quantity++
+                                            cartList[index] =
+                                                cartItem.copy(quantity = cartItem.quantity + 1)
                                         },
                                         modifier = Modifier.size(30.dp)
                                     ) {
@@ -152,9 +152,8 @@ fun AddtoCartScreen(navController: NavHostController, cartList: MutableList<Cart
                                     }
                                 }
 
-                                // Delete Button
                                 IconButton(onClick = {
-                                    cartList.remove(cartItem)
+                                    cartList.removeAt(index)
                                     coroutineScope.launch {
                                         snackbarHostState.showSnackbar("Item removed from cart")
                                     }
@@ -172,7 +171,6 @@ fun AddtoCartScreen(navController: NavHostController, cartList: MutableList<Cart
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Total Price Section
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -189,7 +187,6 @@ fun AddtoCartScreen(navController: NavHostController, cartList: MutableList<Cart
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Continue Button
                 Button(
                     onClick = { navController.navigate("checkout") },
                     modifier = Modifier
@@ -209,64 +206,3 @@ fun AddtoCartScreen(navController: NavHostController, cartList: MutableList<Cart
         }
     }
 }
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CustomSnackbar(snackbarHostState: SnackbarHostState) {
-    SnackbarHost(hostState = snackbarHostState) { snackbarData ->
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFFE6F8FF)), // Light blue background
-            contentAlignment = Alignment.Center
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Circular Check Icon
-                Box(
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(CircleShape)
-                        .background(Color.White),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "Check Icon",
-                        tint = Color(0xFF35AEFF),
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Title
-                Text(
-                    text = "Added to cart!!!",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black,
-                    textAlign = TextAlign.Center
-                )
-
-                // Subtitle
-                Text(
-                    text = "You have successfully added a product to your cart",
-                    fontSize = 14.sp,
-                    color = Color.Gray,
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-    }
-}
-
-
-
-
