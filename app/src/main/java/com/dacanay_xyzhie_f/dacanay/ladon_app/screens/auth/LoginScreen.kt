@@ -16,7 +16,8 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
 
 @Composable
-fun LoginScreen(navController: NavHostController, authViewModel: AuthViewModel = viewModel()) {
+fun LoginScreen(navController: NavHostController,
+                authViewModel: AuthViewModel = viewModel()) {
     Surface(
         modifier = Modifier
             .fillMaxSize()
@@ -54,29 +55,31 @@ fun LoginScreen(navController: NavHostController, authViewModel: AuthViewModel =
             Spacer(modifier = Modifier.height(36.dp))
 
             // Email Input
+            // Email Input
             LabelText(value = stringResource(id = R.string.email))
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(5.dp))
             InputFields(
+
                 labelValue = stringResource(id = R.string.emailInt),
                 painterResource = painterResource(id = R.drawable.envelope),
                 value = authViewModel.email,
                 onValueChange = { authViewModel.email = it },
-                errorMessage = authViewModel.emailError
-
+                errorMessage = authViewModel.signInEmailError
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Password Input
+    // Password Input
             LabelText(value = stringResource(id = R.string.password))
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(5.dp))
             PassFields(
                 labelValue = stringResource(id = R.string.passwordInt),
                 painterResource = painterResource(id = R.drawable.lock_line_icon),
                 value = authViewModel.password,
                 onValueChange = { authViewModel.password = it },
-                errorMessage = authViewModel.passwordError
+                errorMessage = authViewModel.signInPasswordError
             )
+
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -93,8 +96,12 @@ fun LoginScreen(navController: NavHostController, authViewModel: AuthViewModel =
 
 
             // Login Button
-            LoginButtonComponent(value = stringResource(id = R.string.login),
-                navController = navController)
+            LoginButtonComponent(
+                value = stringResource(id = R.string.login),
+                authViewModel = authViewModel,
+                navController = navController
+            )
+
 
             Spacer(modifier = Modifier.height(10.dp))
 

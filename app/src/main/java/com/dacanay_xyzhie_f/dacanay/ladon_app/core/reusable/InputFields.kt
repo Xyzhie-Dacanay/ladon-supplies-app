@@ -280,11 +280,17 @@ fun RememberComp(value: String) {
 
 // Login Button
 @Composable
-fun LoginButtonComponent(value: String, navController: NavHostController) {
+fun LoginButtonComponent(
+    value: String,
+    navController: NavHostController,
+    authViewModel: AuthViewModel
+) {
     Button(
         onClick = {
+                if (authViewModel.validateSignIn()) {
+                    navController.navigate(Routes.HomePage)
+                }
 
-            navController.navigate(Routes.HomePage)
 
         },
         modifier = Modifier
@@ -366,7 +372,7 @@ fun SignupButtonComponent(
     Button(
         onClick = {
             if (authViewModel.validateSignUp()) {
-                navController.navigate(Routes.HomePage)
+                navController.navigate(Routes.LogIn)
             }
         },
         modifier = Modifier
