@@ -34,6 +34,14 @@
     <string name="contact_label">Enter youContact Number</string>
 
 
+    <string name="usernameInt">Enter your new Username</string>
+
+
+    <string name="edemail">Enter your new email</string>
+    <string name="edecontact">Enter your new contact number</string>
+
+
+
 
 
 </resources>

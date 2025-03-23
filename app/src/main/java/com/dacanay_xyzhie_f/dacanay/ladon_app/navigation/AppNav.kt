@@ -16,7 +16,6 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductDetailsScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductsScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.AddtoCartScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.CartItem
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.CheckoutScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.OrderScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.AboutScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.ProfileScreen
@@ -24,6 +23,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.HelpScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.PrivacyPolicvScreem
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.ReportScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.SettingsScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.EditProfile
 
 @Composable
 fun AuthNavigation(navController: NavHostController){
@@ -91,6 +91,9 @@ fun AuthNavigation(navController: NavHostController){
 
         composable(Routes.AddtoCartScreen) {
             AddtoCartScreen(navController, cartList) }
+
+        composable(Routes.EditProfileScreen) {
+           EditProfile(navController = navController) }
 
 
 
