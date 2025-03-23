@@ -1,0 +1,10 @@
+package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders
+
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+
+@Composable
+
+fun CheckoutScreen (navController: NavHostController) {
+
+}

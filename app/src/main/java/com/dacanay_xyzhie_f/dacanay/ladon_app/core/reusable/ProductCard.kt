@@ -16,6 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 
+
+// Component for the actual product
 @Composable
 fun ProductCard(
     productName: String,
@@ -36,8 +38,8 @@ fun ProductCard(
             .height(220.dp)
             .padding(8.dp)
             .clickable {
-                // ✅ Navigate dynamically to the product checkout or add to cart page
-                navController.navigate("product_details/$productId") // Modify route as needed
+
+                navController.navigate("product_details/$productId")
 
             } ) {
         Box(

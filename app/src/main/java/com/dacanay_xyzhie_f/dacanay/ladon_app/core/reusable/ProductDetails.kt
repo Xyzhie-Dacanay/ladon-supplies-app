@@ -2,7 +2,7 @@ package com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable
 
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 
-data class Product(
+class Product(
     val id: Int,
     val name: String,
     val price: String,
@@ -10,7 +10,7 @@ data class Product(
     val category: String
 )
 
-val productLists = listOf(
+val ActualproductLists = listOf(
     Product(1,"Short Bond Paper (1 Ream)", "P39.00", R.drawable.oneream,  "Bond Paper"),
     Product(2, "1 pc Epson Ink", "P250.00", R.drawable.soloink,  "Ink"),
     Product(3,"Pilot Ballpen (1 Box)", "P400.00", R.drawable.pilotballpen,  "Ballpen"),

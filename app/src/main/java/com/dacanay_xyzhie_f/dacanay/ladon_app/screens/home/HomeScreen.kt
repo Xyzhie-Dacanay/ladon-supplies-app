@@ -43,6 +43,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.RatingCard
 
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.productButtonList
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.AddtoCartScreen
 
 
 @Composable
@@ -72,7 +73,7 @@ fun HomeScreen(navController: NavHostController) {
                     )
 
                     Row {
-                        IconButton(onClick = { /* Navigate to Cart */ }) {
+                        IconButton(onClick = { navController.navigate(Routes.AddtoCartScreen) }) {
                             Icon(
                                 imageVector = Icons.Outlined.ShoppingCart,
                                 contentDescription = "Cart",
@@ -185,18 +186,19 @@ fun HomeScreen(navController: NavHostController) {
 }
 
 
-        data class Product(
+        data class RatingProducts(
+
             val name: String,
             val price: String,
             val imageRes: Int,
             val rating: Float)
 
             val productList = listOf(
-                Product("Short Bond Paper (1 Ream)", "P39.00", R.drawable.oneream, 1f),
-                Product("1 pc Epson Ink", "P250.00", R.drawable.soloink, 4.5f),
-                Product("Pilot Ballpen (1 Box)", "P400.00", R.drawable.pilotballpen, 3f),
-                Product("Colored Chalk (1 Box)", "P30.00", R.drawable.coloredchalk, 4.5f),
-                Product("Chalk (1 Box)", "P30.00", R.drawable.chalkbox, 4.5f),
+                RatingProducts("Short Bond Paper (1 Ream)", "P39.00", R.drawable.oneream, 1f),
+                RatingProducts("1 pc Epson Ink", "P250.00", R.drawable.soloink, 4.5f),
+                RatingProducts("Pilot Ballpen (1 Box)", "P400.00", R.drawable.pilotballpen, 3f),
+                RatingProducts("Colored Chalk (1 Box)", "P30.00", R.drawable.coloredchalk, 4.5f),
+                RatingProducts("Chalk (1 Box)", "P30.00", R.drawable.chalkbox, 4.5f),
 
 
 

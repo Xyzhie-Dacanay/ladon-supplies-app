@@ -1,45 +1,175 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
-import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.productLists
+import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ActualproductLists
+import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.CartItem
 
 @Composable
-fun ProductDetailsScreen(navController: NavController, productId: Int) {
-    val product = productLists.find { it.id == productId } // ✅ Find product by ID
+fun ProductDetailsScreen(navController: NavController, productId: Int, cartList: MutableList<CartItem>) {
+    val product = ActualproductLists.find { it.id == productId }
+    var isFavorite by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     if (product == null) {
-        Text(text = "Product not found")
+        Text(text = "Product not found", modifier = Modifier.padding(16.dp))
     } else {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = product.name, fontWeight = FontWeight.Bold, fontSize = 22.sp)
-            Text(text = "Price: ${product.price}", fontSize = 18.sp, color = Color.Gray)
-            AsyncImage(
-                model = product.imageRes,
-                contentDescription = "Product Image",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier.fillMaxWidth().height(250.dp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0xFFE6F8FF))
+                .padding(12.dp)
+        ) {
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = { navController.popBackStack() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+
+                Row {
+                    IconButton(onClick = { isFavorite = !isFavorite }) {
+                        Icon(
+                            imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            contentDescription = "Favorite",
+                            tint = if (isFavorite) Color.Red else Color.Gray
+                        )
+                    }
+
+                    // Shopping Cart Icon
+                    IconButton(onClick = { navController.navigate(Routes.AddtoCartScreen) }) {
+                        Icon(
+                            imageVector = Icons.Outlined.ShoppingCart,
+                            contentDescription = "Cart",
+                            modifier = Modifier.size(32.dp),
+                            tint = Color.Black
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            Box(
+                modifier = Modifier
+                    .size(480.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color.White)
+            ) {
+                Image(
+                    painter = painterResource(id = product.imageRes),
+                    contentDescription = "Product Image",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier.fillMaxWidth().height(480.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(36.dp))
+
+            Text(
+                text = product.name,
+                fontWeight = FontWeight.Bold,
+                fontSize = 22.sp
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            Button(onClick = { navController.navigate("checkout/${product.id}") }) {
-                Text("Proceed to Checkout")
+            Text(
+                text = "₱${product.price}",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.Black
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Availability, Brand, Category
+            ProductDetailRow(label = "Availability:", value = "In stock", isBold = true)
+            ProductDetailRow(label = "Brand:", value = "Stabilo")
+            ProductDetailRow(label = "Category:", value = product.category)
+
+            Spacer(modifier = Modifier.weight(0.5f))
+
+            Button(
+                onClick = {
+                    val selectedProduct = ActualproductLists.find { it.id == productId }
+
+                    if (selectedProduct != null) {
+                        val existingItem = cartList.find { it.product.id == selectedProduct.id }
+
+                        if (existingItem != null) {
+                            existingItem.quantity++
+                        } else {
+                            cartList.add(CartItem(selectedProduct, 1))
+                        }
+
+                        // Show Toast instead of navigating immediately
+                        Toast.makeText(context, "Added to Cart!", Toast.LENGTH_SHORT).show()
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                colors = ButtonDefaults.buttonColors(Color(0xFF35AEFF)),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    text = "Add to Cart",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
         }
+    }
+}
+
+
+// Helper Composable
+@Composable
+fun ProductDetailRow(label: String, value: String, isBold: Boolean = false) {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = label,
+            fontSize = 16.sp,
+            color = Color.Black
+        )
+        Text(
+            text = value,
+            fontSize = 16.sp,
+            fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal
+        )
     }
 }

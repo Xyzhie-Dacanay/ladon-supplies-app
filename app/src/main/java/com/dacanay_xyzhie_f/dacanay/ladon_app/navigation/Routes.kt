@@ -15,5 +15,6 @@ object Routes {
      var Report = "ReportScreen"
      var Settings = "SettingsScreen"
      var ProductsScreen = "Products_Screen"
+     var AddtoCartScreen = "AddtoCart_Screen"
 
 }

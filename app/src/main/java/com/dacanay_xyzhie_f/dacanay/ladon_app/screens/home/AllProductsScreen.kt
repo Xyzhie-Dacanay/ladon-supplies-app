@@ -24,6 +24,9 @@ import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.productButtonList
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ProductButtons
 
+
+//Function Screen for the buttons all categories
+
 @Composable
 fun ProductsScreen(navController: NavHostController) {
     Column(
@@ -33,7 +36,7 @@ fun ProductsScreen(navController: NavHostController) {
             .padding(top = 64.dp)
             .padding(horizontal = 16.dp)
     ) {
-        //  Back Button & Title (Manually Positioned)
+        //  Back Button & Title
         Row(
             modifier = Modifier
                 .fillMaxWidth()

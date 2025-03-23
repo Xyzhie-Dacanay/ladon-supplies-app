@@ -1,6 +1,8 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,6 +14,9 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.favorites.FavoriteScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.HomeScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductDetailsScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductsScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.AddtoCartScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.CartItem
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.CheckoutScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.OrderScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.AboutScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.ProfileScreen
@@ -22,6 +27,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.SettingsScreen
 
 @Composable
 fun AuthNavigation(navController: NavHostController){
+    val cartList = remember { mutableStateListOf<CartItem>() }
     NavHost(navController = navController, startDestination = Routes.LogSign) {
         composable(Routes.LogSign) {
             LogSignScreen(navController = navController)
@@ -77,9 +83,18 @@ fun AuthNavigation(navController: NavHostController){
         composable("product_details/{productId}") { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId")?.toIntOrNull()
             if (productId != null) {
-                ProductDetailsScreen(navController, productId)
+                ProductDetailsScreen(navController, productId, cartList)
             }
         }
+
+
+
+        composable(Routes.AddtoCartScreen) {
+            AddtoCartScreen(navController, cartList) }
+
+
+
+
 
 
 
