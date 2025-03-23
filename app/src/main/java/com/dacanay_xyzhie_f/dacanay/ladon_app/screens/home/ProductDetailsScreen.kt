@@ -124,15 +124,16 @@ fun ProductDetailsScreen(navController: NavController, productId: Int, cartList:
                     val selectedProduct = ActualproductLists.find { it.id == productId }
 
                     if (selectedProduct != null) {
-                        val existingItem = cartList.find { it.product.id == selectedProduct.id }
+                        val existingIndex = cartList.indexOfFirst { it.product.id == selectedProduct.id }
 
-                        if (existingItem != null) {
-                            existingItem.quantity++
+                        if (existingIndex != -1) {
+                            val existingItem = cartList[existingIndex]
+                            val updatedItem = existingItem.copy(quantity = existingItem.quantity + 1)
+                            cartList[existingIndex] = updatedItem // ✅ replace with new object
                         } else {
-                            cartList.add(CartItem(selectedProduct, 1))
+                            cartList.add(CartItem(product = selectedProduct, quantity = 1))
                         }
 
-                        // Show Toast instead of navigating immediately
                         Toast.makeText(context, "Added to Cart!", Toast.LENGTH_SHORT).show()
                     }
                 },

@@ -191,7 +191,8 @@ fun HomeScreen(navController: NavHostController) {
             val name: String,
             val price: String,
             val imageRes: Int,
-            val rating: Float)
+            val rating: Float
+        )
 
             val productList = listOf(
                 RatingProducts("Short Bond Paper (1 Ream)", "P39.00", R.drawable.oneream, 1f),
