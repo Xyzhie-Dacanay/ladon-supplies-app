@@ -17,6 +17,8 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.*
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
 
+
+
 @Composable
 fun SignUpScreen(
     navController: NavHostController,
@@ -136,7 +138,12 @@ fun SignUpScreen(
                 SignupButtonComponent(
                     value = stringResource(id = R.string.signup),
                     authViewModel = authViewModel,
-                    navController = navController
+                    navController = navController,
+                    onSuccess = {
+                        navController.navigate(Routes.LogSign) {
+                            popUpTo(Routes.SignUp) { inclusive = true }
+                        }
+                    }
                 )
 
                 Spacer(modifier = Modifier.height(14.dp))

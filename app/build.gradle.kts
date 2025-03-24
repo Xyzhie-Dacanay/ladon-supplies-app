@@ -38,6 +38,7 @@ android {
         compose = true
     }
 }
+val nav_version = "2.8.6"
 
 dependencies {
 
@@ -60,8 +61,10 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:2.8.6")
     implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    val nav_version = "2.8.6"
+
 
     implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation("androidx.compose.material:material-icons-extended-android:1.7.7")

@@ -115,7 +115,6 @@ fun LoginScreen(navController: NavHostController, authViewModel: AuthViewModel =
                 ButtonComponent()
                 Spacer(modifier = Modifier.height(16.dp))
                 ButtonTextComponent(navController = navController, isSignUpScreen = false)
-
             }
         }
     }

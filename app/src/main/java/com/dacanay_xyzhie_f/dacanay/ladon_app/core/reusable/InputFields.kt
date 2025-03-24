@@ -1,4 +1,5 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,12 +34,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
@@ -357,16 +360,20 @@ fun HomeButtonComponent(value: String, navController: NavHostController) {
 
 
 // SignUp Button
+
 @Composable
 fun SignupButtonComponent(
     value: String,
     authViewModel: AuthViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    onSuccess: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Button(
         onClick = {
             if (authViewModel.validateSignUp()) {
-                navController.navigate(Routes.HomePage)
+                authViewModel.registerUser(onSuccess)
             }
         },
         modifier = Modifier
@@ -375,7 +382,6 @@ fun SignupButtonComponent(
         contentPadding = PaddingValues(),
         colors = ButtonDefaults.buttonColors(Color.Transparent)
     ) {
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -383,23 +389,28 @@ fun SignupButtonComponent(
                 .background(
                     color = BlueLa,
                     shape = RoundedCornerShape(50.dp)
-
                 ),
             contentAlignment = Alignment.Center
-
         ) {
-
             Text(
                 text = value,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
-
-
         }
+    }
 
+    // ✅ Observe result and trigger Toast + Navigation
+    LaunchedEffect(authViewModel.registerResult) {
+        authViewModel.registerResult?.let { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            if (message.contains("success", ignoreCase = true)) {
+                onSuccess() // ✅ navigate from outside
+            }
+        }
     }
 }
+
 
 
 //Divider

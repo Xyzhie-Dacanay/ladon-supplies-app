@@ -124,6 +124,39 @@ fun ProfileScreen(navController: NavHostController) {
                                 contentDescription = "Profile",
                                 modifier = Modifier.size(80.dp)
                             )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         }
 
                         // Edit Profile Button (Overlapping)
