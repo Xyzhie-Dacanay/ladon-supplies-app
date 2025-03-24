@@ -26,12 +26,14 @@ import androidx.navigation.NavController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ActualproductLists
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.CartItem
+import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 
 @Composable
-fun ProductDetailsScreen(navController: NavController, productId: Int, cartList: MutableList<CartItem>) {
+fun ProductDetailsScreen(navController: NavController, productId: Int, cartList: MutableList<CartItem>,   viewModel: FavoritesViewModel) {
     val product = ActualproductLists.find { it.id == productId }
-    var isFavorite by remember { mutableStateOf(false) }
+    val isFavorite = viewModel.favorites.collectAsState().value.contains(product)
     val context = LocalContext.current
+
 
     if (product == null) {
         Text(text = "Product not found", modifier = Modifier.padding(16.dp))
@@ -57,16 +59,26 @@ fun ProductDetailsScreen(navController: NavController, productId: Int, cartList:
                 }
 
                 Row {
-                    IconButton(onClick = { isFavorite = !isFavorite }) {
+                    IconButton(onClick = {
+                        viewModel.toggleFavorite(product)
+                        val message = if (viewModel.isFavorite(product)) {
+                            "${product.name} added to favorites"
+                        } else {
+                            "${product.name} removed from favorites"
+                        }
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }) {
                         Icon(
                             imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                             contentDescription = "Favorite",
-                            tint = if (isFavorite) Color.Red else Color.Gray
+                            tint = if (isFavorite) Color.Red else Color.Black
                         )
                     }
 
-                    // Shopping Cart Icon
-                    IconButton(onClick = { navController.navigate(Routes.AddtoCartScreen) }) {
+
+                    IconButton(onClick = {
+                        navController.navigate(Routes.AddtoCartScreen)
+                    }) {
                         Icon(
                             imageVector = Icons.Outlined.ShoppingCart,
                             contentDescription = "Cart",

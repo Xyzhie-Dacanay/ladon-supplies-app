@@ -1,9 +1,6 @@
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,11 +21,11 @@ fun ProductCard(
     productId: Int,
     productPrice: String,
     productImage: Int,
+    navController: NavController,
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
-    navController: NavController,
-    modifier: Modifier = Modifier
-) {
+
+    ) {
     Card(
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White),
@@ -56,19 +53,7 @@ fun ProductCard(
                     .padding(top = 8.dp)
             )
 
-            // Favorite Button
-            IconButton(
-                onClick = onFavoriteClick,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(8.dp)
-            ) {
-                Icon(
-                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                    contentDescription = "Favorite",
-                    tint = if (isFavorite) Color.Red else Color.Gray
-                )
-            }
+
 
             Column(
                 modifier = Modifier

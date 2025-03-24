@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -29,14 +30,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
-
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ActualproductLists
+import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductsScreen(navController: NavHostController, category: String) {
     val filteredProducts = ActualproductLists.filter { it.name.contains(category, ignoreCase = true) }
-
+    val viewModel: FavoritesViewModel = viewModel()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -81,13 +82,13 @@ fun ProductsScreen(navController: NavHostController, category: String) {
                 ) {
                     for (product in rowItems) {
                         ProductCard(
-                            productId = product.id,
                             productName = product.name,
+                            productId = product.id,
                             productPrice = product.price.toString(),
                             productImage = product.imageRes,
-                            isFavorite = false,
-                            onFavoriteClick = { },
-                            navController = navController
+                            navController = navController,
+                            isFavorite = viewModel.isFavorite(product),
+                            onFavoriteClick = { viewModel.toggleFavorite(product) }
                         )
                     }
 

@@ -3,7 +3,6 @@ package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home
 
 
 import ProductCard
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material.icons.Icons
@@ -14,14 +13,16 @@ import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ActualproductLists
+import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeeAllScreen(navController: NavHostController) {
+    val viewModel: FavoritesViewModel = viewModel()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -53,13 +54,13 @@ fun SeeAllScreen(navController: NavHostController) {
         ) {
             items(ActualproductLists) { product ->
                 ProductCard(
-                    productId = product.id,
                     productName = product.name,
+                    productId = product.id,
                     productPrice = product.price.toString(),
                     productImage = product.imageRes,
-                    isFavorite = false,
-                    onFavoriteClick = {},
-                    navController = navController
+                    navController = navController,
+                    isFavorite = viewModel.isFavorite(product),
+                    onFavoriteClick = { viewModel.toggleFavorite(product) }
                 )
             }
         }

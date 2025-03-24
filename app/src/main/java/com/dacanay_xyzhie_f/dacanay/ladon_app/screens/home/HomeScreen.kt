@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -24,13 +25,18 @@ import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.*
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
-import kotlin.random.Random
+import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavHostController,  viewModel: FavoritesViewModel) {
+
     val randomProducts = remember {
         ActualproductLists.shuffled().take(6)
     }
+
+
+
+
 
     Scaffold(
         bottomBar = { NavBar(navController) }
@@ -169,13 +175,13 @@ fun HomeScreen(navController: NavHostController) {
                 ) {
                     items(randomProducts) { product ->
                         ProductCard(
-                            productId = product.id,
                             productName = product.name,
+                            productId = product.id,
                             productPrice = product.price.toString(),
                             productImage = product.imageRes,
-                            isFavorite = false,
-                            onFavoriteClick = { },
-                            navController = navController
+                            navController = navController,
+                            isFavorite = viewModel.isFavorite(product),
+                            onFavoriteClick = { viewModel.toggleFavorite(product) }
                         )
                     }
                 }
