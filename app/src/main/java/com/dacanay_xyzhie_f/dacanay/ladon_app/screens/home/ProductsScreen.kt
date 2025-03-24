@@ -83,7 +83,7 @@ fun ProductsScreen(navController: NavHostController, category: String) {
                         ProductCard(
                             productId = product.id,
                             productName = product.name,
-                            productPrice = product.price,
+                            productPrice = product.price.toString(),
                             productImage = product.imageRes,
                             isFavorite = false,
                             onFavoriteClick = { },

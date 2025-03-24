@@ -161,7 +161,7 @@ fun ProfileScreen(navController: NavHostController) {
 
                         // Edit Profile Button (Overlapping)
                         IconButton(
-                            onClick = { /* Open Edit Profile */ },
+                            onClick = { navController.navigate(Routes.EditProfileScreen)},
                             modifier = Modifier
                                 .size(32.dp)
                                 .align(Alignment.BottomEnd)
