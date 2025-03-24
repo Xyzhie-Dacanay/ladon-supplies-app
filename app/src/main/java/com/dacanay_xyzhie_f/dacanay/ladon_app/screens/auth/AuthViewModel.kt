@@ -13,7 +13,6 @@ class AuthViewModel : ViewModel() {
     var signInEmailError by mutableStateOf<String?>(null)
     var signInPasswordError by mutableStateOf<String?>(null)
 
-
     var contactNumber by mutableStateOf("")
     var contactNumberError by mutableStateOf<String?>(null)
 
@@ -41,24 +40,6 @@ class AuthViewModel : ViewModel() {
             confirmPasswordError, contactNumberError
         ).all { it == null }
     }
-
-    fun validateSignIn(): Boolean {
-        signInEmailError = when {
-            email.isBlank() -> "Email cannot be empty"
-            !email.contains("@") -> "Email must contain @"
-            !email.contains(".com") -> "Email must contain .com"
-            else -> null
-        }
-
-        signInPasswordError = when {
-            password.isBlank() -> "Password cannot be empty"
-            password.length < 8 -> "Password must be at least 8 characters"
-            else -> null
-        }
-
-        return signInEmailError == null && signInPasswordError == null
-    }
-
 
     fun registerUser(onSuccess: () -> Unit) {
         if (!validateSignUp()) return

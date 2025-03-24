@@ -23,7 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ActualproductLists
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.ActualproductLists
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.CartItem
 import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel

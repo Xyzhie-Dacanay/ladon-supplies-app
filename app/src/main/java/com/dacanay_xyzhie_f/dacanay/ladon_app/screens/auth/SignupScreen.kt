@@ -146,6 +146,7 @@ fun SignUpScreen(
                     }
                 )
 
+
                 Spacer(modifier = Modifier.height(14.dp))
 
                 DividerComponent()

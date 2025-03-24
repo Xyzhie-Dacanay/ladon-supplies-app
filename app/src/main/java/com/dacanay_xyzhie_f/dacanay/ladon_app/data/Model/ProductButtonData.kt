@@ -1,4 +1,4 @@
-package com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable
+package com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model
 
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 

@@ -1,5 +1,8 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable
+import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -280,7 +283,7 @@ fun RememberComp(value: String) {
 
 // Login Button
 @Composable
-fun LoginButtonComponent(value: String, navController: NavHostController) {
+fun LoginButtonComponent(value: String, navController: NavHostController,) {
     Button(
         onClick = {
 
@@ -364,10 +367,12 @@ fun SignupButtonComponent(
     navController: NavHostController,
     onSuccess: () -> Unit
 ) {
+    val context = LocalContext.current
+
     Button(
         onClick = {
             if (authViewModel.validateSignUp()) {
-                navController.navigate(Routes.HomePage)
+                authViewModel.registerUser(onSuccess) //  fixed
             }
         },
         modifier = Modifier
@@ -376,7 +381,6 @@ fun SignupButtonComponent(
         contentPadding = PaddingValues(),
         colors = ButtonDefaults.buttonColors(Color.Transparent)
     ) {
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -384,23 +388,24 @@ fun SignupButtonComponent(
                 .background(
                     color = BlueLa,
                     shape = RoundedCornerShape(50.dp)
-
                 ),
             contentAlignment = Alignment.Center
-
         ) {
-
             Text(
                 text = value,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
-
-
         }
+    }
 
+    LaunchedEffect(authViewModel.registerResult) {
+        authViewModel.registerResult?.let { message ->
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        }
     }
 }
+
 
 
 //Divider
@@ -589,6 +594,44 @@ fun ContactTextField(
                 modifier = Modifier.padding(start = 8.dp, top = 4.dp)
             )
         }
+    }
+
+}
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EmailEdit(
+    labelValue: String,
+    painterResource: Painter,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(55.dp),
+            placeholder = { Text(text = labelValue, color = Color.Gray) },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                cursorColor = colorResource(id = R.color.black),
+                containerColor = colorResource(id = R.color.tfBackground),
+            ),
+            shape = RoundedCornerShape(20.dp),
+            keyboardOptions = KeyboardOptions.Default,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource,
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.primaryColor),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        )
     }
 }
 
