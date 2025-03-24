@@ -98,7 +98,6 @@ fun LoginScreen(navController: NavHostController,
             // Login Button
             LoginButtonComponent(
                 value = stringResource(id = R.string.login),
-                authViewModel = authViewModel,
                 navController = navController
             )
 

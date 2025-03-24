@@ -5,7 +5,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 class Product(
     val id: Int,
     val name: String,
-    val price: Double, // ✅ Change from String to Double
+    val price: Double,
     val imageRes: Int,
     val category: String
 )

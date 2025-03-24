@@ -6,6 +6,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes.SeeAllScreen
 
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LogSignScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LoginScreen
@@ -14,6 +15,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.favorites.FavoriteScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.HomeScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductDetailsScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductsScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.SeeAllScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.AddtoCartScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.CartItem
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.OrderScreen
@@ -24,6 +26,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.PrivacyPolicvScree
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.ReportScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.SettingsScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.EditProfile
+
 
 @Composable
 fun AuthNavigation(navController: NavHostController){
@@ -97,7 +100,9 @@ fun AuthNavigation(navController: NavHostController){
 
 
 
-
+        composable(Routes.SeeAllScreen) {
+            SeeAllScreen(navController = navController)
+        }
 
 
 

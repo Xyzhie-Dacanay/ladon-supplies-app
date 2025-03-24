@@ -361,7 +361,8 @@ fun HomeButtonComponent(value: String, navController: NavHostController) {
 fun SignupButtonComponent(
     value: String,
     authViewModel: AuthViewModel,
-    navController: NavHostController
+    navController: NavHostController,
+    onSuccess: () -> Unit
 ) {
     Button(
         onClick = {
@@ -590,3 +591,43 @@ fun ContactTextField(
         }
     }
 }
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EmailEdit(
+    labelValue: String,
+    painterResource: Painter,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(55.dp),
+            placeholder = { Text(text = labelValue, color = Color.Gray) },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                cursorColor = colorResource(id = R.color.black),
+                containerColor = colorResource(id = R.color.tfBackground),
+            ),
+            shape = RoundedCornerShape(20.dp),
+            keyboardOptions = KeyboardOptions.Default,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource,
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.primaryColor),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        )
+    }
+}
+
