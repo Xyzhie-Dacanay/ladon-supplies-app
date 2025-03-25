@@ -19,5 +19,6 @@ object Routes {
      var AddtoCartScreen = "AddtoCart_Screen"
      var EditProfileScreen = "EditProfileScreen"
      var SeeAllScreen = "SeeAllScreen"
+     var AddNewAddressScreen = "AddNewAddressScreen"
 
 }

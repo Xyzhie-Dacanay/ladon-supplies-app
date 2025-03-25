@@ -1,8 +1,11 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -17,6 +20,8 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.HomeScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductDetailsScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductsScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.SeeAllScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.AddNewAddressScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.AddressEntry
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.AddtoCartScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.CartItem
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.OrderScreen
@@ -34,6 +39,12 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 fun AuthNavigation(navController: NavHostController, startDestination: String) {
     val cartList = remember { mutableStateListOf<CartItem>() }
     val favoritesViewModel: FavoritesViewModel = viewModel()
+    var selectedAddress by remember { mutableStateOf("Default Address") }
+    val savedAddresses = remember { mutableStateListOf<AddressEntry>() }
+
+
+
+
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Routes.LogSign) {
@@ -97,7 +108,15 @@ fun AuthNavigation(navController: NavHostController, startDestination: String) {
 
 
         composable(Routes.AddtoCartScreen) {
-            AddtoCartScreen(navController, cartList) }
+            AddtoCartScreen(
+                navController = navController,
+                cartList = cartList,
+                savedAddresses = savedAddresses,
+                selectedAddress = selectedAddress,
+                onAddressSelected = { selectedAddress = it }
+            )
+        }
+
 
         composable(Routes.EditProfileScreen) {
            EditProfile(navController = navController) }
@@ -107,6 +126,22 @@ fun AuthNavigation(navController: NavHostController, startDestination: String) {
         composable(Routes.SeeAllScreen) {
             SeeAllScreen(navController = navController)
         }
+
+        composable(Routes.AddNewAddressScreen) {
+            AddNewAddressScreen(navController = navController) { newAddress ->
+                // Set all previous as non-default
+                savedAddresses.forEachIndexed { index, entry ->
+                    savedAddresses[index] = entry.copy(isDefault = false)
+                }
+
+                val newEntry = AddressEntry(address = newAddress, isDefault = true)
+                savedAddresses.add(newEntry)
+                selectedAddress = newAddress
+            }
+
+        }
+
+
 
 
 
