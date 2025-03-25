@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 
-import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ActualproductLists
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.ActualproductLists
 import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)

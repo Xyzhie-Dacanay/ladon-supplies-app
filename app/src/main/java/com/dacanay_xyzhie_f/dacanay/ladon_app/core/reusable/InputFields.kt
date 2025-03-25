@@ -61,6 +61,11 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.ui.theme.BlueLa
 import com.dacanay_xyzhie_f.dacanay.ladon_app.ui.theme.GrayLa
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.storage.TokenManager
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+
+
 
 
 
@@ -254,9 +259,11 @@ fun SignUpPasswordField(
 
 
 @Composable
-fun RememberComp(value: String) {
-    val checkedState = remember { mutableStateOf(false) }
-
+fun RememberComp(
+    value: String,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -264,116 +271,55 @@ fun RememberComp(value: String) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Checkbox(
-            checked = checkedState.value,
-            onCheckedChange = { checkedState.value = !checkedState.value },
-            modifier = Modifier.size(8.dp),
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+            modifier = Modifier.size(18.dp),
             colors = CheckboxDefaults.colors(
                 checkedColor = Color(0xFF35AEFF),
                 uncheckedColor = Color.Gray,
                 checkmarkColor = Color.White
             )
         )
-
         Spacer(modifier = Modifier.width(12.dp))
-
         RememberTxt(value)
     }
 }
 
 
+
 // Login Button
+
 @Composable
-fun LoginButtonComponent(value: String, navController: NavHostController,) {
-    Button(
-        onClick = {
-
-            navController.navigate(Routes.HomePage)
-
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(48.dp),
-        contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
-    ) {
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(50.dp)
-                .background(
-                    color = BlueLa,
-                    shape = RoundedCornerShape(50.dp)
-
-                ),
-            contentAlignment = Alignment.Center
-
-        ) {
-
-            Text(
-                text = value,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-
-
-        }
-
-    }
-}
-
-// Go back to homeButton
-@Composable
-fun HomeButtonComponent(value: String, navController: NavHostController) {
-    Button(
-        onClick = {
-            navController.navigate(Routes.HomePage) {
-                popUpTo(Routes.Favorites) { inclusive = true }
-                launchSingleTop = true
-                restoreState = true
-            }
-        },
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(48.dp),
-        contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(50.dp)
-                .background(
-                    color = BlueLa,
-                    shape = RoundedCornerShape(50.dp)
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = value,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-    }
-}
-
-
-// SignUp Button
-@Composable
-fun SignupButtonComponent(
+fun LoginButtonComponent(
     value: String,
-    authViewModel: AuthViewModel,
     navController: NavHostController,
-    onSuccess: () -> Unit
+    authViewModel: AuthViewModel,
+    rememberMe: Boolean,
+    tokenManager: TokenManager
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
 
     Button(
         onClick = {
-            if (authViewModel.validateSignUp()) {
-                authViewModel.registerUser(onSuccess) //  fixed
-            }
+            authViewModel.loginUser(
+                tokenManager = tokenManager,
+                onSuccess = { token ->
+                    coroutineScope.launch {
+                        if (rememberMe && token != null) {
+                            tokenManager.saveToken(token)
+                        }
+
+                        //  Make sure to load user data here
+                        authViewModel.loadUserFromToken(tokenManager)
+
+                        navController.navigate(Routes.HomePage)
+                    }
+                },
+                onError = { message ->
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                }
+            )
         },
         modifier = Modifier
             .fillMaxWidth()
@@ -385,10 +331,7 @@ fun SignupButtonComponent(
             modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(50.dp)
-                .background(
-                    color = BlueLa,
-                    shape = RoundedCornerShape(50.dp)
-                ),
+                .background(color = BlueLa, shape = RoundedCornerShape(50.dp)),
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -398,243 +341,286 @@ fun SignupButtonComponent(
             )
         }
     }
+}
 
-    LaunchedEffect(authViewModel.registerResult) {
-        authViewModel.registerResult?.let { message ->
-            Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+
+
+
+
+    // Go back to homeButton
+    @Composable
+    fun HomeButtonComponent(value: String, navController: NavHostController) {
+        Button(
+            onClick = {
+                navController.navigate(Routes.HomePage) {
+                    popUpTo(Routes.Favorites) { inclusive = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(48.dp),
+            contentPadding = PaddingValues(),
+            colors = ButtonDefaults.buttonColors(Color.Transparent)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(50.dp)
+                    .background(
+                        color = BlueLa,
+                        shape = RoundedCornerShape(50.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = value,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
-}
 
 
-
-//Divider
-@Composable
-fun DividerComponent() {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    )
-    {
-        Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            color = GrayLa,
-            thickness = 1.dp
-        )
-
-
-        Text(
-            modifier = Modifier.padding(8.dp),
-            text = "or", fontSize = 18.sp, color = GrayLa
-        )
-
-        Divider(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            color = GrayLa,
-            thickness = 1.dp
-        )
-
-    }
-
-}
-
-//Button for login and signup
-@Composable
-fun ButtonComponent() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp)
-            .wrapContentSize(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
+    // SignUp Button
+    @Composable
+    fun SignupButtonComponent(
+        value: String,
+        authViewModel: AuthViewModel,
+        navController: NavHostController,
+        onSuccess: () -> Unit
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.faceebook),
-            contentDescription = "facebook",
-            modifier = Modifier
-                .clickable { }
-                .size(50.dp)
-        )
+        val context = LocalContext.current
 
-        Spacer(modifier = Modifier.width(24.dp))
-
-
-
-        Image(
-            painter = painterResource(id = R.drawable.googlee),
-            contentDescription = "google",
-            modifier = Modifier
-                .clickable { }
-                .size(50.dp)
-        )
-    }
-}
-
-@Composable
-fun ButtonTextComponent(navController: NavHostController, isSignUpScreen: Boolean) {
-    val annotatedString = buildAnnotatedString {
-        if (isSignUpScreen) {
-            // Sign-Up Screen: "Already have an account? Log In"
-            append("Already have an account? ")
-            val startIndex = length
-            append("Log In")
-            val endIndex = length
-
-            addStyle(
-                style = SpanStyle(
-                    color = Color(0xFF35AEFF),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
-                ),
-                start = startIndex,
-                end = endIndex
-            )
-
-            addStringAnnotation(
-                tag = "Navigate",
-                annotation = "login",
-                start = startIndex,
-                end = endIndex
-            )
-        } else {
-            // 🔹 Login Screen: "Don't have an account? Sign Up"
-            append("Don't have an account? ")
-            val startIndex = length
-            append("Sign Up")
-            val endIndex = length
-
-            addStyle(
-                style = SpanStyle(
-                    color = Color(0xFF35AEFF),
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Medium
-                ),
-                start = startIndex,
-                end = endIndex
-            )
-
-            addStringAnnotation(
-                tag = "Navigate",
-                annotation = "signup",
-                start = startIndex,
-                end = endIndex
-            )
-        }
-    }
-
-    ClickableText(
-        text = annotatedString,
-        onClick = { offset ->
-            annotatedString.getStringAnnotations(tag = "Navigate", start = offset, end = offset)
-                .firstOrNull()?.let {
-                    if (it.item == "signup") {
-                        navController.navigate("SignupScreen")
-                    } else if (it.item == "login") {
-                        navController.navigate("LoginScreen")
-                    }
-                }
-        }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ContactTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    painterResource: Painter,
-    errorMessage: String?,
-    modifier: Modifier = Modifier,
-    label: String = "Phone Number"
-) {
-    Column {
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = value,
-            onValueChange = {
-                if (it.length <= 11 && it.all { char -> char.isDigit() }) {
-                    onValueChange(it)
+        Button(
+            onClick = {
+                if (authViewModel.validateSignUp()) {
+                    authViewModel.registerUser(onSuccess) //  fixed
                 }
             },
-            leadingIcon = {
-                Icon(
-                    painter = painterResource,
-                    contentDescription = "Phone Icon",
-                    tint = colorResource(id = R.color.primaryColor),
-                    modifier = Modifier.size(24.dp)
-                )
-            },
-            placeholder = { Text(text = label, color = Color.Gray) },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = if (errorMessage == null) Color.Transparent else Color.Red,
-                unfocusedBorderColor = if (errorMessage == null) Color.Transparent else Color.Red,
-                cursorColor = colorResource(id = R.color.black),
-                containerColor = colorResource(id = R.color.tfBackground),
-            ),
-            shape = RoundedCornerShape(20.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done
-            ),
-            singleLine = true,
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
-                .height(55.dp)
+                .heightIn(48.dp),
+            contentPadding = PaddingValues(),
+            colors = ButtonDefaults.buttonColors(Color.Transparent)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(50.dp)
+                    .background(
+                        color = BlueLa,
+                        shape = RoundedCornerShape(50.dp)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = value,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+
+        LaunchedEffect(authViewModel.registerResult) {
+            authViewModel.registerResult?.let { message ->
+                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+
+    //Divider
+    @Composable
+    fun DividerComponent() {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
         )
-        if (!errorMessage.isNullOrEmpty()) {
+        {
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                color = GrayLa,
+                thickness = 1.dp
+            )
+
+
             Text(
-                text = errorMessage,
-                color = Color.Red,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                modifier = Modifier.padding(8.dp),
+                text = "or", fontSize = 18.sp, color = GrayLa
+            )
+
+            Divider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                color = GrayLa,
+                thickness = 1.dp
+            )
+
+        }
+
+    }
+
+    //Button for login and signup
+    @Composable
+    fun ButtonComponent() {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+                .wrapContentSize(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.faceebook),
+                contentDescription = "facebook",
+                modifier = Modifier
+                    .clickable { }
+                    .size(50.dp)
+            )
+
+            Spacer(modifier = Modifier.width(24.dp))
+
+
+
+            Image(
+                painter = painterResource(id = R.drawable.googlee),
+                contentDescription = "google",
+                modifier = Modifier
+                    .clickable { }
+                    .size(50.dp)
             )
         }
     }
 
-}
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EmailEdit(
-    labelValue: String,
-    painterResource: Painter,
-    value: String,
-    onValueChange: (String) -> Unit
-) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Spacer(modifier = Modifier.height(8.dp))
+    @Composable
+    fun ButtonTextComponent(navController: NavHostController, isSignUpScreen: Boolean) {
+        val annotatedString = buildAnnotatedString {
+            if (isSignUpScreen) {
+                // Sign-Up Screen: "Already have an account? Log In"
+                append("Already have an account? ")
+                val startIndex = length
+                append("Log In")
+                val endIndex = length
 
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(55.dp),
-            placeholder = { Text(text = labelValue, color = Color.Gray) },
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
-                cursorColor = colorResource(id = R.color.black),
-                containerColor = colorResource(id = R.color.tfBackground),
-            ),
-            shape = RoundedCornerShape(20.dp),
-            keyboardOptions = KeyboardOptions.Default,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource,
-                    contentDescription = null,
-                    tint = colorResource(id = R.color.primaryColor),
-                    modifier = Modifier.size(24.dp)
+                addStyle(
+                    style = SpanStyle(
+                        color = Color(0xFF35AEFF),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    start = startIndex,
+                    end = endIndex
                 )
+
+                addStringAnnotation(
+                    tag = "Navigate",
+                    annotation = "login",
+                    start = startIndex,
+                    end = endIndex
+                )
+            } else {
+                // 🔹 Login Screen: "Don't have an account? Sign Up"
+                append("Don't have an account? ")
+                val startIndex = length
+                append("Sign Up")
+                val endIndex = length
+
+                addStyle(
+                    style = SpanStyle(
+                        color = Color(0xFF35AEFF),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium
+                    ),
+                    start = startIndex,
+                    end = endIndex
+                )
+
+                addStringAnnotation(
+                    tag = "Navigate",
+                    annotation = "signup",
+                    start = startIndex,
+                    end = endIndex
+                )
+            }
+        }
+
+        ClickableText(
+            text = annotatedString,
+            onClick = { offset ->
+                annotatedString.getStringAnnotations(tag = "Navigate", start = offset, end = offset)
+                    .firstOrNull()?.let {
+                        if (it.item == "signup") {
+                            navController.navigate("SignupScreen")
+                        } else if (it.item == "login") {
+                            navController.navigate("LoginScreen")
+                        }
+                    }
             }
         )
     }
-}
 
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    fun ContactTextField(
+        value: String,
+        onValueChange: (String) -> Unit,
+        painterResource: Painter,
+        errorMessage: String?,
+        modifier: Modifier = Modifier,
+        label: String = "Phone Number"
+    ) {
+        Column {
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = value,
+                onValueChange = {
+                    if (it.length <= 11 && it.all { char -> char.isDigit() }) {
+                        onValueChange(it)
+                    }
+                },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource,
+                        contentDescription = "Phone Icon",
+                        tint = colorResource(id = R.color.primaryColor),
+                        modifier = Modifier.size(24.dp)
+                    )
+                },
+                placeholder = { Text(text = label, color = Color.Gray) },
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = if (errorMessage == null) Color.Transparent else Color.Red,
+                    unfocusedBorderColor = if (errorMessage == null) Color.Transparent else Color.Red,
+                    cursorColor = colorResource(id = R.color.black),
+                    containerColor = colorResource(id = R.color.tfBackground),
+                ),
+                shape = RoundedCornerShape(20.dp),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
+                singleLine = true,
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(55.dp)
+            )
+            if (!errorMessage.isNullOrEmpty()) {
+                Text(
+                    text = errorMessage,
+                    color = Color.Red,
+                    fontSize = 12.sp,
+                    modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+                )
+            }
+        }
+
+    }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -22,14 +22,13 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
+
 fun ProfileOption(
     icon: ImageVector,
     text: String,
-    onClick1: Color,
+    tint: Color = Color(0xFF35AEFF), // You can override the color if needed
     onClick: () -> Unit
 ) {
-    val primaryColor = Color(0xFF35AEFF)
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -39,7 +38,7 @@ fun ProfileOption(
         Icon(
             imageVector = icon,
             contentDescription = text,
-            tint = primaryColor,
+            tint = tint,
             modifier = Modifier.size(24.dp)
         )
         Spacer(modifier = Modifier.width(12.dp))
@@ -50,9 +49,7 @@ fun ProfileOption(
             fontWeight = FontWeight.Medium
         )
         Spacer(modifier = Modifier.weight(1f))
-
-
-        IconButton(onClick = { onClick() }) {
+        IconButton(onClick = onClick) {
             Icon(
                 imageVector = Icons.Outlined.KeyboardArrowRight,
                 contentDescription = "Arrow",

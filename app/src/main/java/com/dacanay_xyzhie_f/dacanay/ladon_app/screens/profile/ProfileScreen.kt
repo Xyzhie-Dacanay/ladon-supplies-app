@@ -2,53 +2,48 @@ package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.ExitToApp
-import androidx.compose.material.icons.outlined.Help
-import androidx.compose.material.icons.outlined.Info
-import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Report
-import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.ShoppingCart
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.icons.outlined.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.NavBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
+import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.NavBar
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ProfileOption
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
+import android.graphics.BitmapFactory
+import android.util.Base64
+import androidx.compose.ui.graphics.asImageBitmap
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.storage.TokenManager
+import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
 
 
 @Composable
-fun ProfileScreen(navController: NavHostController) {
+fun ProfileScreen(
+    navController: NavHostController,
+    tokenManager: TokenManager,
+    authViewModel: AuthViewModel = viewModel()
+) {
+    val imageBitmap = remember(authViewModel.profileImageBase64) {
+        authViewModel.profileImageBase64?.let {
+            val imageBytes = Base64.decode(it, Base64.DEFAULT)
+            BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)?.asImageBitmap()
+        }
+    }
+
     Scaffold(
         bottomBar = { NavBar(navController) }
     ) { paddingValues ->
@@ -60,8 +55,11 @@ fun ProfileScreen(navController: NavHostController) {
                 .padding(horizontal = 18.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Header
             Row(
-                modifier = Modifier.fillMaxWidth().padding(6.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(6.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -72,21 +70,18 @@ fun ProfileScreen(navController: NavHostController) {
                 )
 
                 Row {
-                    IconButton(onClick = { /* Navigate to Cart */ }) {
+                    IconButton(onClick = { /* TODO: Navigate to Cart */ }) {
                         Icon(
-                            imageVector = Icons.Outlined.ShoppingCart,
+                            Icons.Outlined.ShoppingCart,
                             contentDescription = "Cart",
                             modifier = Modifier.size(32.dp),
                             tint = Color.Black
                         )
                     }
-
                     Spacer(modifier = Modifier.width(5.dp))
-
-
-                    IconButton(onClick = { /* Navigate to Notifications */ }) {
+                    IconButton(onClick = { /* TODO: Navigate to Notifications */ }) {
                         Icon(
-                            imageVector = Icons.Outlined.Notifications,
+                            Icons.Outlined.Notifications,
                             contentDescription = "Notifications",
                             modifier = Modifier.size(32.dp),
                             tint = Color.Black
@@ -97,21 +92,16 @@ fun ProfileScreen(navController: NavHostController) {
 
             Spacer(modifier = Modifier.height(5.dp))
 
+            // Profile Info
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White, shape = RoundedCornerShape(16.dp))
                     .padding(20.dp),
                 contentAlignment = Alignment.Center
-
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        // Profile Picture
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Box(contentAlignment = Alignment.Center) {
                         Box(
                             modifier = Modifier
                                 .size(130.dp)
@@ -119,49 +109,20 @@ fun ProfileScreen(navController: NavHostController) {
                                 .background(Color.LightGray),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = "Profile",
-                                modifier = Modifier.size(80.dp)
-                            )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                            if (imageBitmap != null) {
+                                Image(bitmap = imageBitmap, contentDescription = "Profile Image")
+                            } else {
+                                Icon(
+                                    Icons.Default.Person,
+                                    contentDescription = "Profile",
+                                    modifier = Modifier.size(80.dp)
+                                )
+                            }
                         }
 
-                        // Edit Profile Button (Overlapping)
+
                         IconButton(
-                            onClick = { navController.navigate(Routes.EditProfileScreen)},
+                            onClick = { navController.navigate(Routes.EditProfileScreen) },
                             modifier = Modifier
                                 .size(32.dp)
                                 .align(Alignment.BottomEnd)
@@ -179,54 +140,65 @@ fun ProfileScreen(navController: NavHostController) {
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
-                    Text(text = "John Ross Doe", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = authViewModel.loggedInUserName,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Options Section
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White, shape = RoundedCornerShape(16.dp))
+                    .padding(16.dp)
+            ) {
+                ProfileOption(Icons.Outlined.Help, "Help Center", Color.Red) {
+                    navController.navigate(Routes.HelpCenter)
                 }
 
-            }
+                ProfileOption(Icons.Outlined.Info, "About", Color.Red) {
+                    navController.navigate(Routes.About)
+                }
 
-                Spacer(modifier = Modifier.height(12.dp))
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.White, shape = RoundedCornerShape(16.dp))
-                        .padding(16.dp)
-                ) {
-                    ProfileOption(
-                        Icons.Outlined.Help,
-                        "Help Center",
-                        Color.Red) {
-                        navController.navigate(Routes.HelpCenter) }
+                ProfileOption(Icons.Outlined.Description, "Privacy & Policy", Color.Red) {
+                    navController.navigate(Routes.PrivacyPolicy)
+                }
 
-                    ProfileOption(
-                        Icons.Outlined.Info,
-                        "About", Color.Red
-                    ) { navController.navigate(Routes.About)
-                    }
+                ProfileOption(Icons.Outlined.Report, "Report a problem", Color.Red) {
+                    navController.navigate(Routes.Report)
+                }
 
-                    ProfileOption(
-                        Icons.Outlined.Description,
-                        "Privacy & Policy",
-                        Color.Red
-                    ) { navController.navigate(Routes.PrivacyPolicy)}
+                ProfileOption(Icons.Outlined.Settings, "Settings", Color.Red) {
+                    navController.navigate(Routes.Settings)
+                }
 
-                    ProfileOption(
-                        Icons.Outlined.Report,
-                        "Report a problem",
-                        Color.Red
-                    ) { navController.navigate(Routes.Report)}
+                Spacer(modifier = Modifier.height(8.dp))
 
-                    ProfileOption(
-                        Icons.Outlined.Settings,
-                        "Settings", Color.Red
-
-                    ) {navController.navigate(Routes.Settings)
-                    }
-
-
+                // Login/Logout
+                if (authViewModel.isLoggedIn) {
                     ProfileOption(Icons.Outlined.ExitToApp, "Logout", Color.Red) {
-                        /* Handle Logout */
+                        authViewModel.logout(tokenManager) {
+                            navController.navigate(Routes.LogIn) {
+                                popUpTo(0)
+                            }
+                        }
                     }
+                } else {
+                    ProfileOption(Icons.Outlined.ExitToApp, "Login", Color.Red) {
+                        navController.navigate(Routes.LogIn)
+                    }
+                }
             }
         }
+    }
 
-    }}
+    // Auto-load user if token exists
+    LaunchedEffect(Unit) {
+        authViewModel.loadUserFromToken(tokenManager)
+    }
+}

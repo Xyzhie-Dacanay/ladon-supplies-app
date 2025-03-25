@@ -1,7 +1,8 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel
 
 import androidx.lifecycle.ViewModel
-import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.Product
+
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.Product
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

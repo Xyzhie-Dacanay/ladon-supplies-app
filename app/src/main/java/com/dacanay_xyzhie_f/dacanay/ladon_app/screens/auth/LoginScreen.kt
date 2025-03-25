@@ -2,9 +2,10 @@ package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -12,37 +13,45 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.*
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.storage.TokenManager
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
 
 @Composable
-fun LoginScreen(navController: NavHostController,
-                authViewModel: AuthViewModel = viewModel()) {
+fun LoginScreen(
+    navController: NavHostController,
+    authViewModel: AuthViewModel = viewModel()
+) {
+    val context = LocalContext.current
+    val tokenManager = remember { TokenManager(context) }
+    var rememberMe by remember { mutableStateOf(false) }
+
     Surface(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(12.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(12.dp),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.Start
         ) {
-            //Back Button
+            // Back Button
             IconButton(
                 onClick = { navController.navigate(Routes.LogSign) },
-                modifier = Modifier
-                    .padding(top = 30.dp)
+                modifier = Modifier.padding(top = 30.dp)
             ) {
                 Icon(
                     painter = painterResource(R.drawable.baseline_arrow_back_24),
-                    contentDescription = "Arrow Back image Button"
+                    contentDescription = "Arrow Back"
                 )
             }
 
-            Spacer(modifier = Modifier.height(36.dp)) //
+            Spacer(modifier = Modifier.height(36.dp))
 
-            // Header Section
+            // Header
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -54,12 +63,10 @@ fun LoginScreen(navController: NavHostController,
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            // Email Input
-            // Email Input
+            // Email
             LabelText(value = stringResource(id = R.string.email))
             Spacer(modifier = Modifier.height(5.dp))
             InputFields(
-
                 labelValue = stringResource(id = R.string.emailInt),
                 painterResource = painterResource(id = R.drawable.envelope),
                 value = authViewModel.email,
@@ -69,7 +76,7 @@ fun LoginScreen(navController: NavHostController,
 
             Spacer(modifier = Modifier.height(16.dp))
 
-    // Password Input
+            // Password
             LabelText(value = stringResource(id = R.string.password))
             Spacer(modifier = Modifier.height(5.dp))
             PassFields(
@@ -80,27 +87,25 @@ fun LoginScreen(navController: NavHostController,
                 errorMessage = authViewModel.signInPasswordError
             )
 
-
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Remember Me Checkbox
+            RememberComp(
+                value = stringResource(id = R.string.rememberme),
+                checked = rememberMe,
+                onCheckedChange = { rememberMe = it }
+            )
 
-
-
-               // Remember Me Checkbox
-               RememberComp(value = stringResource(id = R.string.rememberme))
-
-               Spacer(modifier = Modifier.width(20.dp))
-
-
-
-
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Login Button
             LoginButtonComponent(
                 value = stringResource(id = R.string.login),
-                navController = navController
+                navController = navController,
+                authViewModel = authViewModel,
+                rememberMe = rememberMe,
+                tokenManager = tokenManager
             )
-
 
             Spacer(modifier = Modifier.height(10.dp))
 
@@ -111,17 +116,7 @@ fun LoginScreen(navController: NavHostController,
                 ForgotComponent()
             }
 
-            // Divider + Social Login Buttons
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                DividerComponent()
-                Spacer(modifier = Modifier.height(16.dp))
-                ButtonComponent()
-                Spacer(modifier = Modifier.height(16.dp))
-                ButtonTextComponent(navController = navController, isSignUpScreen = false)
-            }
+
         }
     }
 }

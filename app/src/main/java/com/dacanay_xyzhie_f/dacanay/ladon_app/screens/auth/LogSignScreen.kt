@@ -85,20 +85,14 @@ fun LogSignScreen(navController: NavHostController) {
         TextButton(
             onClick = {navController.navigate(Routes.HomePage)},
             colors = ButtonDefaults.textButtonColors(
-
-
             )
             ) {
-            Text(text="Continue as Guest",
+            Text(
+                text = "Continue as Guest",
                 fontSize = 14.sp,
                 textDecoration = TextDecoration.Underline,
-                color = Color.Black,
-                modifier = Modifier.clickable
-
-
-                {
-
-                })
+                color = Color.Black
+            )
         }
 
 }

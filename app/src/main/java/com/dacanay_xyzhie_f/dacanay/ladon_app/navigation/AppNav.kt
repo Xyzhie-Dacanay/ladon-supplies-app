@@ -7,6 +7,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.storage.TokenManager
 
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LogSignScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LoginScreen
@@ -30,10 +31,11 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 
 
 @Composable
-fun AuthNavigation(navController: NavHostController){
+fun AuthNavigation(navController: NavHostController, startDestination: String) {
     val cartList = remember { mutableStateListOf<CartItem>() }
     val favoritesViewModel: FavoritesViewModel = viewModel()
-    NavHost(navController = navController, startDestination = Routes.LogSign) {
+
+    NavHost(navController = navController, startDestination = startDestination) {
         composable(Routes.LogSign) {
             LogSignScreen(navController = navController)
     }
@@ -45,7 +47,7 @@ fun AuthNavigation(navController: NavHostController){
             SignUpScreen(navController = navController)
         }
         composable(Routes.HomePage) {
-            HomeScreen(navController = navController, viewModel = favoritesViewModel)
+            HomeScreen(navController = navController)
         }
         composable(Routes.Favorites) {
             FavoriteScreen(navController = navController, viewModel = favoritesViewModel)
@@ -54,7 +56,7 @@ fun AuthNavigation(navController: NavHostController){
             OrderScreen(navController = navController)
         }
         composable(Routes.Profile) {
-            ProfileScreen(navController = navController)
+            ProfileScreen(navController = navController, tokenManager = TokenManager(navController.context))
         }
 
         composable(Routes.HelpCenter) {

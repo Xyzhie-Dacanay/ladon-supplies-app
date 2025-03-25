@@ -12,7 +12,6 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -23,20 +22,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
-import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.*
+import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.NavBar
+import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ProductButtons
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.*
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
-import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
+import kotlin.random.Random
 
 @Composable
-fun HomeScreen(navController: NavHostController,  viewModel: FavoritesViewModel) {
-
+fun HomeScreen(navController: NavHostController) {
     val randomProducts = remember {
         ActualproductLists.shuffled().take(6)
     }
-
-
-
-
 
     Scaffold(
         bottomBar = { NavBar(navController) }
@@ -164,7 +160,7 @@ fun HomeScreen(navController: NavHostController,  viewModel: FavoritesViewModel)
                         )
 
 
-                }
+                    }
                 }
             }
 
@@ -175,13 +171,13 @@ fun HomeScreen(navController: NavHostController,  viewModel: FavoritesViewModel)
                 ) {
                     items(randomProducts) { product ->
                         ProductCard(
-                            productName = product.name,
                             productId = product.id,
+                            productName = product.name,
                             productPrice = product.price.toString(),
                             productImage = product.imageRes,
-                            navController = navController,
-                            isFavorite = viewModel.isFavorite(product),
-                            onFavoriteClick = { viewModel.toggleFavorite(product) }
+                            isFavorite = false,
+                            onFavoriteClick = { },
+                            navController = navController
                         )
                     }
                 }

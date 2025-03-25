@@ -56,23 +56,21 @@ fun DescriptionText(value:String) {
 
 }
 
-    @Composable
 
-    fun RememberTxt(value: String) {
+@Composable
+fun RememberTxt(value: String) {
+    Text(
+        text = value,
+        modifier = Modifier.fillMaxWidth(),
+        style = TextStyle(
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Normal,
+            fontStyle = FontStyle.Normal
+        ),
+        color = colorResource(id = R.color.black)
+    )
+}
 
-        Text(
-            text = value,
-            modifier = Modifier.fillMaxWidth(),
-            style = TextStyle(
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal,
-                fontStyle = FontStyle.Normal
-            ), color = colorResource(id = R.color.black),
-
-        )
-
-
-    }
 
 
 @Composable
