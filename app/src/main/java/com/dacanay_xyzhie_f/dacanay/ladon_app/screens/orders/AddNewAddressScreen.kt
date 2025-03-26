@@ -100,7 +100,7 @@ fun AddNewAddressScreen(
                     .fillMaxWidth()
                     .height(50.dp),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF2D55))
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF35AEFF))
             ) {
                 Text("Save", color = Color.White, fontWeight = FontWeight.Bold)
             }
