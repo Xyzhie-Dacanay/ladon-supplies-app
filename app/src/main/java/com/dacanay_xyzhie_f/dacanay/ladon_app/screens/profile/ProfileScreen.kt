@@ -70,9 +70,11 @@ fun ProfileScreen(
                 )
 
                 Row {
-                    IconButton(onClick = { /* TODO: Navigate to Cart */ }) {
+                    IconButton(onClick = {
+                        navController.navigate(Routes.AddtoCartScreen)
+                    }) {
                         Icon(
-                            Icons.Outlined.ShoppingCart,
+                            imageVector = Icons.Outlined.ShoppingCart,
                             contentDescription = "Cart",
                             modifier = Modifier.size(32.dp),
                             tint = Color.Black
@@ -157,23 +159,23 @@ fun ProfileScreen(
                     .background(Color.White, shape = RoundedCornerShape(16.dp))
                     .padding(16.dp)
             ) {
-                ProfileOption(Icons.Outlined.Help, "Help Center", Color.Red) {
+                ProfileOption(Icons.Outlined.Help, "Help Center", Color(0xFF35AEFF)) {
                     navController.navigate(Routes.HelpCenter)
                 }
 
-                ProfileOption(Icons.Outlined.Info, "About", Color.Red) {
+                ProfileOption(Icons.Outlined.Info, "About", Color(0xFF35AEFF)) {
                     navController.navigate(Routes.About)
                 }
 
-                ProfileOption(Icons.Outlined.Description, "Privacy & Policy", Color.Red) {
+                ProfileOption(Icons.Outlined.Description, "Privacy & Policy", Color(0xFF35AEFF)) {
                     navController.navigate(Routes.PrivacyPolicy)
                 }
 
-                ProfileOption(Icons.Outlined.Report, "Report a problem", Color.Red) {
+                ProfileOption(Icons.Outlined.Report, "Report a problem", Color(0xFF35AEFF)) {
                     navController.navigate(Routes.Report)
                 }
 
-                ProfileOption(Icons.Outlined.Settings, "Settings", Color.Red) {
+                ProfileOption(Icons.Outlined.Settings, "Settings", Color(0xFF35AEFF)) {
                     navController.navigate(Routes.Settings)
                 }
 

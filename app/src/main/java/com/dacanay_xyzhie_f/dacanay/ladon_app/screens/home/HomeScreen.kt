@@ -60,15 +60,17 @@ fun HomeScreen(navController: NavHostController) {
                         modifier = Modifier.size(100.dp)
                     )
                     Row {
-                        IconButton(onClick = { navController.navigate(Routes.AddtoCartScreen) }) {
+                        IconButton(onClick = {
+                            navController.navigate(Routes.AddtoCartScreen)
+                        }) {
                             Icon(
                                 imageVector = Icons.Outlined.ShoppingCart,
                                 contentDescription = "Cart",
-                                tint = Color.Black,
-                                modifier = Modifier.size(32.dp)
+                                modifier = Modifier.size(32.dp),
+                                tint = Color.Black
                             )
                         }
-                        Spacer(modifier = Modifier.width(5.dp))
+                        Spacer(modifier = Modifier.width(4.dp))
                         IconButton(onClick = { /* Notifications */ }) {
                             Icon(
                                 imageVector = Icons.Outlined.Notifications,
@@ -94,8 +96,10 @@ fun HomeScreen(navController: NavHostController) {
                 )
             }
 
+
             item {
                 // Categories Header
+                Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -108,14 +112,7 @@ fun HomeScreen(navController: NavHostController) {
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
-                    TextButton(onClick = { navController.navigate(Routes.ProductsScreen) }) {
-                        Text(
-                            text = "See all",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF35AEFF)
-                        )
-                    }
+
                 }
             }
 

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.NavBar
+import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 
 private val PrimaryColor = Color(0xFF0080FF)
 
@@ -89,8 +90,15 @@ fun OrderScreen(navController: NavHostController) {
                     modifier = Modifier.size(100.dp)
                 )
                 Row {
-                    IconButton(onClick = { }) {
-                        Icon(Icons.Outlined.ShoppingCart, contentDescription = "Cart", tint = Color.Black)
+                    IconButton(onClick = {
+                        navController.navigate(Routes.AddtoCartScreen)
+                    }) {
+                        Icon(
+                            imageVector = Icons.Outlined.ShoppingCart,
+                            contentDescription = "Cart",
+                            modifier = Modifier.size(32.dp),
+                            tint = Color.Black
+                        )
                     }
                     Spacer(modifier = Modifier.width(5.dp))
                     IconButton(onClick = { }) {

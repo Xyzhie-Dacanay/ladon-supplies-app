@@ -37,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.HomeButtonComponent
+import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 
 
@@ -75,7 +76,9 @@ fun FavoriteScreen(
                     )
 
                     Row {
-                        IconButton(onClick = { /* Navigate to Cart */ }) {
+                        IconButton(onClick = {
+                            navController.navigate(Routes.AddtoCartScreen)
+                        }) {
                             Icon(
                                 imageVector = Icons.Outlined.ShoppingCart,
                                 contentDescription = "Cart",
