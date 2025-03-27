@@ -19,26 +19,30 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.ActualproductLists
 import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductsScreen(navController: NavHostController, category: String) {
-    val viewModel: FavoritesViewModel = viewModel()
+    val productViewModel: ProductViewModel = viewModel()
+    val favoritesViewModel: FavoritesViewModel = viewModel()
 
     var selectedFilter by remember { mutableStateOf("Default") }
     var expanded by remember { mutableStateOf(false) }
 
-    val baseFiltered = remember(category) {
-        ActualproductLists.filter { it.name.contains(category, ignoreCase = true) }
+    // 👇 Fetch products by category when screen loads
+    LaunchedEffect(category) {
+        productViewModel.fetchProductsByCategory(category)
     }
 
-    val filteredProducts = remember(selectedFilter, baseFiltered) {
+    val productsByCategory by productViewModel.productsByCategory
+
+    val sortedProducts = remember(productsByCategory, selectedFilter) {
         when (selectedFilter) {
-            "Price: Low to High" -> baseFiltered.sortedBy { it.price }
-            "A-Z" -> baseFiltered.sortedBy { it.name }
-            else -> baseFiltered
+            "Price: Low to High" -> productsByCategory.sortedBy { it.product_price }
+            "A-Z" -> productsByCategory.sortedBy { it.product_name }
+            else -> productsByCategory
         }
     }
 
@@ -60,10 +64,7 @@ fun ProductsScreen(navController: NavHostController, category: String) {
                 actions = {
                     Box {
                         IconButton(onClick = { expanded = true }) {
-                            Icon(Icons.Default.FilterList,
-                                contentDescription = "Filter",
-                                tint = Color.Black
-                            )
+                            Icon(Icons.Default.FilterList, contentDescription = "Filter")
                         }
 
                         DropdownMenu(
@@ -94,51 +95,66 @@ fun ProductsScreen(navController: NavHostController, category: String) {
                         }
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFE6F8FF)
-                )
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFE6F8FF))
             )
-        }
+        },
+        containerColor = Color(0xFFE6F8FF)
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFE6F8FF))
                 .padding(paddingValues)
-                .padding(horizontal = 4.dp)
+                .padding(horizontal = 8.dp)
         ) {
             item {
                 Text(
-                    text = "Products for $category",
+                    text = "Products for \"$category\"",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(16.dp)
                 )
             }
 
-            itemsIndexed(filteredProducts.chunked(2)) { _, rowItems ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(2.dp)
-                ) {
-                    for (product in rowItems) {
-                        ProductCard(
-                            productName = product.name,
-                            productId = product.id,
-                            productPrice = product.price.toString(),
-                            productImage = product.imageRes,
-                            navController = navController,
-                            isFavorite = viewModel.isFavorite(product),
-                            onFavoriteClick = { viewModel.toggleFavorite(product) }
+            if (sortedProducts.isEmpty()) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(top = 100.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "No products found for \"$category\".",
+                            fontSize = 16.sp,
+                            color = Color.Gray
                         )
                     }
-
-                    if (rowItems.size == 1) {
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
                 }
+            } else {
+                itemsIndexed(sortedProducts.chunked(2)) { _, rowItems ->
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        rowItems.forEach { product ->
+                            ProductCard(
+                                productId = product.id,
+                                productName = product.product_name,
+                                productPrice = product.product_price.toString(),
+                                productImage = product.product_image ?: "",
+                                navController = navController,
+                                isFavorite = false,
+                                onFavoriteClick = { }
+                            )
+                        }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                        if (rowItems.size == 1) {
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
             }
         }
     }

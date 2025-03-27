@@ -18,6 +18,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.SignUpScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.favorites.FavoriteScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.HomeScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductDetailsScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductsScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.SeeAllScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.AddNewAddressScreen
@@ -39,21 +40,17 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 fun AuthNavigation(navController: NavHostController, startDestination: String) {
     val cartList = remember { mutableStateListOf<CartItem>() }
     val favoritesViewModel: FavoritesViewModel = viewModel()
+    val productViewModel: ProductViewModel = viewModel() // Inject ProductViewModel
     var selectedAddress by remember { mutableStateOf("Default Address") }
     val savedAddresses = remember { mutableStateListOf<AddressEntry>() }
-
-
-
-
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Routes.LogSign) {
             LogSignScreen(navController = navController)
-    }
+        }
         composable(Routes.LogIn) {
             LoginScreen(navController = navController)
         }
-
         composable(Routes.SignUp) {
             SignUpScreen(navController = navController)
         }
@@ -69,43 +66,39 @@ fun AuthNavigation(navController: NavHostController, startDestination: String) {
         composable(Routes.Profile) {
             ProfileScreen(navController = navController, tokenManager = TokenManager(navController.context))
         }
-
         composable(Routes.HelpCenter) {
             HelpScreen(navController = navController)
         }
         composable(Routes.About) {
             AboutScreen(navController = navController)
         }
-
         composable(Routes.PrivacyPolicy) {
             PrivacyPolicvScreem(navController = navController)
         }
-
         composable(Routes.Report) {
-           ReportScreen(navController = navController)
+            ReportScreen(navController = navController)
         }
-
         composable(Routes.Settings) {
             SettingsScreen(navController = navController)
         }
-
         composable(Routes.ProductsScreen) {
             ProductsScreen(navController = navController)
         }
-
         composable("products/{category}") { backStackEntry ->
-            val category = backStackEntry.arguments?.getString("category") ?: "All"
+            val category = backStackEntry.arguments?.getString("category") ?: ""
             ProductsScreen(navController = navController, category = category)
         }
 
         composable("product_details/{productId}") { backStackEntry ->
             val productId = backStackEntry.arguments?.getString("productId")?.toIntOrNull()
             if (productId != null) {
-                ProductDetailsScreen(navController, productId, cartList,  viewModel = favoritesViewModel)
+                ProductDetailsScreen(
+                    navController = navController,
+                    productId = productId,
+                    favoritesViewModel = favoritesViewModel
+                )
             }
         }
-
-
 
         composable(Routes.AddtoCartScreen) {
             AddtoCartScreen(
@@ -117,11 +110,9 @@ fun AuthNavigation(navController: NavHostController, startDestination: String) {
             )
         }
 
-
         composable(Routes.EditProfileScreen) {
-           EditProfile(navController = navController) }
-
-
+            EditProfile(navController = navController)
+        }
 
         composable(Routes.SeeAllScreen) {
             SeeAllScreen(navController = navController)
@@ -129,44 +120,16 @@ fun AuthNavigation(navController: NavHostController, startDestination: String) {
 
         composable(Routes.AddNewAddressScreen) {
             AddNewAddressScreen(navController = navController) { newAddress ->
-                // Set all previous as non-default
                 savedAddresses.forEachIndexed { index, entry ->
                     savedAddresses[index] = entry.copy(isDefault = false)
                 }
-
                 val newEntry = AddressEntry(address = newAddress, isDefault = true)
                 savedAddresses.add(newEntry)
                 selectedAddress = newAddress
             }
-
         }
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-
+}
 
 
 

@@ -1,43 +1,37 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home
 
-
-
 import ProductCard
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.filled.FilterList
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.ActualproductLists
-import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 
+import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SeeAllScreen(navController: NavHostController) {
+    val productViewModel: ProductViewModel = viewModel()
     val viewModel: FavoritesViewModel = viewModel()
+    val allProducts by productViewModel.products
     var selectedFilter by remember { mutableStateOf("Default") }
     var expanded by remember { mutableStateOf(false) }
 
-    val filteredProducts = remember(selectedFilter) {
+    val filteredProducts = remember(allProducts, selectedFilter) {
         when (selectedFilter) {
-            "Price: Low to High" -> ActualproductLists.sortedBy { it.price }
-            "A-Z" -> ActualproductLists.sortedBy { it.name }
-            else -> ActualproductLists
+            "Price: Low to High" -> allProducts.sortedBy { it.product_price }
+            "A-Z" -> allProducts.sortedBy { it.product_name }
+            else -> allProducts
         }
     }
 
@@ -57,11 +51,10 @@ fun SeeAllScreen(navController: NavHostController) {
                     }
                 },
                 actions = {
-                    // Icon filter button with dropdown
                     Box {
                         IconButton(onClick = { expanded = true }) {
                             Icon(
-                                imageVector = Icons.Default.FilterList, // Or use Icons.Default.FilterList if preferred
+                                imageVector = Icons.Default.FilterList,
                                 contentDescription = "Filter",
                                 tint = Color.Black
                             )
@@ -111,15 +104,16 @@ fun SeeAllScreen(navController: NavHostController) {
         ) {
             items(filteredProducts) { product ->
                 ProductCard(
-                    productName = product.name,
+                    productName = product.product_name,
                     productId = product.id,
-                    productPrice = product.price.toString(),
-                    productImage = product.imageRes,
+                    productPrice = product.product_price.toString(),
+                    productImage = product.product_image ?: "",
                     navController = navController,
-                    isFavorite = viewModel.isFavorite(product),
-                    onFavoriteClick = { viewModel.toggleFavorite(product) }
+                    isFavorite = false,
+                    onFavoriteClick = { }
                 )
             }
         }
     }
 }
+

@@ -149,17 +149,7 @@ fun FavoriteScreen(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        for (product in rowItems) {
-                            ProductCard(
-                                productId = product.id,
-                                productName = product.name,
-                                productPrice = product.price.toString(),
-                                productImage = product.imageRes,
-                                isFavorite = viewModel.isFavorite(product),
-                                onFavoriteClick = { viewModel.toggleFavorite(product) },
-                                navController = navController
-                            )
-                        }
+
 
                         if (rowItems.size == 1) {
                             Spacer(modifier = Modifier.weight(1f))

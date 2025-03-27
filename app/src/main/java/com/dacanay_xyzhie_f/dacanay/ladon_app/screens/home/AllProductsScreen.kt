@@ -21,9 +21,6 @@ import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.productButtonList
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ProductButtons
 
-
-//Function Screen for the buttons all categories
-
 @Composable
 fun ProductsScreen(navController: NavHostController) {
     Column(
@@ -33,7 +30,7 @@ fun ProductsScreen(navController: NavHostController) {
             .padding(top = 64.dp)
             .padding(horizontal = 16.dp)
     ) {
-        //  Back Button & Title
+        // Back Button & Title
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -53,12 +50,12 @@ fun ProductsScreen(navController: NavHostController) {
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.size(56.dp))
+            Spacer(modifier = Modifier.size(56.dp)) // Space to balance back icon
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // 4-column product grid
+        // 4-column category grid
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
             contentPadding = PaddingValues(vertical = 16.dp),
@@ -70,10 +67,11 @@ fun ProductsScreen(navController: NavHostController) {
                 ProductButtons(
                     imageResId = product.imageResId,
                     text = product.text,
-                    onClick = product.onClick
+                    onClick = { selectedCategory ->
+                        navController.navigate("products/$selectedCategory")
+                    }
                 )
             }
         }
     }
 }
-

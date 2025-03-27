@@ -27,7 +27,7 @@ fun ProductButtons(
         modifier = Modifier
             .width(80.dp)
             .padding(6.dp)
-            ,
+            .clickable { onClick(text) },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(

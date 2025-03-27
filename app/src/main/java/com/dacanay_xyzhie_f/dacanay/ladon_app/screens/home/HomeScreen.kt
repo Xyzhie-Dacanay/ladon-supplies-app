@@ -20,18 +20,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import base64ToImageBitmap
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.NavBar
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ProductButtons
-import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.*
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
-import kotlin.random.Random
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.productButtonList
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
-    val randomProducts = remember {
-        ActualproductLists.shuffled().take(6)
+fun HomeScreen(navController: NavHostController, viewModel: ProductViewModel = viewModel()) {
+    val allProducts by viewModel.products
+    val randomProducts = remember(allProducts) {
+        allProducts.shuffled().take(6)
     }
 
     Scaffold(
@@ -84,7 +87,6 @@ fun HomeScreen(navController: NavHostController) {
             }
 
             item {
-                // Hero Image
                 Image(
                     painter = painterResource(id = R.drawable.homepic),
                     contentDescription = "Home Picture",
@@ -96,9 +98,7 @@ fun HomeScreen(navController: NavHostController) {
                 )
             }
 
-
             item {
-                // Categories Header
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier
@@ -112,12 +112,10 @@ fun HomeScreen(navController: NavHostController) {
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
-
                 }
             }
 
             item {
-                // Product Buttons (Categories)
                 LazyRow(
                     contentPadding = PaddingValues(horizontal = 8.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -135,7 +133,6 @@ fun HomeScreen(navController: NavHostController) {
             }
 
             item {
-                // All Products Header
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -155,8 +152,6 @@ fun HomeScreen(navController: NavHostController) {
                             fontWeight = FontWeight.SemiBold,
                             color = Color(0xFF35AEFF)
                         )
-
-
                     }
                 }
             }
@@ -169,9 +164,9 @@ fun HomeScreen(navController: NavHostController) {
                     items(randomProducts) { product ->
                         ProductCard(
                             productId = product.id,
-                            productName = product.name,
-                            productPrice = product.price.toString(),
-                            productImage = product.imageRes,
+                            productName = product.product_name,
+                            productPrice = product.product_price.toString(),
+                            productImage = product.product_image ?: "",
                             isFavorite = false,
                             onFavoriteClick = { },
                             navController = navController

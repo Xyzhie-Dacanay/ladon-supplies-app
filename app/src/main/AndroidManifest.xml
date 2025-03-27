@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Ladonapp"
         android:usesCleartextTraffic="true"
+        android:name=".core.utils.App"
         tools:targetApi="31">
 
 
