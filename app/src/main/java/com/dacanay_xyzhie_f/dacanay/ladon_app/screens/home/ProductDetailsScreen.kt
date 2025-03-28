@@ -36,11 +36,16 @@ fun ProductDetailsScreen(
 ) {
     val context = LocalContext.current
     val product = viewModel.products.value.find { it.id == productId }
-    val isFavorite = favoritesViewModel.favorites.collectAsState().value.any { it.id == productId }
+    val favorites by favoritesViewModel.favorites.collectAsState()
+    val isFavorite = favorites.any { it.product_id == productId }
 
     if (product == null) {
         Text("Product not found", modifier = Modifier.padding(16.dp))
         return
+    }
+
+    LaunchedEffect(Unit) {
+        favoritesViewModel.fetchFavorites()
     }
 
     Column(
@@ -60,11 +65,17 @@ fun ProductDetailsScreen(
             }
 
             Row {
-                IconButton(onClick = {
-
-                    val message = if (isFavorite) "Removed from favorites" else "Added to favorites"
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-                }) {
+                IconButton(
+                    onClick = {
+                        if (isFavorite) {
+                            favoritesViewModel.removeFromFavorites(productId)
+                            Toast.makeText(context, "Removed from favorites", Toast.LENGTH_SHORT).show()
+                        } else {
+                            favoritesViewModel.addToFavorites(productId)
+                            Toast.makeText(context, "Added to favorites", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                ) {
                     Icon(
                         imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                         contentDescription = "Favorite",
@@ -110,11 +121,11 @@ fun ProductDetailsScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Add to Cart
+        // Add to Cart Button
         Button(
             onClick = {
-                // ✅ You can call your addToCart API here
                 Toast.makeText(context, "Added to Cart!", Toast.LENGTH_SHORT).show()
+                // 💡 You can call your API here to add to cart
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -126,6 +137,7 @@ fun ProductDetailsScreen(
         }
     }
 }
+
 
 // Helper
 @Composable

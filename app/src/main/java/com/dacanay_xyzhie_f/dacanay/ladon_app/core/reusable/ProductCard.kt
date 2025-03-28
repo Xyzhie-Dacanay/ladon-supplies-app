@@ -19,14 +19,14 @@ fun ProductCard(
     productName: String,
     productId: Int?,
     productPrice: String,
-    productImage: String, // this is base64
+    productImage: String?, // this is base64
     navController: NavController,
     isFavorite: Boolean,
     onFavoriteClick: () -> Unit,
 ) {
     val context = LocalContext.current
     val imageBitmap = remember(productImage) {
-        base64ToImageBitmap(context, productImage)
+        base64ToImageBitmap(context, productImage ?:"" )
     }
 
     Card(

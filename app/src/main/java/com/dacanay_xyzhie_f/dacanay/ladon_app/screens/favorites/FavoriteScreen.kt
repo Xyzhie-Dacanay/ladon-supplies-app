@@ -3,53 +3,37 @@ package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.favorites
 import ProductCard
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.ShoppingCart
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
-import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.NavBar
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.HomeButtonComponent
+import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.NavBar
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
-
 
 @Composable
 fun FavoriteScreen(
     navController: NavHostController,
     viewModel: FavoritesViewModel
-)  {
-
+) {
     val favoriteProducts by viewModel.favorites.collectAsState()
-
-
 
     Scaffold(
         bottomBar = { NavBar(navController) }
@@ -65,7 +49,9 @@ fun FavoriteScreen(
             item {
                 // Header
                 Row(
-                    modifier = Modifier.fillMaxWidth().padding(6.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(6.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -98,7 +84,6 @@ fun FavoriteScreen(
                     }
                 }
             }
-
 
             if (favoriteProducts.isEmpty()) {
                 item {
@@ -142,14 +127,29 @@ fun FavoriteScreen(
                         )
                     }
                 }
-
-            }else {
+            } else {
                 items(favoriteProducts.chunked(2)) { rowItems ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-
+                        for (FavoriteResponse in rowItems) {
+                            ProductCard(
+                                productId = FavoriteResponse.product_id,
+                                productName = FavoriteResponse.product_name,
+                                productPrice = FavoriteResponse.product_price.toString(),
+                                productImage = FavoriteResponse.product_image,
+                                isFavorite = viewModel.isFavorite(FavoriteResponse.product_id),
+                                onFavoriteClick = {
+                                    if (viewModel.isFavorite(FavoriteResponse.product_id)) {
+                                        viewModel.removeFromFavorites(FavoriteResponse.product_id)
+                                    } else {
+                                        viewModel.addToFavorites(FavoriteResponse.product_id)
+                                    }
+                                },
+                                navController = navController
+                            )
+                        }
 
                         if (rowItems.size == 1) {
                             Spacer(modifier = Modifier.weight(1f))
@@ -161,14 +161,3 @@ fun FavoriteScreen(
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
