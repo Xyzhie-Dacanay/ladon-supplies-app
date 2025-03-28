@@ -14,3 +14,5 @@ val BlueLa = Color(0xFF35AEFF)
 val BlackLa = Color(0xFF000000)
 
 val GrayLa = Color(0xFF7B6F72)
+
+val Button = Color(0xFFDBF1FF)

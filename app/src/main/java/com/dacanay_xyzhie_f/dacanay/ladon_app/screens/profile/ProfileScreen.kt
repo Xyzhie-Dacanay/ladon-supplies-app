@@ -52,7 +52,7 @@ fun ProfileScreen(
                 .fillMaxSize()
                 .background(Color(0xFFE6F8FF))
                 .padding(paddingValues)
-                .padding(horizontal = 18.dp),
+                .padding(horizontal = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Header

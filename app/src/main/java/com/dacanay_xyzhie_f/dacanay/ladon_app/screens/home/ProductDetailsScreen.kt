@@ -52,7 +52,7 @@ fun ProductDetailsScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFE6F8FF))
-            .padding(12.dp)
+            .padding(24.dp)
     ) {
         // Top Row
         Row(
@@ -104,15 +104,52 @@ fun ProductDetailsScreen(
                 bitmap = base64ToImageBitmap(context, product.product_image ?: ""),
                 contentDescription = "Product Image",
                 contentScale = ContentScale.Fit,
-                modifier = Modifier.fillMaxSize().padding(8.dp)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
             )
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Name & Price
-        Text(product.product_name, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        Text("₱${product.product_price}", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+        // Name, Price and Static Quantity Controls
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(product.product_name, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text("₱${product.product_price}", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+            }
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                Button(onClick = {},
+                    modifier = Modifier.
+                    size(40.dp, 40.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.filledTonalButtonColors(containerColor = Color(0xFF35AEFF))) {
+                    Text("-", fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                       )
+                }
+                Text("1", fontSize = 16.sp, fontWeight = FontWeight.Medium)
+                Button(onClick = {},
+                    modifier = Modifier.
+                    size(40.dp, 40.dp),
+                    shape = RoundedCornerShape(24.dp),
+                    contentPadding = PaddingValues(0.dp),
+                    colors = ButtonDefaults.filledTonalButtonColors(containerColor = Color(0xFF35AEFF))) {
+                    Text("+", fontSize = 18.sp, fontWeight = FontWeight.Bold,
+                        color = Color.White)
+                }
+            }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -138,8 +175,6 @@ fun ProductDetailsScreen(
     }
 }
 
-
-// Helper
 @Composable
 fun ProductDetailRow(label: String, value: String, isBold: Boolean = false) {
     Row(
