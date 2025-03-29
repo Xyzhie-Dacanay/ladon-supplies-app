@@ -26,6 +26,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.HomeButtonComponent
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.NavBar
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
+import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 
 @Composable

@@ -9,8 +9,10 @@ import androidx.navigation.compose.rememberNavController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.storage.TokenManager
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.AuthNavigation
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
+import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.ui.theme.LadonappTheme
 import kotlinx.coroutines.flow.firstOrNull
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,16 +23,21 @@ class MainActivity : ComponentActivity() {
             LadonappTheme {
                 val navController = rememberNavController()
                 val context = applicationContext
+                val authViewModel: AuthViewModel = viewModel() // ✅ Create ViewModel manually
                 var startDestination by remember { mutableStateOf<String?>(null) }
-
                 LaunchedEffect(Unit) {
                     val tokenManager = TokenManager(context)
+                    authViewModel.loadUserFromToken(tokenManager)
                     val token = tokenManager.tokenFlow.firstOrNull() // ✅ Use tokenFlow here
                     startDestination = if (token != null) Routes.HomePage else Routes.LogSign
                 }
 
                 startDestination?.let { start ->
-                    AuthNavigation(navController = navController, startDestination = start)
+                    AuthNavigation(
+                        navController = navController,
+                        startDestination = start,
+                        authViewModel = authViewModel // ✅ Pass shared instance if needed
+                    )
                 }
             }
         }

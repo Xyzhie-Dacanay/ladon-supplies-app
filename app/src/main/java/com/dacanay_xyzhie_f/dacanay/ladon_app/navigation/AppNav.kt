@@ -1,70 +1,59 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.navigation
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.CartViewModel
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.ProductViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.storage.TokenManager
-
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LogSignScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.LoginScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.SignUpScreen
+import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.*
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.favorites.FavoriteScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.HomeScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductDetailsScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductViewModel
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductsScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.SeeAllScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.AddNewAddressScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.AddressEntry
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.AddtoCartScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.CartItem
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.OrderScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.AboutScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.ProfileScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.HelpScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.PrivacyPolicvScreem
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.ReportScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.SettingsScreen
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.EditProfile
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.*
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.*
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.*
 import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 
-
 @Composable
-fun AuthNavigation(navController: NavHostController, startDestination: String) {
+fun AuthNavigation(
+    navController: NavHostController,
+    startDestination: String,
+    authViewModel: AuthViewModel
+) {
     val cartList = remember { mutableStateListOf<CartItem>() }
     val favoritesViewModel: FavoritesViewModel = viewModel()
-    val productViewModel: ProductViewModel = viewModel() // Inject ProductViewModel
+    val productViewModel: ProductViewModel = viewModel()
     var selectedAddress by remember { mutableStateOf("Default Address") }
     val savedAddresses = remember { mutableStateListOf<AddressEntry>() }
 
     NavHost(navController = navController, startDestination = startDestination) {
+
         composable(Routes.LogSign) {
-            LogSignScreen(navController = navController)
+            LogSignScreen(navController = navController,)
         }
         composable(Routes.LogIn) {
-            LoginScreen(navController = navController)
+            LoginScreen(navController = navController, authViewModel = authViewModel)
         }
         composable(Routes.SignUp) {
-            SignUpScreen(navController = navController)
+            SignUpScreen(navController = navController, authViewModel = authViewModel)
         }
         composable(Routes.HomePage) {
             HomeScreen(navController = navController)
         }
         composable(Routes.Favorites) {
-            FavoriteScreen(navController = navController, viewModel = favoritesViewModel)
+            FavoriteScreen(navController = navController, viewModel = favoritesViewModel, )
         }
         composable(Routes.Orders) {
             OrderScreen(navController = navController)
         }
         composable(Routes.Profile) {
-            ProfileScreen(navController = navController, tokenManager = TokenManager(navController.context))
+            ProfileScreen(
+                navController = navController,
+                tokenManager = TokenManager(navController.context),
+                authViewModel = authViewModel
+            )
         }
         composable(Routes.HelpCenter) {
             HelpScreen(navController = navController)
@@ -95,15 +84,18 @@ fun AuthNavigation(navController: NavHostController, startDestination: String) {
                 ProductDetailsScreen(
                     navController = navController,
                     productId = productId,
-                    favoritesViewModel = favoritesViewModel
+                    favoritesViewModel = favoritesViewModel,
+                    authViewModel = authViewModel
                 )
             }
         }
 
         composable(Routes.AddtoCartScreen) {
+            val cartViewModel: CartViewModel = viewModel()
+
             AddtoCartScreen(
                 navController = navController,
-                cartList = cartList,
+                cartViewModel = cartViewModel,
                 savedAddresses = savedAddresses,
                 selectedAddress = selectedAddress,
                 onAddressSelected = { selectedAddress = it }
@@ -111,11 +103,11 @@ fun AuthNavigation(navController: NavHostController, startDestination: String) {
         }
 
         composable(Routes.EditProfileScreen) {
-            EditProfile(navController = navController)
+            EditProfile(navController = navController,)
         }
 
         composable(Routes.SeeAllScreen) {
-            SeeAllScreen(navController = navController)
+            SeeAllScreen(navController = navController,)
         }
 
         composable(Routes.AddNewAddressScreen) {
@@ -130,11 +122,3 @@ fun AuthNavigation(navController: NavHostController, startDestination: String) {
         }
     }
 }
-
-
-
-
-
-
-
-

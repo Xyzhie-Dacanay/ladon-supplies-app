@@ -24,7 +24,10 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import base64ToImageBitmap
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.CartViewModel
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.ProductViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
+import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
 
 @Composable
@@ -32,12 +35,19 @@ fun ProductDetailsScreen(
     navController: NavController,
     productId: Int,
     viewModel: ProductViewModel = viewModel(),
-    favoritesViewModel: FavoritesViewModel = viewModel()
+    cartViewModel: CartViewModel = viewModel(),
+    favoritesViewModel: FavoritesViewModel = viewModel(),
+    authViewModel: AuthViewModel = viewModel()
 ) {
     val context = LocalContext.current
+    var showLoginDialog by remember { mutableStateOf(false) }
     val product = viewModel.products.value.find { it.id == productId }
     val favorites by favoritesViewModel.favorites.collectAsState()
+    val cartItems by cartViewModel.cartItems.collectAsState()
     val isFavorite = favorites.any { it.product_id == productId }
+    val cartItem = cartItems.find { it.product_id == productId }
+    val isInCart = cartItem != null
+    var quantity by remember { mutableStateOf(cartItem?.quantity ?: 1) }
 
     if (product == null) {
         Text("Product not found", modifier = Modifier.padding(16.dp))
@@ -46,6 +56,7 @@ fun ProductDetailsScreen(
 
     LaunchedEffect(Unit) {
         favoritesViewModel.fetchFavorites()
+        cartViewModel.fetchCartItems()
     }
 
     Column(
@@ -54,7 +65,7 @@ fun ProductDetailsScreen(
             .background(Color(0xFFE6F8FF))
             .padding(24.dp)
     ) {
-        // Top Row
+        // Top Row with Back and Actions
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -67,12 +78,16 @@ fun ProductDetailsScreen(
             Row {
                 IconButton(
                     onClick = {
-                        if (isFavorite) {
-                            favoritesViewModel.removeFromFavorites(productId)
-                            Toast.makeText(context, "Removed from favorites", Toast.LENGTH_SHORT).show()
+                        if (!authViewModel.isLoggedIn) {
+                            showLoginDialog = true
                         } else {
-                            favoritesViewModel.addToFavorites(productId)
-                            Toast.makeText(context, "Added to favorites", Toast.LENGTH_SHORT).show()
+                            if (isFavorite) {
+                                favoritesViewModel.removeFromFavorites(productId)
+                                Toast.makeText(context, "Removed from favorites", Toast.LENGTH_SHORT).show()
+                            } else {
+                                favoritesViewModel.addToFavorites(productId)
+                                Toast.makeText(context, "Added to favorites", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     }
                 ) {
@@ -112,7 +127,7 @@ fun ProductDetailsScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Name, Price and Static Quantity Controls
+        // Name, Price, Quantity
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -127,26 +142,44 @@ fun ProductDetailsScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Button(onClick = {},
-                    modifier = Modifier.
-                    size(40.dp, 40.dp),
+                Button(
+                    onClick = {
+                        if (isInCart) {
+                            if (cartItem?.quantity ?: 1 > 1) {
+                                cartViewModel.updateCartQuantity(productId, (cartItem?.quantity ?: 1) - 1)
+                            }
+                        } else if (quantity > 1) {
+                            quantity--
+                        }
+                    },
+                    modifier = Modifier.size(40.dp),
                     shape = RoundedCornerShape(24.dp),
                     contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(containerColor = Color(0xFF35AEFF))) {
-                    Text("-", fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                       )
+                    colors = ButtonDefaults.filledTonalButtonColors(containerColor = Color(0xFF35AEFF))
+                ) {
+                    Text("-", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
-                Text("1", fontSize = 16.sp, fontWeight = FontWeight.Medium)
-                Button(onClick = {},
-                    modifier = Modifier.
-                    size(40.dp, 40.dp),
+
+                Text(
+                    if (isInCart) (cartItem?.quantity ?: 1).toString() else quantity.toString(),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
+
+                Button(
+                    onClick = {
+                        if (isInCart) {
+                            cartViewModel.updateCartQuantity(productId, (cartItem?.quantity ?: 1) + 1)
+                        } else {
+                            quantity++
+                        }
+                    },
+                    modifier = Modifier.size(40.dp),
                     shape = RoundedCornerShape(24.dp),
                     contentPadding = PaddingValues(0.dp),
-                    colors = ButtonDefaults.filledTonalButtonColors(containerColor = Color(0xFF35AEFF))) {
-                    Text("+", fontSize = 18.sp, fontWeight = FontWeight.Bold,
-                        color = Color.White)
+                    colors = ButtonDefaults.filledTonalButtonColors(containerColor = Color(0xFF35AEFF))
+                ) {
+                    Text("+", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
             }
         }
@@ -158,11 +191,18 @@ fun ProductDetailsScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Add to Cart Button
+        // Add to Cart
         Button(
             onClick = {
-                Toast.makeText(context, "Added to Cart!", Toast.LENGTH_SHORT).show()
-                // 💡 You can call your API here to add to cart
+                when {
+                    !authViewModel.isLoggedIn -> showLoginDialog = true
+                    product.stock == 0 -> Toast.makeText(context, "Out of stock", Toast.LENGTH_SHORT).show()
+                    isInCart -> Toast.makeText(context, "Already in cart", Toast.LENGTH_SHORT).show()
+                    else -> {
+                        cartViewModel.addToCart(productId, quantity)
+                        Toast.makeText(context, "Added to Cart!", Toast.LENGTH_SHORT).show()
+                    }
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -173,7 +213,29 @@ fun ProductDetailsScreen(
             Text("Add to Cart", fontWeight = FontWeight.Bold, color = Color.White)
         }
     }
+
+    if (showLoginDialog) {
+        AlertDialog(
+            onDismissRequest = { showLoginDialog = false },
+            title = { Text("Login Required") },
+            text = { Text("Would you like to login or register to add items to your cart or favorites?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showLoginDialog = false
+                    navController.navigate(Routes.LogSign)
+                }) {
+                    Text("Yes")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLoginDialog = false }) {
+                    Text("No")
+                }
+            }
+        )
+    }
 }
+
 
 @Composable
 fun ProductDetailRow(label: String, value: String, isBold: Boolean = false) {

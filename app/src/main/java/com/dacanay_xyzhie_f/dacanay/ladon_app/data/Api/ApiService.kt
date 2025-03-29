@@ -1,4 +1,5 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.data.Api
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.CartItemResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.LoginRequest
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.LoginResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.RegisterRequest
@@ -41,6 +42,28 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body body: Map<String, Int>
     ): Response<Unit>
+
+    @GET("api/mobile/cart")
+    suspend fun getCartItems(@Header("Authorization") token: String): List<CartItemResponse>
+
+    @POST("api/mobile/cart")
+    suspend fun addToCart(
+        @Header("Authorization") token: String,
+        @Body body: Map<String, Int> // product_id, quantity
+    ): Response<Unit>
+
+    @POST("api/mobile/cart/update")
+    suspend fun updateCartQuantity(
+        @Header("Authorization") token: String,
+        @Body body: Map<String, Int> // ✅ Must be: product_id and quantity_change
+    ): Response<Unit>
+
+    @POST("api/mobile/cart/remove")
+    suspend fun removeFromCart(
+        @Header("Authorization") token: String,
+        @Body body: Map<String, Int> // ✅ Just product_id
+    ): Response<Unit>
+
 }
 
 

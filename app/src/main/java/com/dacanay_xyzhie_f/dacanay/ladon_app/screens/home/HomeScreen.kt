@@ -26,7 +26,7 @@ import base64ToImageBitmap
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.NavBar
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ProductButtons
-import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.ProductViewModel
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.ProductViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.productButtonList
 

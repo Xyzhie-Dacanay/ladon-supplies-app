@@ -15,13 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import base64ToImageBitmap
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.CartViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import kotlinx.coroutines.launch
 
@@ -35,58 +38,62 @@ data class AddressEntry(
 @Composable
 fun AddtoCartScreen(
     navController: NavHostController,
-    cartList: SnapshotStateList<CartItem>,
+    cartViewModel: CartViewModel,
     savedAddresses: SnapshotStateList<AddressEntry>,
     selectedAddress: String,
     onAddressSelected: (String) -> Unit
 ) {
+    val cartItems by cartViewModel.cartItems.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val allChecked by derivedStateOf {
-        cartList.isNotEmpty() && cartList.all { it.isSelected }
+    val scrollState = rememberScrollState()
+    var showAddressModal by remember { mutableStateOf(false) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        cartViewModel.fetchCartItems()
     }
-    val totalPrice by derivedStateOf {
-        cartList.filter { it.isSelected }.sumOf {
-            it.product.price * it.quantity
+
+    val allChecked = remember(cartItems) {
+        mutableStateListOf<Boolean>().apply {
+            addAll(List(cartItems.size) { true })
         }
     }
 
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var showAddressModal by remember { mutableStateOf(false) }
-    val scrollState = rememberScrollState()
+    val localQuantities = remember { mutableStateMapOf<Int, Int>() }
+
+    // 🔁 Sync localQuantities whenever cartItems change
+    LaunchedEffect(cartItems) {
+        localQuantities.clear()
+        cartItems.forEach { localQuantities[it.product_id] = it.quantity }
+    }
+
+    val totalPrice = cartItems.mapIndexed { index, item ->
+        if (allChecked.getOrNull(index) == true) {
+            val qty = localQuantities[item.product_id] ?: item.quantity
+            item.product_price * qty
+        } else 0.0
+    }.sum()
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            "Shopping cart (${cartList.size})",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        )
+                        Text("Shopping cart (${cartItems.size})", fontWeight = FontWeight.Bold, fontSize = 18.sp)
                         Row(
                             modifier = Modifier.clickable { showAddressModal = true },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Icon(
-                                Icons.Default.AddLocation,
-                                contentDescription = null,
-                                tint = Color.Gray,
-                                modifier = Modifier.size(14.dp)
-                            )
+                            Icon(Icons.Default.AddLocation, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(14.dp))
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = selectedAddress.take(30) + if (selectedAddress.length > 30) "..." else "",
                                 fontSize = 13.sp,
                                 color = Color.Gray
                             )
-                            Icon(
-                                Icons.Default.ArrowForward,
-                                contentDescription = null,
-                                tint = Color.Gray,
-                                modifier = Modifier.size(14.dp)
-                            )
+                            Icon(Icons.Default.ArrowForward, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(14.dp))
                         }
                     }
                 },
@@ -108,93 +115,7 @@ fun AddtoCartScreen(
                 .verticalScroll(scrollState)
                 .padding(horizontal = 16.dp)
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .border(2.dp, Color(0xFF0080FF), RoundedCornerShape(12.dp))
-                    .background(Color(0xFFD3ECFF))
-                    .padding(12.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(
-                        checked = true,
-                        onCheckedChange = null
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.pencils), // replace with actual drawable
-                        contentDescription = "Image",
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(Color.White),
-                        contentScale = ContentScale.Fit
-                    )
-                    Spacer(Modifier.width(12.dp))
-                    Column(Modifier.weight(1f)) {
-                        Text("Ballpen Pack", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                        Text("₱59.00", fontSize = 14.sp, color = Color(0xFF27AE60))
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = {}) {
-                            Text("-", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                        }
-                        Text("1", fontSize = 18.sp)
-                        IconButton(onClick = {}) {
-                            Text("+", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                        }
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete")
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
-                    .border(2.dp, Color(0xFF0080FF), RoundedCornerShape(12.dp))
-                    .background(Color(0xFFD3ECFF))
-                    .padding(12.dp)
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(
-                        checked = true,
-                        onCheckedChange = null
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.pencils), // replace with actual drawable
-                        contentDescription = "Image",
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(Color.White),
-                        contentScale = ContentScale.Fit
-                    )
-                    Spacer(Modifier.width(12.dp))
-                    Column(Modifier.weight(1f)) {
-                        Text("Ballpen Pack", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                        Text("₱59.00", fontSize = 14.sp, color = Color(0xFF27AE60))
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = {}) {
-                            Text("-", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                        }
-                        Text("1", fontSize = 18.sp)
-                        IconButton(onClick = {}) {
-                            Text("+", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                        }
-                    }
-                    IconButton(onClick = {}) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete")
-                    }
-                }
-            }
-
-
-            /*if (cartList.isEmpty()) {
+            if (cartItems.isEmpty()) {
                 Text(
                     text = "Your cart is empty",
                     fontSize = 18.sp,
@@ -205,75 +126,85 @@ fun AddtoCartScreen(
                     textAlign = TextAlign.Center
                 )
             } else {
-                LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    items(cartList.size) { index ->
-                        val cartItem = cartList[index]
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(12.dp))
-                                .border(2.dp, Color(0xFF0080FF), RoundedCornerShape(12.dp))
-                                .background(Color(0xFFD3ECFF))
-                                .padding(12.dp)
-                        ) {
+                cartItems.forEachIndexed { index, item ->
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(12.dp))
+                            .border(2.dp, Color(0xFF0080FF), RoundedCornerShape(12.dp))
+                            .background(Color(0xFFD3ECFF))
+                            .padding(12.dp)
+                            .padding(bottom = 8.dp)
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(
+                                checked = allChecked[index],
+                                onCheckedChange = { allChecked[index] = it }
+                            )
+
+                            Spacer(Modifier.width(8.dp))
+
+                            Image(
+                                bitmap = base64ToImageBitmap(context, item.product_image ?: ""),
+                                contentDescription = "Product Image",
+                                modifier = Modifier
+                                    .size(50.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color.White),
+                                contentScale = ContentScale.Fit
+                            )
+
+                            Spacer(Modifier.width(12.dp))
+
+                            Column(Modifier.weight(1f)) {
+                                Text(item.product_name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                Text("₱${item.product_price}", fontSize = 14.sp, color = Color(0xFF27AE60))
+                            }
+
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Checkbox(
-                                    checked = cartItem.isSelected,
-                                    onCheckedChange = {
-                                        cartList[index] = cartItem.copy(isSelected = it)
-                                    }
-                                )
-                                Spacer(Modifier.width(8.dp))
-                                Image(
-                                    painter = painterResource(id = cartItem.product.imageRes),
-                                    contentDescription = "Image",
-                                    modifier = Modifier
-                                        .size(50.dp)
-                                        .clip(RoundedCornerShape(8.dp))
-                                        .background(Color.White),
-                                    contentScale = ContentScale.Fit
-                                )
-                                Spacer(Modifier.width(12.dp))
-                                Column(Modifier.weight(1f)) {
-                                    Text(cartItem.product.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                    Text("₱${cartItem.product.price}", fontSize = 14.sp, color = Color(0xFF27AE60))
-                                }
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    IconButton(onClick = {
-                                        if (cartItem.quantity > 1) {
-                                            cartList[index] = cartItem.copy(quantity = cartItem.quantity - 1)
-                                        }
-                                    }) {
-                                        Text("-", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                                    }
-                                    Text(cartItem.quantity.toString(), fontSize = 18.sp)
-                                    IconButton(onClick = {
-                                        cartList[index] = cartItem.copy(quantity = cartItem.quantity + 1)
-                                    }) {
-                                        Text("+", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                                    }
-                                }
                                 IconButton(onClick = {
-                                    cartList.removeAt(index)
-                                    coroutineScope.launch {
-                                        snackbarHostState.showSnackbar("Item removed from cart")
+                                    val currentQty = localQuantities[item.product_id] ?: item.quantity
+                                    if (currentQty > 1) {
+                                        localQuantities[item.product_id] = currentQty - 1
+                                        cartViewModel.updateCartQuantity(item.product_id, -1) // ➖ Delta
                                     }
                                 }) {
-                                    Icon(Icons.Default.Delete, contentDescription = "Delete")
+                                    Text("-", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                                 }
+
+                                Text(localQuantities[item.product_id]?.toString() ?: item.quantity.toString(), fontSize = 18.sp)
+
+                                IconButton(onClick = {
+                                    val currentQty = localQuantities[item.product_id] ?: item.quantity
+                                    if (currentQty < item.stock) {
+                                        localQuantities[item.product_id] = currentQty + 1
+                                        cartViewModel.updateCartQuantity(item.product_id, 1) // ➕ Delta
+                                    } else {
+                                        coroutineScope.launch {
+                                            snackbarHostState.showSnackbar("Reached max stock limit.")
+                                        }
+                                    }
+                                }) {
+                                    Text("+", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                                }
+
+                            }
+
+                            IconButton(onClick = {
+                                cartViewModel.removeFromCart(item.product_id)
+                                coroutineScope.launch {
+                                    snackbarHostState.showSnackbar("Item removed from cart")
+                                }
+                            }) {
+                                Icon(Icons.Default.Delete, contentDescription = "Delete")
                             }
                         }
                     }
                 }
-                */
+            }
 
+            Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(420.dp))
-
-            // Footer
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -285,27 +216,19 @@ fun AddtoCartScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
-                        checked = allChecked,
-                        onCheckedChange = { isChecked ->
-                            for (i in cartList.indices) {
-                                cartList[i] = cartList[i].copy(isSelected = isChecked)
-                            }
+                        checked = allChecked.all { it },
+                        onCheckedChange = { check ->
+                            for (i in allChecked.indices) allChecked[i] = check
                         }
                     )
                     Text("All", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        "Total: ₱${"%.2f".format(totalPrice)}",
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 16.sp
-                    )
+                    Text("Total: ₱${"%.2f".format(totalPrice)}", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                     Spacer(modifier = Modifier.width(12.dp))
                     Button(
-                        onClick = {
-                            navController.navigate("checkout")
-                        },
+                        onClick = { navController.navigate("checkout") },
                         shape = RoundedCornerShape(20.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF35AEFF)),
                         modifier = Modifier.height(40.dp)
@@ -315,8 +238,7 @@ fun AddtoCartScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
+            // 📦 Address modal...
             if (showAddressModal) {
                 ModalBottomSheet(
                     onDismissRequest = { showAddressModal = false },
@@ -324,47 +246,29 @@ fun AddtoCartScreen(
                     shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Row(
-                            Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text("Select address", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                            IconButton(onClick = { showAddressModal = false }) {
-                                Icon(Icons.Default.Close, contentDescription = "Close")
-                            }
-                        }
-
-                        Spacer(Modifier.height(12.dp))
-
+                        Text("Select address", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Spacer(modifier = Modifier.height(12.dp))
                         savedAddresses.forEach { entry ->
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(vertical = 10.dp)
                                     .clickable {
                                         onAddressSelected(entry.address)
                                         showAddressModal = false
-                                    },
+                                    }
+                                    .padding(vertical = 10.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Column(modifier = Modifier.weight(1f)) {
+                                Column(Modifier.weight(1f)) {
                                     Text("Xyzhie Dacanay", fontWeight = FontWeight.Bold)
                                     Text("(+63)09********94", fontSize = 13.sp)
                                     Text(entry.address, fontSize = 13.sp)
-                                    if (entry.isDefault) {
-                                        Text("Default", fontSize = 12.sp, color = Color.Gray)
-                                    }
+                                    if (entry.isDefault) Text("Default", fontSize = 12.sp, color = Color.Gray)
                                 }
-                                RadioButton(
-                                    selected = selectedAddress == entry.address,
-                                    onClick = null
-                                )
+                                RadioButton(selected = selectedAddress == entry.address, onClick = null)
                             }
                             Divider()
                         }
-
-                        Spacer(modifier = Modifier.height(16.dp))
 
                         Button(
                             onClick = {
@@ -377,11 +281,7 @@ fun AddtoCartScreen(
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF35AEFF))
                         ) {
-                            Text(
-                                "Add new address",
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold
-                            )
+                            Text("Add new address", color = Color.White, fontWeight = FontWeight.Bold)
                         }
 
                         Spacer(modifier = Modifier.height(24.dp))
@@ -389,8 +289,9 @@ fun AddtoCartScreen(
                 }
             }
         }
-
     }
 }
-    
+
+
+
 

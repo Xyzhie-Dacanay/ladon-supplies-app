@@ -1,4 +1,4 @@
-package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home
+package com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel
 
 import android.util.Log
 import androidx.compose.runtime.State
