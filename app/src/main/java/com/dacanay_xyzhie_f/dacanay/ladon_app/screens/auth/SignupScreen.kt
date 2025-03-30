@@ -149,10 +149,8 @@ fun SignUpScreen(
 
                 Spacer(modifier = Modifier.height(14.dp))
 
-                DividerComponent()
-                Spacer(modifier = Modifier.height(10.dp))
-                ButtonComponent()
-                Spacer(modifier = Modifier.height(10.dp))
+
+
                 ButtonTextComponent(navController = navController, isSignUpScreen = true)
             }
         }

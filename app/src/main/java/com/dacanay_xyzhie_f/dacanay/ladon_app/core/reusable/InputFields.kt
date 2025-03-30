@@ -466,38 +466,7 @@ fun LoginButtonComponent(
 
     }
 
-    //Button for login and signup
-    @Composable
-    fun ButtonComponent() {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-                .wrapContentSize(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.faceebook),
-                contentDescription = "facebook",
-                modifier = Modifier
-                    .clickable { }
-                    .size(50.dp)
-            )
 
-            Spacer(modifier = Modifier.width(24.dp))
-
-
-
-            Image(
-                painter = painterResource(id = R.drawable.googlee),
-                contentDescription = "google",
-                modifier = Modifier
-                    .clickable { }
-                    .size(50.dp)
-            )
-        }
-    }
 
     @Composable
     fun ButtonTextComponent(navController: NavHostController, isSignUpScreen: Boolean) {
