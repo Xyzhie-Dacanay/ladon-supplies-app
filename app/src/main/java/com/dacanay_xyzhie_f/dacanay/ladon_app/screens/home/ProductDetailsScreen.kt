@@ -47,7 +47,7 @@ fun ProductDetailsScreen(
     val isFavorite = favorites.any { it.product_id == productId }
     val cartItem = cartItems.find { it.product_id == productId }
     val isInCart = cartItem != null
-    var quantity by remember { mutableStateOf(cartItem?.quantity ?: 1) }
+    var quantity by remember { mutableStateOf(1) }
 
     if (product == null) {
         Text("Product not found", modifier = Modifier.padding(16.dp))
@@ -65,7 +65,6 @@ fun ProductDetailsScreen(
             .background(Color(0xFFE6F8FF))
             .padding(24.dp)
     ) {
-        // Top Row with Back and Actions
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -106,7 +105,6 @@ fun ProductDetailsScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Product Image
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -127,7 +125,6 @@ fun ProductDetailsScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Name, Price, Quantity
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -144,14 +141,9 @@ fun ProductDetailsScreen(
             ) {
                 Button(
                     onClick = {
-                        if (isInCart) {
-                            if (cartItem?.quantity ?: 1 > 1) {
-                                cartViewModel.updateCartQuantity(productId, (cartItem?.quantity ?: 1) - 1)
-                            }
-                        } else if (quantity > 1) {
-                            quantity--
-                        }
+                        if (quantity > 1) quantity--
                     },
+                    enabled = quantity > 1,
                     modifier = Modifier.size(40.dp),
                     shape = RoundedCornerShape(24.dp),
                     contentPadding = PaddingValues(0.dp),
@@ -160,20 +152,13 @@ fun ProductDetailsScreen(
                     Text("-", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = Color.White)
                 }
 
-                Text(
-                    if (isInCart) (cartItem?.quantity ?: 1).toString() else quantity.toString(),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                )
+                Text(quantity.toString(), fontSize = 16.sp, fontWeight = FontWeight.Medium)
 
                 Button(
                     onClick = {
-                        if (isInCart) {
-                            cartViewModel.updateCartQuantity(productId, (cartItem?.quantity ?: 1) + 1)
-                        } else {
-                            quantity++
-                        }
+                        if (quantity < (product.stock ?: 1)) quantity++
                     },
+                    enabled = quantity < (product.stock ?: 1),
                     modifier = Modifier.size(40.dp),
                     shape = RoundedCornerShape(24.dp),
                     contentPadding = PaddingValues(0.dp),
@@ -191,7 +176,6 @@ fun ProductDetailsScreen(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // Add to Cart
         Button(
             onClick = {
                 when {
@@ -235,6 +219,7 @@ fun ProductDetailsScreen(
         )
     }
 }
+
 
 
 @Composable
