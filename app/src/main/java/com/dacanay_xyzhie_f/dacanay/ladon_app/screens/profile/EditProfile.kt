@@ -24,9 +24,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
+import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ContactEdit
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.EmailEdit
+import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.FullNameEdit
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.LabelText
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.PassFields
+import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.UserNameEdit
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -117,14 +120,26 @@ fun EditProfile(navController: NavHostController) {
                 // Username
                 LabelText(value = stringResource(id = R.string.username))
                 Spacer(modifier = Modifier.height(5.dp))
-                EmailEdit(
-                    labelValue = stringResource(id = R.string.usernameInt),
-                    painterResource = painterResource(id = R.drawable.user),
-                    value = username,
-                    onValueChange = { username = it }
-                )
+                    UserNameEdit(
+                        labelValue = stringResource(id = R.string.usernameInt),
+                        painterResource = painterResource(id = R.drawable.user),
+                        value = username,
+                        onValueChange = { username = it }
+                    )
 
                 Spacer(modifier = Modifier.height(16.dp))
+
+                    // Username
+                    LabelText(value = stringResource(id = R.string.full_Name))
+                    Spacer(modifier = Modifier.height(5.dp))
+                    FullNameEdit(
+                        labelValue = stringResource(id = R.string.fullName),
+                        painterResource = painterResource(id = R.drawable.namecard),
+                        value = username,
+                        onValueChange = { username = it }
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
 
                 // Email
                 LabelText(value = stringResource(id = R.string.email))
@@ -141,7 +156,7 @@ fun EditProfile(navController: NavHostController) {
                 // Contact
                 LabelText(value = stringResource(id = R.string.contact))
                 Spacer(modifier = Modifier.height(5.dp))
-                EmailEdit(
+                ContactEdit(
                     labelValue = stringResource(id = R.string.edecontact),
                     painterResource = painterResource(id = R.drawable.contact),
                     value = contact,

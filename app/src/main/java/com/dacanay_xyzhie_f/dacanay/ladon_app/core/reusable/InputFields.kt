@@ -432,39 +432,6 @@ fun LoginButtonComponent(
     }
 
 
-    //Divider
-    @Composable
-    fun DividerComponent() {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        )
-        {
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                color = GrayLa,
-                thickness = 1.dp
-            )
-
-
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = "or", fontSize = 18.sp, color = GrayLa
-            )
-
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                color = GrayLa,
-                thickness = 1.dp
-            )
-
-        }
-
-    }
 
 
 
@@ -591,9 +558,133 @@ fun LoginButtonComponent(
 
     }
 
+
+// Email
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailEdit(
+    labelValue: String,
+    painterResource: Painter,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(55.dp),
+            placeholder = { Text(text = labelValue, color = Color.Gray) },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                cursorColor = colorResource(id = R.color.black),
+                containerColor = colorResource(id = R.color.tfBackground),
+            ),
+            shape = RoundedCornerShape(20.dp),
+            keyboardOptions = KeyboardOptions.Default,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource,
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.primaryColor),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        )
+    }
+}
+
+
+
+
+//UserName
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun UserNameEdit(
+    labelValue: String,
+    painterResource: Painter,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(55.dp),
+            placeholder = { Text(text = labelValue, color = Color.Gray) },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                cursorColor = colorResource(id = R.color.black),
+                containerColor = colorResource(id = R.color.tfBackground),
+            ),
+            shape = RoundedCornerShape(20.dp),
+            keyboardOptions = KeyboardOptions.Default,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource,
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.primaryColor),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        )
+    }
+}
+
+
+//Full Name
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FullNameEdit(
+    labelValue: String,
+    painterResource: Painter,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(55.dp),
+            placeholder = { Text(text = labelValue, color = Color.Gray) },
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = Color.Transparent,
+                unfocusedBorderColor = Color.Transparent,
+                cursorColor = colorResource(id = R.color.black),
+                containerColor = colorResource(id = R.color.tfBackground),
+            ),
+            shape = RoundedCornerShape(20.dp),
+            keyboardOptions = KeyboardOptions.Default,
+            leadingIcon = {
+                Icon(
+                    painter = painterResource,
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.primaryColor),
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+        )
+    }
+}
+
+
+//Full Name
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ContactEdit(
     labelValue: String,
     painterResource: Painter,
     value: String,
