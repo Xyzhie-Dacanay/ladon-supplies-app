@@ -1,6 +1,8 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -15,13 +17,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.foundation.rememberScrollState
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,11 +25,13 @@ fun AddNewAddressScreen(
     navController: NavHostController,
     onSaveAddress: (String) -> Unit
 ) {
+    var street by remember { mutableStateOf("") }
     var barangay by remember { mutableStateOf("") }
     var municipality by remember { mutableStateOf("") }
     var province by remember { mutableStateOf("") }
     var setAsDefault by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -55,6 +53,13 @@ fun AddNewAddressScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text("Address Information", fontWeight = FontWeight.Bold)
+
+            OutlinedTextField(
+                value = street,
+                onValueChange = { street = it },
+                label = { Text("Street") },
+                modifier = Modifier.fillMaxWidth()
+            )
 
             OutlinedTextField(
                 value = barangay,
@@ -92,7 +97,7 @@ fun AddNewAddressScreen(
 
             Button(
                 onClick = {
-                    val fullAddress = "$barangay, $municipality, $province"
+                    val fullAddress = "$street, $barangay, $municipality, $province"
                     onSaveAddress(fullAddress)
                     navController.popBackStack()
                 },
