@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -44,7 +45,6 @@ fun AddtoCartScreen(
     val addresses by addressViewModel.addresses.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val scrollState = rememberScrollState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var showAddressModal by remember { mutableStateOf(false) }
 
@@ -113,139 +113,142 @@ fun AddtoCartScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .verticalScroll(scrollState)
-                .padding(horizontal = 16.dp)
         ) {
-            if (cartItems.isEmpty()) {
-                Text(
-                    text = "Your cart is empty",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 100.dp),
-                    textAlign = TextAlign.Center
-                )
-            } else {
-                cartItems.forEachIndexed { index, item ->
-                    Box(
+            Box(modifier = Modifier.weight(1f)) {
+                if (cartItems.isEmpty()) {
+                    Text(
+                        text = "Your cart is empty",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .border(2.dp, Color(0xFF0080FF), RoundedCornerShape(12.dp))
-                            .background(Color(0xFFD3ECFF))
-                            .padding(12.dp)
-                            .padding(bottom = 8.dp)
+                            .padding(top = 100.dp),
+                        textAlign = TextAlign.Center
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Checkbox(
-                                checked = allChecked[index],
-                                onCheckedChange = { allChecked[index] = it }
-                            )
-
-                            Spacer(Modifier.width(8.dp))
-
-                            Image(
-                                bitmap = base64ToImageBitmap(LocalContext.current, item.product_image ?: ""),
-                                contentDescription = "Product Image",
+                        items(cartItems.size) { index ->
+                            val item = cartItems[index]
+                            Box(
                                 modifier = Modifier
-                                    .size(50.dp)
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(Color.White),
-                                contentScale = ContentScale.Fit
-                            )
-
-                            Spacer(Modifier.width(12.dp))
-
-                            Column(Modifier.weight(1f)) {
-                                Text(item.product_name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                Text("₱${item.product_price}", fontSize = 14.sp, color = Color(0xFF27AE60))
-                            }
-
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                IconButton(onClick = {
-                                    val currentQty = localQuantities[item.product_id] ?: item.quantity
-                                    if (currentQty > 1) {
-                                        localQuantities[item.product_id] = currentQty - 1
-                                        cartViewModel.updateCartQuantity(item.product_id, -1)
+                                    .fillMaxWidth()
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .border(2.dp, Color(0xFF0080FF), RoundedCornerShape(12.dp))
+                                    .background(Color(0xFFD3ECFF))
+                                    .padding(12.dp)
+                            ) {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Checkbox(
+                                        checked = allChecked[index],
+                                        onCheckedChange = { allChecked[index] = it }
+                                    )
+                                    Spacer(Modifier.width(8.dp))
+                                    Image(
+                                        bitmap = base64ToImageBitmap(context, item.product_image ?: ""),
+                                        contentDescription = "Product Image",
+                                        modifier = Modifier
+                                            .size(50.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(Color.White),
+                                        contentScale = ContentScale.Fit
+                                    )
+                                    Spacer(Modifier.width(12.dp))
+                                    Column(Modifier.weight(1f)) {
+                                        Text(item.product_name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                                        Text("₱${item.product_price}", fontSize = 14.sp, color = Color(0xFF27AE60))
                                     }
-                                }) {
-                                    Text("-", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                                }
-
-                                Text(localQuantities[item.product_id]?.toString() ?: item.quantity.toString(), fontSize = 18.sp)
-
-                                IconButton(onClick = {
-                                    val currentQty = localQuantities[item.product_id] ?: item.quantity
-                                    if (currentQty < item.stock) {
-                                        localQuantities[item.product_id] = currentQty + 1
-                                        cartViewModel.updateCartQuantity(item.product_id, 1)
-                                    } else {
-                                        coroutineScope.launch {
-                                            snackbarHostState.showSnackbar("Reached max stock limit.")
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        IconButton(onClick = {
+                                            val currentQty = localQuantities[item.product_id] ?: item.quantity
+                                            if (currentQty > 1) {
+                                                localQuantities[item.product_id] = currentQty - 1
+                                                cartViewModel.updateCartQuantity(item.product_id, -1)
+                                            }
+                                        }) {
+                                            Text("-", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                                        }
+                                        Text(localQuantities[item.product_id]?.toString() ?: item.quantity.toString(), fontSize = 18.sp)
+                                        IconButton(onClick = {
+                                            val currentQty = localQuantities[item.product_id] ?: item.quantity
+                                            if (currentQty < item.stock) {
+                                                localQuantities[item.product_id] = currentQty + 1
+                                                cartViewModel.updateCartQuantity(item.product_id, 1)
+                                            } else {
+                                                coroutineScope.launch {
+                                                    snackbarHostState.showSnackbar("Reached max stock limit.")
+                                                }
+                                            }
+                                        }) {
+                                            Text("+", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                                         }
                                     }
-                                }) {
-                                    Text("+", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                                    IconButton(onClick = {
+                                        cartViewModel.removeFromCart(item.product_id)
+                                        coroutineScope.launch {
+                                            snackbarHostState.showSnackbar("Item removed from cart")
+                                        }
+                                    }) {
+                                        Icon(Icons.Default.Delete, contentDescription = "Delete")
+                                    }
                                 }
-                            }
-
-                            IconButton(onClick = {
-                                cartViewModel.removeFromCart(item.product_id)
-                                coroutineScope.launch {
-                                    snackbarHostState.showSnackbar("Item removed from cart")
-                                }
-                            }) {
-                                Icon(Icons.Default.Delete, contentDescription = "Delete")
                             }
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
+            // Fixed Bottom Checkout Section
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .border(2.dp, Color(0xFF0080FF), RoundedCornerShape(12.dp))
-                    .background(Color.White)
-                    .padding(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .padding(16.dp)
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Checkbox(
-                        checked = allChecked.all { it },
-                        onCheckedChange = { check -> allChecked.indices.forEach { allChecked[it] = check } }
-                    )
-                    Text("All", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
-                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .border(2.dp, Color(0xFF0080FF), RoundedCornerShape(12.dp))
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(
+                            checked = allChecked.all { it },
+                            onCheckedChange = { check -> allChecked.indices.forEach { allChecked[it] = check } }
+                        )
+                        Text("All", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
+                    }
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Total: ₱${"%.2f".format(totalPrice)}", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Button(
-                        onClick = {
-                            if (selectedAddressId != null) {
-                                coroutineScope.launch {
-                                    val checkoutUrl = cartViewModel.getStripeCheckoutUrl(selectedAddressId!!)
-                                    if (checkoutUrl != null) {
-                                        navController.navigate("webview_checkout?url=${Uri.encode(checkoutUrl)}")
-                                    } else {
-                                        snackbarHostState.showSnackbar("Failed to start checkout.")
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("Total: ₱${"%.2f".format(totalPrice)}", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Button(
+                            onClick = {
+                                if (selectedAddressId != null) {
+                                    coroutineScope.launch {
+                                        val checkoutUrl = cartViewModel.getStripeCheckoutUrl(selectedAddressId!!)
+                                        if (checkoutUrl != null) {
+                                            navController.navigate("webview_checkout?url=${Uri.encode(checkoutUrl)}")
+                                        } else {
+                                            snackbarHostState.showSnackbar("Failed to start checkout.")
+                                        }
                                     }
                                 }
-                            }
-                        },
-                        enabled = selectedAddressId != null,
-                        shape = RoundedCornerShape(20.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = if (selectedAddressId != null) Color(0xFF35AEFF) else Color.Gray
-                        ),
-                        modifier = Modifier.height(40.dp)
-                    ) {
-                        Text("Check out", color = Color.White, fontWeight = FontWeight.Bold)
+                            },
+                            enabled = selectedAddressId != null,
+                            shape = RoundedCornerShape(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (selectedAddressId != null) Color(0xFF35AEFF) else Color.Gray
+                            ),
+                            modifier = Modifier.height(40.dp)
+                        ) {
+                            Text("Check out", color = Color.White, fontWeight = FontWeight.Bold)
+                        }
                     }
                 }
             }

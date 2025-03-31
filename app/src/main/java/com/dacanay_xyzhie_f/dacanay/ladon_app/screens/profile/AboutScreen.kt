@@ -25,8 +25,8 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 @Composable
 fun AboutScreen(
     navController: NavController,
-    topMargin: Dp = 100.dp,  // Adjustable Top Margin
-    bottomMargin: Dp = 4.dp // Adjustable Bottom Margin
+    topMargin: Dp = 100.dp,
+    bottomMargin: Dp = 4.dp
 ) {
     Column(
         modifier = Modifier
@@ -75,11 +75,11 @@ fun AboutScreen(
                     text = "Ladon’s Photocopies and Supplies",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1E88E5)
+                    color = Color(0xFF35AEFF)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = "Your go-to app for seamless hotel booking! Whether you're planning a vacation, business trip, or a spontaneous getaway.",
+                    text = "Ladon Photocopies and Supplies is a mobile app for quick and hassle-free ordering of school supplies anytime, anywhere.",
                     fontSize = 14.sp
                 )
             }
@@ -104,9 +104,9 @@ fun AboutScreen(
                 ) {
                     Text(
                         text = "Our Mission",
+                        color = Color(0xFF35AEFF),
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.Black,
                         modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                             .align(Alignment.CenterHorizontally)
                     )
@@ -124,7 +124,7 @@ fun AboutScreen(
                         painter = painterResource(id = R.drawable.primary),
                         contentDescription = "Ladon Logo",
                         modifier = Modifier
-                            .size(152.dp)
+                            .size(270.dp)
                             .align(Alignment.CenterHorizontally)
                     )
                 }
@@ -138,8 +138,9 @@ fun AboutScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "At Ladon’s Photocopies and Supplies, we aim to make hotel bookings easier and more convenient. We believe that everyone deserves a stress-free travel experience, and finding a hotel should be the first step in that journey.",
+                        text = "Our mission is to provide a fast, easy, and reliable way to order school supplies. We aim to make shopping more convenient and accessible, helping students and professionals get what they need without the hassle.",
                         fontSize = 14.sp
+
                     )
                 }
             }
@@ -165,7 +166,7 @@ fun AboutScreen(
                         text = "this project",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1E88E5)
+                        color = Color(0xFF35AEFF)
                     )
                 }
 
@@ -180,8 +181,8 @@ fun AboutScreen(
                     "UI Designer App and Web:" to "Terrence Lopez"
                 )
 
-                // Adjustable column width for roles
-                val roleColumnWidth = 180.dp  // Adjust as needed
+
+                val roleColumnWidth = 180.dp
 
                 teamMembers.forEach { (role, name) ->
                     Row(
@@ -192,14 +193,14 @@ fun AboutScreen(
                             text = role,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            modifier = Modifier.width(roleColumnWidth) // Ensures all roles take up the same space
+                            modifier = Modifier.width(roleColumnWidth)
                         )
                         Text(
                             text = name,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1E88E5),
-                            modifier = Modifier.weight(1f) // Ensures names align properly
+                            color = Color(0xFF35AEFF),
+                            modifier = Modifier.weight(1f)
                         )
                     }
                     Spacer(modifier = Modifier.height(4.dp))
