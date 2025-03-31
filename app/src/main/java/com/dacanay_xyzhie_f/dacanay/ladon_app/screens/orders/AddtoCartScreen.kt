@@ -103,7 +103,7 @@ fun AddtoCartScreen(
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+               colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFE6F8FF))
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },

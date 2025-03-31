@@ -42,7 +42,7 @@ fun SeeAllScreen(navController: NavHostController) {
                     Text(
                         text = "All Products",
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(0.8f)
+                        modifier = Modifier.fillMaxWidth(1f)
                     )
                 },
                 navigationIcon = {

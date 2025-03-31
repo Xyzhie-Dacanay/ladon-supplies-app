@@ -63,11 +63,17 @@ fun OrderScreen(navController: NavHostController) {
                     IconButton(onClick = {
                         navController.navigate(Routes.AddtoCartScreen)
                     }) {
-                        Icon(Icons.Outlined.ShoppingCart, contentDescription = "Cart", tint = Color.Black)
+                        Icon(Icons.Outlined.ShoppingCart,
+                            contentDescription = "Cart",
+                            modifier = Modifier.size(32.dp),
+                            tint = Color.Black)
                     }
                     Spacer(modifier = Modifier.width(5.dp))
                     IconButton(onClick = { /* Notifications */ }) {
-                        Icon(Icons.Outlined.Notifications, contentDescription = "Notifications", tint = Color.Black)
+                        Icon(Icons.Outlined.Notifications,
+                            contentDescription = "Notifications",
+                            modifier = Modifier.size(32.dp),
+                            tint = Color.Black)
                     }
                 }
             }

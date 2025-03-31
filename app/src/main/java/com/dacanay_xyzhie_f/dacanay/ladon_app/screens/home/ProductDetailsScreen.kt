@@ -63,7 +63,7 @@ fun ProductDetailsScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFE6F8FF))
-            .padding(24.dp)
+            .padding(horizontal = 8.dp, vertical = 56.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -93,12 +93,17 @@ fun ProductDetailsScreen(
                     Icon(
                         imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
                         contentDescription = "Favorite",
+                        modifier = Modifier.size(32.dp),
                         tint = if (isFavorite) Color.Red else Color.Black
                     )
                 }
 
+                Spacer(modifier = Modifier.width(4.dp))
+
                 IconButton(onClick = { navController.navigate(Routes.AddtoCartScreen) }) {
-                    Icon(Icons.Outlined.ShoppingCart, contentDescription = "Cart")
+                    Icon(Icons.Outlined.ShoppingCart,
+                        modifier = Modifier.size(32.dp),
+                        contentDescription = "Cart")
                 }
             }
         }
@@ -108,7 +113,7 @@ fun ProductDetailsScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(250.dp)
+                .height(400.dp)
                 .clip(RoundedCornerShape(12.dp))
                 .background(Color.White),
             contentAlignment = Alignment.Center
@@ -132,6 +137,7 @@ fun ProductDetailsScreen(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(product.product_name, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(4.dp))
                 Text("₱${product.product_price}", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
             }
 

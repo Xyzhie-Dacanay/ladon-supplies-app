@@ -92,7 +92,7 @@ fun ProfileScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             // Profile Info
             Box(
@@ -150,34 +150,32 @@ fun ProfileScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(18.dp))
 
             // Options Section
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White, shape = RoundedCornerShape(16.dp))
-                    .padding(16.dp)
+                    .padding(24.dp)
             ) {
                 ProfileOption(Icons.Outlined.Help, "Help Center", Color(0xFF35AEFF)) {
                     navController.navigate(Routes.HelpCenter)
                 }
-
+                Spacer(modifier = Modifier.height(8.dp))
                 ProfileOption(Icons.Outlined.Info, "About", Color(0xFF35AEFF)) {
                     navController.navigate(Routes.About)
                 }
-
+                Spacer(modifier = Modifier.height(8.dp))
                 ProfileOption(Icons.Outlined.Description, "Privacy & Policy", Color(0xFF35AEFF)) {
                     navController.navigate(Routes.PrivacyPolicy)
                 }
-
+                Spacer(modifier = Modifier.height(8.dp))
                 ProfileOption(Icons.Outlined.Report, "Report a problem", Color(0xFF35AEFF)) {
                     navController.navigate(Routes.Report)
                 }
 
-                ProfileOption(Icons.Outlined.Settings, "Settings", Color(0xFF35AEFF)) {
-                    navController.navigate(Routes.Settings)
-                }
+
 
                 Spacer(modifier = Modifier.height(8.dp))
 

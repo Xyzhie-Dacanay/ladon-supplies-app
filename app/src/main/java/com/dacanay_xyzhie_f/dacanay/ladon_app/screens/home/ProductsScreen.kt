@@ -53,7 +53,7 @@ fun ProductsScreen(navController: NavHostController, category: String) {
                     Text(
                         text = category,
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(0.8f)
+                        modifier = Modifier.fillMaxWidth(1f)
                     )
                 },
                 navigationIcon = {
