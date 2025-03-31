@@ -3,7 +3,9 @@ package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -25,6 +27,7 @@ fun HelpScreen(navController: NavController) {
             .fillMaxSize()
             .background(Color(0xFFE6F7FF))
             .padding(16.dp)
+            .verticalScroll(rememberScrollState()) // ⬅️ Ensures the whole screen scrolls
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -34,8 +37,7 @@ fun HelpScreen(navController: NavController) {
                 imageVector = Icons.Default.ArrowBack,
                 contentDescription = "Back",
                 modifier = Modifier
-                    .padding(bottom = 4.dp)
-                    .padding(top = 50.dp)
+                    .padding(bottom = 4.dp, top = 50.dp)
                     .size(24.dp)
                     .clickable { navController.popBackStack() }
             )
@@ -45,15 +47,14 @@ fun HelpScreen(navController: NavController) {
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
-                    .padding(bottom = 4.dp)
-                    .padding(top = 50.dp)
+                    .padding(bottom = 4.dp, top = 50.dp)
                     .align(Alignment.CenterVertically)
             )
             Spacer(modifier = Modifier.weight(1f))
         }
+
         Spacer(modifier = Modifier.height(16.dp))
 
-        Spacer(modifier = Modifier.height(3.dp))
         HelpSection(
             title = "Account & Profile",
             faqs = listOf(
@@ -61,7 +62,6 @@ fun HelpScreen(navController: NavController) {
                 "Can I change my email address?" to "Yes, you can update your email address in the 'My Account' section of your Account page."
             )
         )
-        Spacer(modifier = Modifier.height(3.dp))
         HelpSection(
             title = "Orders & Payments",
             faqs = listOf(
@@ -69,7 +69,6 @@ fun HelpScreen(navController: NavController) {
                 "What payment methods do you accept?" to "We accept credit/debit cards, PayPal, and other popular payment methods."
             )
         )
-        Spacer(modifier = Modifier.height(3.dp))
         HelpSection(
             title = "Shipping & Delivery",
             faqs = listOf(
@@ -94,9 +93,9 @@ fun HelpSection(title: String, faqs: List<Pair<String, String>>) {
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Q: $question", fontWeight = FontWeight.Bold,modifier = Modifier.padding(bottom = 4.dp))
+                    Text(text = "Q: $question", fontWeight = FontWeight.Bold, modifier = Modifier.padding(bottom = 4.dp))
                     Spacer(modifier = Modifier.height(4.dp))
-                    Text(text = "A: $answer",modifier = Modifier.padding(bottom = 4.dp))
+                    Text(text = "A: $answer", modifier = Modifier.padding(bottom = 4.dp))
                 }
             }
         }

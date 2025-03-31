@@ -13,6 +13,15 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
+      <SelectionState runConfigName="PreviewAboutScreen">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="PreviewHelpScreen">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="PreviewPrivacyPolicyScreen">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

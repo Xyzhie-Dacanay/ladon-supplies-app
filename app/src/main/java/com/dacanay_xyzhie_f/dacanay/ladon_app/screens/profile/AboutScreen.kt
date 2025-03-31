@@ -2,7 +2,6 @@ package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -36,16 +35,23 @@ fun AboutScreen(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Back Button Row
-        // Back Button Row
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
+        // Title Bar (Same as Help Screen)
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp, start = 8.dp, end = 16.dp) // Adjusted padding
+                .padding(vertical = 16.dp),
+            contentAlignment = Alignment.Center
         ) {
+            Text(
+                text = "About",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+
             IconButton(
-                onClick = { navController.popBackStack() }
+                onClick = { navController.popBackStack() },
+                modifier = Modifier.align(Alignment.CenterStart)
             ) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
@@ -53,19 +59,7 @@ fun AboutScreen(
                     tint = Color.Black
                 )
             }
-
-            Spacer(modifier = Modifier.width(25.dp)) // Small space between button and text
-
-            Text(
-                text = "About",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-            )
         }
-
 
         Spacer(modifier = Modifier.height(18.dp))
 
@@ -220,4 +214,3 @@ fun AboutScreen(
 fun PreviewAboutScreen() {
     AboutScreen(navController = rememberNavController(), topMargin = 16.dp, bottomMargin = 16.dp)
 }
-
