@@ -72,6 +72,9 @@ fun AuthNavigation(
         composable(Routes.Report) {
             ReportScreen(navController = navController)
         }
+        composable(Routes.ReportProblemScreen){
+            ReportProblemScreen(navController = navController)
+        }
         composable(Routes.Settings) {
             SettingsScreen(navController = navController)
         }

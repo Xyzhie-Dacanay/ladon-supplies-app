@@ -14,6 +14,7 @@ object Routes {
      var About = "AboutScreen"
      var PrivacyPolicy = "PrivacyPolicyScreen"
      var Report = "ReportScreen"
+     var ReportProblemScreen = "ReportProblemScreen"
      var Settings = "SettingsScreen"
      var ProductsScreen = "Products_Screen"
      var AddtoCartScreen = "AddtoCart_Screen"
