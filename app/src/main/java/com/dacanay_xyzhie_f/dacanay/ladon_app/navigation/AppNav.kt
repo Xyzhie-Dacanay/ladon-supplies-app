@@ -67,7 +67,7 @@ fun AuthNavigation(
             AboutScreen(navController = navController)
         }
         composable(Routes.PrivacyPolicy) {
-            PrivacyPolicvScreem(navController = navController)
+            PrivacyPolicyScreen(navController = navController)
         }
         composable(Routes.Report) {
             ReportScreen(navController = navController)
