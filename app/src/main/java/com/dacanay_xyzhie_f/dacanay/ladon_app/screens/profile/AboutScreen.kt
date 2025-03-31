@@ -25,7 +25,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 @Composable
 fun AboutScreen(
     navController: NavController,
-    topMargin: Dp = 50.dp,  // Adjustable Top Margin
+    topMargin: Dp = 100.dp,  // Adjustable Top Margin
     bottomMargin: Dp = 4.dp // Adjustable Bottom Margin
 ) {
     Column(
@@ -124,7 +124,7 @@ fun AboutScreen(
                         painter = painterResource(id = R.drawable.primary),
                         contentDescription = "Ladon Logo",
                         modifier = Modifier
-                            .size(140.dp)
+                            .size(152.dp)
                             .align(Alignment.CenterHorizontally)
                     )
                 }
