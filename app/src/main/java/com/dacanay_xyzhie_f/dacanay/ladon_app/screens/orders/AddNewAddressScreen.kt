@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -12,25 +11,32 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import android.widget.Toast
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.AddressRequest
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.AddressViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddNewAddressScreen(
     navController: NavHostController,
-    onSaveAddress: (String) -> Unit
+    onSaveAddress: (String) -> Unit,
+    addressViewModel: AddressViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+    val scrollState = rememberScrollState()
+
     var street by remember { mutableStateOf("") }
     var barangay by remember { mutableStateOf("") }
     var municipality by remember { mutableStateOf("") }
     var province by remember { mutableStateOf("") }
-    var setAsDefault by remember { mutableStateOf(false) }
-    val scrollState = rememberScrollState()
+    var isSaving by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -82,15 +88,8 @@ fun AddNewAddressScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Text("Settings", fontWeight = FontWeight.Bold)
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text("Set as default")
-                Switch(checked = setAsDefault, onCheckedChange = { setAsDefault = it })
+            if (isSaving) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             }
 
             Spacer(modifier = Modifier.weight(1f))
@@ -98,9 +97,27 @@ fun AddNewAddressScreen(
             Button(
                 onClick = {
                     val fullAddress = "$street, $barangay, $municipality, $province"
-                    onSaveAddress(fullAddress)
-                    navController.popBackStack()
+
+                    if (street.isBlank() || barangay.isBlank() || municipality.isBlank() || province.isBlank()) {
+                        Toast.makeText(context, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+                        return@Button
+                    }
+
+                    isSaving = true
+                    val addressRequest = AddressRequest(street, barangay, municipality, province)
+
+                    addressViewModel.addAddress(addressRequest) { success, message ->
+                        isSaving = false
+                        if (success) {
+                            Toast.makeText(context, "Address saved", Toast.LENGTH_SHORT).show()
+                            onSaveAddress(fullAddress)
+                            navController.popBackStack()
+                        } else {
+                            Toast.makeText(context, "Failed: $message", Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 },
+                enabled = !isSaving,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),

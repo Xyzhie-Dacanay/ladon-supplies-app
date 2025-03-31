@@ -1,20 +1,25 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.navigation
 
+import android.net.Uri
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.AddressViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.CartViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.ProductViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.storage.TokenManager
 import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
+import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.WebView.CheckoutWebViewScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth.*
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.favorites.FavoriteScreen
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home.*
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders.*
 import com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile.*
 import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodel.FavoritesViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun AuthNavigation(
@@ -31,7 +36,7 @@ fun AuthNavigation(
     NavHost(navController = navController, startDestination = startDestination) {
 
         composable(Routes.LogSign) {
-            LogSignScreen(navController = navController,)
+            LogSignScreen(navController = navController)
         }
         composable(Routes.LogIn) {
             LoginScreen(navController = navController, authViewModel = authViewModel)
@@ -43,7 +48,7 @@ fun AuthNavigation(
             HomeScreen(navController = navController)
         }
         composable(Routes.Favorites) {
-            FavoriteScreen(navController = navController, viewModel = favoritesViewModel, )
+            FavoriteScreen(navController = navController, viewModel = favoritesViewModel)
         }
         composable(Routes.Orders) {
             OrderScreen(navController = navController)
@@ -92,33 +97,55 @@ fun AuthNavigation(
 
         composable(Routes.AddtoCartScreen) {
             val cartViewModel: CartViewModel = viewModel()
+            val addressViewModel: AddressViewModel = viewModel()
 
             AddtoCartScreen(
                 navController = navController,
                 cartViewModel = cartViewModel,
-                savedAddresses = savedAddresses,
-                selectedAddress = selectedAddress,
-                onAddressSelected = { selectedAddress = it }
+                addressViewModel = addressViewModel
             )
         }
 
+        composable("webview_checkout?url={url}") { backStackEntry ->
+            val url = backStackEntry.arguments?.getString("url")?.let { Uri.decode(it) }
+            val cartViewModel: CartViewModel = viewModel()
+            val snackbarHostState = remember { SnackbarHostState() }
+            val scope = rememberCoroutineScope()
+
+            if (url != null) {
+                CheckoutWebViewScreen(url = url) {
+                    navController.popBackStack()
+                    scope.launch {
+                        snackbarHostState.showSnackbar("Payment Successful!")
+                    }
+                    cartViewModel.fetchCartItems()
+                }
+            }
+        }
+
         composable(Routes.EditProfileScreen) {
-            EditProfile(navController = navController,)
+            EditProfile(navController = navController)
         }
 
         composable(Routes.SeeAllScreen) {
-            SeeAllScreen(navController = navController,)
+            SeeAllScreen(navController = navController)
         }
 
         composable(Routes.AddNewAddressScreen) {
-            AddNewAddressScreen(navController = navController) { newAddress ->
-                savedAddresses.forEachIndexed { index, entry ->
-                    savedAddresses[index] = entry.copy(isDefault = false)
+            val addressViewModel: AddressViewModel = viewModel()
+
+            AddNewAddressScreen(
+                navController = navController,
+                addressViewModel = addressViewModel,
+                onSaveAddress = { newAddress ->
+                    savedAddresses.forEachIndexed { index, entry ->
+                        savedAddresses[index] = entry.copy(isDefault = false)
+                    }
+                    val newEntry = AddressEntry(address = newAddress, isDefault = true)
+                    savedAddresses.add(newEntry)
+                    selectedAddress = newAddress
                 }
-                val newEntry = AddressEntry(address = newAddress, isDefault = true)
-                savedAddresses.add(newEntry)
-                selectedAddress = newAddress
-            }
+            )
         }
     }
 }

@@ -183,7 +183,7 @@ fun ProfileScreen(
 
                 // Login/Logout
                 if (authViewModel.isLoggedIn) {
-                    ProfileOption(Icons.Outlined.ExitToApp, "Logout", Color.Red) {
+                    ProfileOption(Icons.Outlined.ExitToApp, "Log out", Color.Red) {
                         authViewModel.logout(tokenManager) {
                             navController.navigate(Routes.LogIn) {
                                 popUpTo(0)
@@ -191,7 +191,7 @@ fun ProfileScreen(
                         }
                     }
                 } else {
-                    ProfileOption(Icons.Outlined.ExitToApp, "Login", Color.Red) {
+                    ProfileOption(Icons.Outlined.ExitToApp, "Log in", Color.Red) {
                         navController.navigate(Routes.LogIn)
                     }
                 }

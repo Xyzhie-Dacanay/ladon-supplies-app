@@ -1,4 +1,6 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.data.Api
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.AddressRequest
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.AddressResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.CartItemResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.LoginRequest
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.LoginResponse
@@ -6,6 +8,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.RegisterRequest
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.RegisterResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.ProductResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.FavoriteResponse
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.StripeCheckoutResponse
 
 import retrofit2.Response
 import retrofit2.http.Body
@@ -64,6 +67,25 @@ interface ApiService {
         @Body body: Map<String, Int> // ✅ Just product_id
     ): Response<Unit>
 
+    @GET("api/mobile/address")
+    suspend fun getAddresses(@Header("Authorization") token: String): List<AddressResponse>
+
+    @POST("/api/mobile/address")
+    suspend fun addAddress(
+        @Header("Authorization") token: String,
+        @Body request: AddressRequest
+    ): Response<Map<String, String>>
+
+    @HTTP(method = "DELETE", path = "api/mobile/address/delete", hasBody = true)
+    suspend fun deleteAddress(
+        @Header("Authorization") token: String,
+        @Body body: Map<String, Int>
+    ): Response<Unit>
+    @POST("api/mobile/checkout")
+    suspend fun mobileCheckout(
+        @Header("Authorization") token: String,
+        @Body body: Map<String, String>
+    ): StripeCheckoutResponse
 }
 
 

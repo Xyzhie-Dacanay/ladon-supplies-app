@@ -1,30 +1,29 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders
 
 import android.annotation.SuppressLint
+import android.net.Uri
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import base64ToImageBitmap
-import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.CartViewModel
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.AddressViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import kotlinx.coroutines.launch
 
@@ -38,35 +37,37 @@ data class AddressEntry(
 @Composable
 fun AddtoCartScreen(
     navController: NavHostController,
-    cartViewModel: CartViewModel,
-    savedAddresses: SnapshotStateList<AddressEntry>,
-    selectedAddress: String,
-    onAddressSelected: (String) -> Unit
+    cartViewModel: CartViewModel = viewModel(),
+    addressViewModel: AddressViewModel = viewModel()
 ) {
     val cartItems by cartViewModel.cartItems.collectAsState()
+    val addresses by addressViewModel.addresses.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    var showAddressModal by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var showAddressModal by remember { mutableStateOf(false) }
+
+    var selectedAddressId by remember { mutableStateOf<String?>(null) }
+    var selectedAddressLabel by remember { mutableStateOf<String?>(null) }
+
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         cartViewModel.fetchCartItems()
+        addressViewModel.fetchAddresses()
+    }
+
+    val localQuantities = remember { mutableStateMapOf<Int, Int>() }
+    LaunchedEffect(cartItems) {
+        localQuantities.clear()
+        cartItems.forEach { localQuantities[it.product_id] = it.quantity }
     }
 
     val allChecked = remember(cartItems) {
         mutableStateListOf<Boolean>().apply {
             addAll(List(cartItems.size) { true })
         }
-    }
-
-    val localQuantities = remember { mutableStateMapOf<Int, Int>() }
-
-    // 🔁 Sync localQuantities whenever cartItems change
-    LaunchedEffect(cartItems) {
-        localQuantities.clear()
-        cartItems.forEach { localQuantities[it.product_id] = it.quantity }
     }
 
     val totalPrice = cartItems.mapIndexed { index, item ->
@@ -89,7 +90,7 @@ fun AddtoCartScreen(
                             Icon(Icons.Default.AddLocation, contentDescription = null, tint = Color.Gray, modifier = Modifier.size(14.dp))
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = selectedAddress.take(30) + if (selectedAddress.length > 30) "..." else "",
+                                text = selectedAddressLabel?.take(30) ?: "Select address",
                                 fontSize = 13.sp,
                                 color = Color.Gray
                             )
@@ -145,7 +146,7 @@ fun AddtoCartScreen(
                             Spacer(Modifier.width(8.dp))
 
                             Image(
-                                bitmap = base64ToImageBitmap(context, item.product_image ?: ""),
+                                bitmap = base64ToImageBitmap(LocalContext.current, item.product_image ?: ""),
                                 contentDescription = "Product Image",
                                 modifier = Modifier
                                     .size(50.dp)
@@ -166,7 +167,7 @@ fun AddtoCartScreen(
                                     val currentQty = localQuantities[item.product_id] ?: item.quantity
                                     if (currentQty > 1) {
                                         localQuantities[item.product_id] = currentQty - 1
-                                        cartViewModel.updateCartQuantity(item.product_id, -1) // ➖ Delta
+                                        cartViewModel.updateCartQuantity(item.product_id, -1)
                                     }
                                 }) {
                                     Text("-", fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -178,7 +179,7 @@ fun AddtoCartScreen(
                                     val currentQty = localQuantities[item.product_id] ?: item.quantity
                                     if (currentQty < item.stock) {
                                         localQuantities[item.product_id] = currentQty + 1
-                                        cartViewModel.updateCartQuantity(item.product_id, 1) // ➕ Delta
+                                        cartViewModel.updateCartQuantity(item.product_id, 1)
                                     } else {
                                         coroutineScope.launch {
                                             snackbarHostState.showSnackbar("Reached max stock limit.")
@@ -187,7 +188,6 @@ fun AddtoCartScreen(
                                 }) {
                                     Text("+", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                                 }
-
                             }
 
                             IconButton(onClick = {
@@ -217,9 +217,7 @@ fun AddtoCartScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(
                         checked = allChecked.all { it },
-                        onCheckedChange = { check ->
-                            for (i in allChecked.indices) allChecked[i] = check
-                        }
+                        onCheckedChange = { check -> allChecked.indices.forEach { allChecked[it] = check } }
                     )
                     Text("All", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
                 }
@@ -228,9 +226,23 @@ fun AddtoCartScreen(
                     Text("Total: ₱${"%.2f".format(totalPrice)}", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                     Spacer(modifier = Modifier.width(12.dp))
                     Button(
-                        onClick = { navController.navigate("checkout") },
+                        onClick = {
+                            if (selectedAddressId != null) {
+                                coroutineScope.launch {
+                                    val checkoutUrl = cartViewModel.getStripeCheckoutUrl(selectedAddressId!!)
+                                    if (checkoutUrl != null) {
+                                        navController.navigate("webview_checkout?url=${Uri.encode(checkoutUrl)}")
+                                    } else {
+                                        snackbarHostState.showSnackbar("Failed to start checkout.")
+                                    }
+                                }
+                            }
+                        },
+                        enabled = selectedAddressId != null,
                         shape = RoundedCornerShape(20.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF35AEFF)),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (selectedAddressId != null) Color(0xFF35AEFF) else Color.Gray
+                        ),
                         modifier = Modifier.height(40.dp)
                     ) {
                         Text("Check out", color = Color.White, fontWeight = FontWeight.Bold)
@@ -238,7 +250,6 @@ fun AddtoCartScreen(
                 }
             }
 
-            // 📦 Address modal...
             if (showAddressModal) {
                 ModalBottomSheet(
                     onDismissRequest = { showAddressModal = false },
@@ -248,24 +259,31 @@ fun AddtoCartScreen(
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text("Select address", fontWeight = FontWeight.Bold, fontSize = 18.sp)
                         Spacer(modifier = Modifier.height(12.dp))
-                        savedAddresses.forEach { entry ->
+
+                        addresses.forEach { entry ->
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clickable {
-                                        onAddressSelected(entry.address)
+                                        selectedAddressId = entry.id.toString()
+                                        selectedAddressLabel = entry.full_address
                                         showAddressModal = false
                                     }
                                     .padding(vertical = 10.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Column(Modifier.weight(1f)) {
-                                    Text("Xyzhie Dacanay", fontWeight = FontWeight.Bold)
-                                    Text("(+63)09********94", fontSize = 13.sp)
-                                    Text(entry.address, fontSize = 13.sp)
-                                    if (entry.isDefault) Text("Default", fontSize = 12.sp, color = Color.Gray)
+                                    Text(entry.full_address, fontSize = 13.sp)
                                 }
-                                RadioButton(selected = selectedAddress == entry.address, onClick = null)
+                                IconButton(onClick = {
+                                    addressViewModel.deleteAddress(entry.id)
+                                    coroutineScope.launch {
+                                        snackbarHostState.showSnackbar("Address deleted")
+                                    }
+                                }) {
+                                    Icon(Icons.Default.Delete, contentDescription = "Delete")
+                                }
+                                RadioButton(selected = selectedAddressId == entry.id.toString(), onClick = null)
                             }
                             Divider()
                         }
@@ -291,7 +309,3 @@ fun AddtoCartScreen(
         }
     }
 }
-
-
-
-

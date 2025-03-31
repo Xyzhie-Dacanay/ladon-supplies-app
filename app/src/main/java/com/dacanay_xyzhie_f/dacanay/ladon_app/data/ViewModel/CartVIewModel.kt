@@ -53,7 +53,6 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-
     fun addToCart(productId: Int, quantity: Int) {
         viewModelScope.launch {
             val token = tokenManager.getToken() ?: return@launch
@@ -94,6 +93,30 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
             } catch (e: Exception) {
                 Log.e("CartViewModel", "Exception during removeFromCart: ${e.message}")
             }
+        }
+    }
+
+    suspend fun getStripeCheckoutUrl(address: String): String? {
+        return try {
+            val token = tokenManager.getToken()
+            if (token == null) {
+                Log.e("CartViewModel", "Token is null")
+                return null
+            }
+
+            Log.d("CartViewModel", "Using token: Bearer $token")
+
+            val response = RetrofitInstance.api.mobileCheckout(
+                token = "Bearer $token",
+                body = mapOf("address_id" to address)
+            )
+
+            Log.d("CartViewModel", "Checkout response: $response")
+            Log.d("CartViewModel", "Checkout URL: ${response.checkout_url}")
+            response.checkout_url
+        } catch (e: Exception) {
+            Log.e("CartViewModel", "Failed to get Stripe Checkout URL: ${e.message}", e)
+            null
         }
     }
 }
