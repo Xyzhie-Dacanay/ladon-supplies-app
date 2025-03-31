@@ -8,6 +8,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.RegisterRequest
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.RegisterResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.ProductResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.FavoriteResponse
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.OrderResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.StripeCheckoutResponse
 
 import retrofit2.Response
@@ -86,6 +87,9 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body body: Map<String, String>
     ): StripeCheckoutResponse
+    @GET("api/mobile/orders")
+    suspend fun getMobileOrders(@Header("Authorization") token: String): List<OrderResponse>
+
 }
 
 
