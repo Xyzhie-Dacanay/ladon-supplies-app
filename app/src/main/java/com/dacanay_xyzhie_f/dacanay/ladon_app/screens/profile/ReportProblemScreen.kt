@@ -1,5 +1,11 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile
 
+import android.graphics.BitmapFactory
+import android.util.Base64
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,27 +20,77 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.TicketRequest
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.storage.TokenManager
+import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodels.TicketViewModel
+import kotlinx.coroutines.launch
+import java.io.InputStream
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ReportProblemScreen(navController: NavController) {
-    var ticketType by remember { mutableStateOf("Report a problem") }
-    val ticketOptions = listOf("Report a problem", "Feature request", "Bug report", "Other")
+fun ReportProblemScreen(
+    navController: NavController,
+    tokenManager: TokenManager,
+    ticketViewModel: TicketViewModel = viewModel()
+) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    val ticketOptions = listOf(
+        "Report a Problem" to "report_problem",
+        "Feature Request" to "feature_request",
+        "Comment" to "comment",
+        "Other" to "other"
+    )
+    var selectedDisplay by remember { mutableStateOf(ticketOptions[0].first) }
+    var selectedEnum by remember { mutableStateOf(ticketOptions[0].second) }
+
+    var subject by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+    var screenshot by remember { mutableStateOf<String?>(null) }
+    var previewBitmap by remember { mutableStateOf<android.graphics.Bitmap?>(null) }
+
+    val ticketState by ticketViewModel.ticketState.collectAsState()
+
+    val filePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            val inputStream: InputStream? = context.contentResolver.openInputStream(it)
+            val bytes = inputStream?.readBytes()
+            inputStream?.close()
+            if (bytes != null) {
+                val base64 = Base64.encodeToString(bytes, Base64.NO_WRAP)
+                screenshot = "data:image/png;base64,$base64"
+                previewBitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            }
+        }
+    }
+
+    LaunchedEffect(ticketState) {
+        ticketState?.let {
+            Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            if (it.contains("success", ignoreCase = true)) {
+                navController.popBackStack()
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFEAF4FA)) // Light blue background
+            .background(Color(0xFFEAF4FA))
             .padding(32.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        // Top Bar with Back Button and Title
+        // Top bar
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
@@ -43,18 +99,16 @@ fun ReportProblemScreen(navController: NavController) {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 50.dp, start = 16.dp, bottom = 4.dp) // Adjust padding
+                    .padding(top = 50.dp, start = 16.dp, bottom = 4.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
                     contentDescription = "Back",
                     modifier = Modifier
                         .size(24.dp)
-                        .clickable { navController.popBackStack() } // Ensure navController is not null
+                        .clickable { navController.popBackStack() }
                 )
-
-                Spacer(modifier = Modifier.width(32.dp)) // Space between icon and text
-
+                Spacer(modifier = Modifier.width(32.dp))
                 Text(
                     text = "Report a Problem",
                     fontSize = 24.sp,
@@ -62,75 +116,53 @@ fun ReportProblemScreen(navController: NavController) {
                     modifier = Modifier.align(Alignment.CenterVertically)
                 )
             }
-
-            Spacer(modifier = Modifier.weight(1f))
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // User Information Fields
-        Text(text = "User Information", fontWeight = FontWeight.Bold)
+        Text(text = "Subject", fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = "", onValueChange = {},
-            placeholder = { Text("First Name") },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = "", onValueChange = {},
-            placeholder = { Text("Last Name") },
+            value = subject,
+            onValueChange = { subject = it },
+            placeholder = { Text("e.g. App crashes on login") },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Contact Information
-        Text(text = "Contact Information", fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = "", onValueChange = {},
-            placeholder = { Text("ex: useremail@gmail.com") },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp)
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = "", onValueChange = {},
-            placeholder = { Text("Phone Number") },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Ticket Type Dropdown
         Text(text = "Ticket Type", fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp) .width(6.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
         var expanded by remember { mutableStateOf(false) }
+
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
         ) {
             OutlinedTextField(
-                value = ticketType,
+                value = selectedDisplay,
                 onValueChange = {},
                 readOnly = true,
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(),
                 shape = RoundedCornerShape(10.dp),
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) }
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                colors = ExposedDropdownMenuDefaults.textFieldColors()
             )
+
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                ticketOptions.forEach { option ->
+                ticketOptions.forEach { (label, value) ->
                     DropdownMenuItem(
-                        text = { Text(option) },
+                        text = { Text(label) },
                         onClick = {
-                            ticketType = option
+                            selectedDisplay = label
+                            selectedEnum = value
                             expanded = false
                         }
                     )
@@ -140,45 +172,40 @@ fun ReportProblemScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // File Upload Section
-        Column(
+        Text(text = "Attach a Screenshot (Optional)", fontWeight = FontWeight.Bold)
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White, shape = RoundedCornerShape(10.dp))
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .height(120.dp)
+                .clickable {
+                    filePickerLauncher.launch("image/*")
+                },
+            contentAlignment = Alignment.Center
         ) {
-            Text(text = "Attach a Screenshot (Optional)", color = Color.Black)
-            Spacer(modifier = Modifier.height(8.dp))
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .clickable { /* TODO: File picker logic */ },
-                contentAlignment = Alignment.Center
-            ) {
+            if (previewBitmap != null) {
+                Image(
+                    bitmap = previewBitmap!!.asImageBitmap(),
+                    contentDescription = "Selected image",
+                    modifier = Modifier.fillMaxSize()
+                )
+            } else {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(
-                        imageVector = Icons.Default.UploadFile,
-                        contentDescription = "Import Icon",
-                        modifier = Modifier.size(40.dp)
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(text = "IMPORT A FILE", color = Color.Black)
+                    Icon(Icons.Default.UploadFile, contentDescription = "Upload", modifier = Modifier.size(40.dp))
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("IMPORT A FILE", color = Color.Black)
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Additional Details
         Text(text = "Additional Details", fontWeight = FontWeight.Bold)
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
-            placeholder = { Text("Please type here...") },
+            value = description,
+            onValueChange = { description = it },
+            placeholder = { Text("Please describe your issue...") },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),
@@ -187,10 +214,24 @@ fun ReportProblemScreen(navController: NavController) {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Submit Button
         Button(
-            onClick = { /* TODO: Handle submission */ },
-            colors = ButtonDefaults.buttonColors(Color(0xFF3498DB)), // Blue button
+            onClick = {
+                coroutineScope.launch {
+                    val token = tokenManager.getToken()
+                    if (token != null) {
+                        val request = TicketRequest(
+                            subject = subject,
+                            description = description,
+                            ticket_type = selectedEnum,
+                            screenshot = screenshot
+                        )
+                        ticketViewModel.submitTicket(token, request)
+                    } else {
+                        Toast.makeText(context, "User not authenticated", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            },
+            colors = ButtonDefaults.buttonColors(Color(0xFF3498DB)),
             shape = RoundedCornerShape(50.dp),
             modifier = Modifier
                 .fillMaxWidth()
@@ -199,10 +240,4 @@ fun ReportProblemScreen(navController: NavController) {
             Text("SUBMIT", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewReportProblemScreen() {
-    ReportProblemScreen(navController = rememberNavController())
 }

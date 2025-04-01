@@ -28,6 +28,8 @@ fun AuthNavigation(
     startDestination: String,
     authViewModel: AuthViewModel
 ) {
+    val context = navController.context
+    val tokenManager = remember { TokenManager(context) } // ✅ Moved to top for reuse
 
     val favoritesViewModel: FavoritesViewModel = viewModel()
     val productViewModel: ProductViewModel = viewModel()
@@ -35,53 +37,69 @@ fun AuthNavigation(
     val savedAddresses = remember { mutableStateListOf<AddressEntry>() }
 
     NavHost(navController = navController, startDestination = startDestination) {
-
         composable(Routes.LogSign) {
             LogSignScreen(navController = navController)
         }
+
         composable(Routes.LogIn) {
             LoginScreen(navController = navController, authViewModel = authViewModel)
         }
+
         composable(Routes.SignUp) {
             SignUpScreen(navController = navController, authViewModel = authViewModel)
         }
+
         composable(Routes.HomePage) {
             HomeScreen(navController = navController)
         }
+
         composable(Routes.Favorites) {
             FavoriteScreen(navController = navController, viewModel = favoritesViewModel)
         }
+
         composable(Routes.Orders) {
             OrderScreen(navController = navController)
         }
+
         composable(Routes.Profile) {
             ProfileScreen(
                 navController = navController,
-                tokenManager = TokenManager(navController.context),
+                tokenManager = tokenManager,
                 authViewModel = authViewModel
             )
         }
+
+        composable(Routes.ReportProblemScreen) {
+            ReportProblemScreen(
+                navController = navController,
+                tokenManager = tokenManager // ✅ Passed correctly here
+            )
+        }
+
         composable(Routes.HelpCenter) {
             HelpScreen(navController = navController)
         }
+
         composable(Routes.About) {
             AboutScreen(navController = navController)
         }
+
         composable(Routes.PrivacyPolicy) {
             PrivacyPolicyScreen(navController = navController)
         }
+
         composable(Routes.Report) {
             ReportScreen(navController = navController)
         }
-        composable(Routes.ReportProblemScreen){
-            ReportProblemScreen(navController = navController)
-        }
+
         composable(Routes.Settings) {
             SettingsScreen(navController = navController)
         }
+
         composable(Routes.ProductsScreen) {
             ProductsScreen(navController = navController)
         }
+
         composable("products/{category}") { backStackEntry ->
             val category = backStackEntry.arguments?.getString("category") ?: ""
             ProductsScreen(navController = navController, category = category)
@@ -128,9 +146,11 @@ fun AuthNavigation(
         }
 
         composable(Routes.EditProfileScreen) {
-            EditProfile(navController = navController,
+            EditProfile(
+                navController = navController,
                 authViewModel = authViewModel,
-                tokenManager = TokenManager(navController.context))
+                tokenManager = tokenManager // ✅ Reused here too
+            )
         }
 
         composable(Routes.SeeAllScreen) {

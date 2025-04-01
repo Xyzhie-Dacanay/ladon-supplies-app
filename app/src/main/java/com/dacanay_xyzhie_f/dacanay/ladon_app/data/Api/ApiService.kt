@@ -11,6 +11,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.ProductResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.FavoriteResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.OrderResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.StripeCheckoutResponse
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.TicketRequest
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.UpdateProfileRequest
 
 import retrofit2.Response
@@ -40,7 +41,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body request: UpdateProfileRequest
     ): Response<Map<String, String>>
-
+    @POST("api/mobile/tickets/submit")
+    suspend fun submitTicket(
+        @Header("Authorization") token: String,
+        @Body request: TicketRequest
+    ): Response<Map<String, String>>
 
 
     @GET("api/mobile/favorites")
