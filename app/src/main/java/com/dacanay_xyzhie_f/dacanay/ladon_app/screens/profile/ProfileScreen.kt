@@ -1,5 +1,8 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.profile
 
+import android.content.Context
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -14,22 +17,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import base64ToImageBitmap
 import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.NavBar
 import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ProfileOption
-import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
-import android.graphics.BitmapFactory
-import android.util.Base64
-import androidx.compose.ui.graphics.asImageBitmap
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.storage.TokenManager
+import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
-
 
 @Composable
 fun ProfileScreen(
@@ -37,12 +39,14 @@ fun ProfileScreen(
     tokenManager: TokenManager,
     authViewModel: AuthViewModel = viewModel()
 ) {
-    val imageBitmap = remember(authViewModel.profileImageBase64) {
-        authViewModel.profileImageBase64?.let {
-            val imageBytes = Base64.decode(it, Base64.DEFAULT)
-            BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)?.asImageBitmap()
+    val context = LocalContext.current
+    val profileImage by rememberUpdatedState(newValue = authViewModel.profileImageBase64)
+    val imageBitmap = remember(profileImage) {
+        profileImage?.let {
+            base64ToImageBitmap(context, it)
         }
     }
+
 
     Scaffold(
         bottomBar = { NavBar(navController) }
@@ -112,7 +116,14 @@ fun ProfileScreen(
                             contentAlignment = Alignment.Center
                         ) {
                             if (imageBitmap != null) {
-                                Image(bitmap = imageBitmap, contentDescription = "Profile Image")
+                                Image(
+                                    bitmap = imageBitmap,
+                                    contentDescription = "Profile Image",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
                             } else {
                                 Icon(
                                     Icons.Default.Person,
@@ -120,8 +131,8 @@ fun ProfileScreen(
                                     modifier = Modifier.size(80.dp)
                                 )
                             }
-                        }
 
+                        }
 
                         IconButton(
                             onClick = { navController.navigate(Routes.EditProfileScreen) },
@@ -179,7 +190,6 @@ fun ProfileScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Login/Logout
                 if (authViewModel.isLoggedIn) {
                     ProfileOption(Icons.Outlined.ExitToApp, "Log out", Color.Red) {
                         authViewModel.logout(tokenManager) {

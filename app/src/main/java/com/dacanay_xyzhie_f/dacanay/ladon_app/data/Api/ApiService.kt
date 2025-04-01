@@ -1,6 +1,7 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.data.Api
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.AddressRequest
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.AddressResponse
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.ApiResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.CartItemResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.LoginRequest
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.LoginResponse
@@ -10,6 +11,7 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.ProductResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.FavoriteResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.OrderResponse
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.StripeCheckoutResponse
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.UpdateProfileRequest
 
 import retrofit2.Response
 import retrofit2.http.Body
@@ -17,6 +19,7 @@ import retrofit2.http.POST
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.Header
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 
@@ -25,10 +28,18 @@ interface ApiService {
     suspend fun register(@Body request: RegisterRequest): Response<RegisterResponse>
     @POST("/api/mobile/login")
     suspend fun login(@Body request: LoginRequest): Response<LoginResponse>
+
+
     @GET("/api/products")
     suspend fun getAllProducts(): List<ProductResponse>
     @GET("/api/products/category/{category}")
     suspend fun getProductsByCategory(@Path("category") category: String): List<ProductResponse>
+
+    @POST("api/mobile/update-profile")
+    suspend fun updateProfile(
+        @Header("Authorization") token: String,
+        @Body request: UpdateProfileRequest
+    ): Response<Map<String, String>>
 
 
 

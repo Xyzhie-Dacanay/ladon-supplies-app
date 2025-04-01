@@ -1,5 +1,6 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.navigation
 
+import EditProfile
 import android.net.Uri
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
@@ -27,7 +28,7 @@ fun AuthNavigation(
     startDestination: String,
     authViewModel: AuthViewModel
 ) {
-    val cartList = remember { mutableStateListOf<CartItem>() }
+
     val favoritesViewModel: FavoritesViewModel = viewModel()
     val productViewModel: ProductViewModel = viewModel()
     var selectedAddress by remember { mutableStateOf("Default Address") }
@@ -127,7 +128,9 @@ fun AuthNavigation(
         }
 
         composable(Routes.EditProfileScreen) {
-            EditProfile(navController = navController)
+            EditProfile(navController = navController,
+                authViewModel = authViewModel,
+                tokenManager = TokenManager(navController.context))
         }
 
         composable(Routes.SeeAllScreen) {

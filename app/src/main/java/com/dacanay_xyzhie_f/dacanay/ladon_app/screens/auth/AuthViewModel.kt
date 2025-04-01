@@ -11,6 +11,8 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.RegisterRequest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import android.util.Log
+import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.UpdateProfileRequest
+import com.google.gson.Gson
 
 class AuthViewModel : ViewModel() {
 
@@ -152,6 +154,31 @@ class AuthViewModel : ViewModel() {
                 loggedInUserName = name?.takeIf { it.isNotBlank() } ?: "Guest"
                 loggedInUserId = id ?: ""
                 profileImageBase64 = image
+            }
+        }
+    }
+    fun updateUserProfile(
+        tokenManager: TokenManager,
+        request: UpdateProfileRequest,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        viewModelScope.launch {
+            try {
+                val token = tokenManager.getToken()
+                if (token == null) {
+                    onError("Token not found.")
+                    return@launch
+                }
+                Log.d("PROFILE_UPDATE", "Sending: ${Gson().toJson(request)}")
+                val response = RetrofitInstance.api.updateProfile("Bearer $token", request)
+                if (response.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onError("Error: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                onError("Exception: ${e.localizedMessage}")
             }
         }
     }
