@@ -17,6 +17,8 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.data.storage.TokenManager
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.presentation.auth.AuthViewModel
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     navController: NavHostController,
@@ -26,97 +28,102 @@ fun LoginScreen(
     val tokenManager = remember { TokenManager(context) }
     var rememberMe by remember { mutableStateOf(false) }
 
-    Surface(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp)
-    ) {
-        Column(
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(onClick = { navController.navigate(Routes.LogSign) }) {
+                        Icon(
+                            painter = painterResource(R.drawable.baseline_arrow_back_24),
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+            )
+        }
+    ) { paddingValues ->
+        Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(12.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.Start
+                .padding(paddingValues)
+                .padding(24.dp)
         ) {
-            // Back Button
-            IconButton(
-                onClick = { navController.navigate(Routes.LogSign) },
-                modifier = Modifier.padding(top = 30.dp)
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.baseline_arrow_back_24),
-                    contentDescription = "Arrow Back"
-                )
-            }
-
-            Spacer(modifier = Modifier.height(36.dp))
-
-            // Header
             Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
             ) {
-                HeadingText(value = stringResource(id = R.string.welcome))
-                Spacer(modifier = Modifier.height(8.dp))
-                DescriptionText(value = stringResource(id = R.string.description_text))
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Header
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    HeadingText(value = stringResource(id = R.string.welcome))
+                    Spacer(modifier = Modifier.height(8.dp))
+                    DescriptionText(value = stringResource(id = R.string.description_text))
+                }
+
+                Spacer(modifier = Modifier.height(36.dp))
+
+                // Email
+                LabelText(value = stringResource(id = R.string.email))
+                Spacer(modifier = Modifier.height(5.dp))
+                InputFields(
+                    labelValue = stringResource(id = R.string.emailInt),
+                    painterResource = painterResource(id = R.drawable.envelope),
+                    value = authViewModel.email,
+                    onValueChange = { authViewModel.email = it },
+                    errorMessage = authViewModel.signInEmailError
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Password
+                LabelText(value = stringResource(id = R.string.password))
+                Spacer(modifier = Modifier.height(5.dp))
+                PassFields(
+                    labelValue = stringResource(id = R.string.passwordInt),
+                    painterResource = painterResource(id = R.drawable.lock_line_icon),
+                    value = authViewModel.password,
+                    onValueChange = { authViewModel.password = it },
+                    errorMessage = authViewModel.signInPasswordError
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Remember Me Checkbox
+                RememberComp(
+                    value = stringResource(id = R.string.rememberme),
+                    checked = rememberMe,
+                    onCheckedChange = { rememberMe = it }
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Login Button
+                LoginButtonComponent(
+                    value = stringResource(id = R.string.login),
+                    navController = navController,
+                    authViewModel = authViewModel,
+                    rememberMe = rememberMe,
+                    tokenManager = tokenManager
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    ForgotComponent()
+                }
             }
-
-            Spacer(modifier = Modifier.height(36.dp))
-
-            // Email
-            LabelText(value = stringResource(id = R.string.email))
-            Spacer(modifier = Modifier.height(5.dp))
-            InputFields(
-                labelValue = stringResource(id = R.string.emailInt),
-                painterResource = painterResource(id = R.drawable.envelope),
-                value = authViewModel.email,
-                onValueChange = { authViewModel.email = it },
-                errorMessage = authViewModel.signInEmailError
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Password
-            LabelText(value = stringResource(id = R.string.password))
-            Spacer(modifier = Modifier.height(5.dp))
-            PassFields(
-                labelValue = stringResource(id = R.string.passwordInt),
-                painterResource = painterResource(id = R.drawable.lock_line_icon),
-                value = authViewModel.password,
-                onValueChange = { authViewModel.password = it },
-                errorMessage = authViewModel.signInPasswordError
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Remember Me Checkbox
-            RememberComp(
-                value = stringResource(id = R.string.rememberme),
-                checked = rememberMe,
-                onCheckedChange = { rememberMe = it }
-            )
-
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // Login Button
-            LoginButtonComponent(
-                value = stringResource(id = R.string.login),
-                navController = navController,
-                authViewModel = authViewModel,
-                rememberMe = rememberMe,
-                tokenManager = tokenManager
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                ForgotComponent()
-            }
-
-
         }
     }
 }
