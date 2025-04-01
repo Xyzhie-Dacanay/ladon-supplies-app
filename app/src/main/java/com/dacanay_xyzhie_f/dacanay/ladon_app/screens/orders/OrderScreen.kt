@@ -2,6 +2,7 @@ package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.orders
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -76,8 +77,9 @@ fun OrderScreen(navController: NavHostController) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 10.dp, vertical = 14.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 8.dp, vertical = 14.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(86.dp)
             ) {
                 Text("Order ID", color = PrimaryColor, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 Text("Status", color = PrimaryColor, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
@@ -120,9 +122,9 @@ fun OrderRow(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
+            .padding(horizontal = 8.dp, vertical = 12.dp)
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically,  horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             Text(orderId, modifier = Modifier.weight(1f))
             Text(status, modifier = Modifier.weight(1f))
             Row(

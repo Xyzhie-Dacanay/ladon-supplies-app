@@ -52,6 +52,7 @@ fun ProductsScreen(navController: NavHostController, category: String) {
                 title = {
                     Text(
                         text = category,
+                        fontSize = 20.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth(1f)
                     )

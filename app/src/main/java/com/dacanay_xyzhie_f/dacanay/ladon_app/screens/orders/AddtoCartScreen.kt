@@ -82,7 +82,7 @@ fun AddtoCartScreen(
             TopAppBar(
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("Shopping cart (${cartItems.size})", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text("Shopping cart (${cartItems.size})", fontWeight = FontWeight.Bold, fontSize = 20.sp)
                         Row(
                             modifier = Modifier.clickable { showAddressModal = true },
                             verticalAlignment = Alignment.CenterVertically
@@ -202,12 +202,25 @@ fun AddtoCartScreen(
                 }
             }
 
+
+
             // Fixed Bottom Checkout Section
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
+
+                Text(
+                    text = "Note: Please select your address before proceeding to checkout",
+                    fontSize = 14.sp,
+                    textAlign = TextAlign.Justify
+                )
+
+                Spacer(Modifier.height(8.dp))
+
+
+
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
