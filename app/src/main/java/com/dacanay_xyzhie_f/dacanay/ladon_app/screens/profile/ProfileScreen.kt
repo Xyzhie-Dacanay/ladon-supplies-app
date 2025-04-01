@@ -84,15 +84,7 @@ fun ProfileScreen(
                             tint = Color.Black
                         )
                     }
-                    Spacer(modifier = Modifier.width(5.dp))
-                    IconButton(onClick = { /* TODO: Navigate to Notifications */ }) {
-                        Icon(
-                            Icons.Outlined.Notifications,
-                            contentDescription = "Notifications",
-                            modifier = Modifier.size(32.dp),
-                            tint = Color.Black
-                        )
-                    }
+
                 }
             }
 
@@ -190,19 +182,45 @@ fun ProfileScreen(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+                var showLogoutDialog by remember { mutableStateOf(false) }
+
                 if (authViewModel.isLoggedIn) {
                     ProfileOption(Icons.Outlined.ExitToApp, "Log out", Color.Red) {
-                        authViewModel.logout(tokenManager) {
-                            navController.navigate(Routes.LogIn) {
-                                popUpTo(0)
+                        showLogoutDialog = true
+                    }
+
+                    if (showLogoutDialog) {
+                        AlertDialog(
+                            onDismissRequest = { showLogoutDialog = false },
+                            title = { Text("Confirm Logout") },
+                            text = { Text("Are you sure you want to log out?") },
+                            confirmButton = {
+                                TextButton(
+                                    onClick = {
+                                        showLogoutDialog = false
+                                        authViewModel.logout(tokenManager) {
+                                            navController.navigate(Routes.LogIn) {
+                                                popUpTo(0)
+                                            }
+                                        }
+                                    }
+                                ) {
+                                    Text("Yes", color = Color.Red)
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = { showLogoutDialog = false }) {
+                                    Text("Cancel")
+                                }
                             }
-                        }
+                        )
                     }
                 } else {
                     ProfileOption(Icons.Outlined.ExitToApp, "Log in", Color.Red) {
                         navController.navigate(Routes.LogIn)
                     }
                 }
+
             }
         }
     }

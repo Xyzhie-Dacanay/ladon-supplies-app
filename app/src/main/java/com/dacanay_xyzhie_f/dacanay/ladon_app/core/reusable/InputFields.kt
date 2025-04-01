@@ -563,10 +563,9 @@ fun LoginButtonComponent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailEdit(
-    labelValue: String,
-    painterResource: Painter,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    error: Boolean
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.height(8.dp))
@@ -577,23 +576,15 @@ fun EmailEdit(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(55.dp),
-            placeholder = { Text(text = labelValue, color = Color.Gray) },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = Color.Gray,
+                unfocusedBorderColor = Color.LightGray,
                 cursorColor = colorResource(id = R.color.black),
                 containerColor = colorResource(id = R.color.tfBackground),
             ),
             shape = RoundedCornerShape(20.dp),
             keyboardOptions = KeyboardOptions.Default,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource,
-                    contentDescription = null,
-                    tint = colorResource(id = R.color.primaryColor),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+
         )
     }
 }
@@ -605,10 +596,9 @@ fun EmailEdit(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserNameEdit(
-    labelValue: String,
-    painterResource: Painter,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    error: Boolean
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.height(8.dp))
@@ -619,23 +609,15 @@ fun UserNameEdit(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(55.dp),
-            placeholder = { Text(text = labelValue, color = Color.Gray) },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = Color.Gray,
+                unfocusedBorderColor = Color.LightGray,
                 cursorColor = colorResource(id = R.color.black),
                 containerColor = colorResource(id = R.color.tfBackground),
             ),
             shape = RoundedCornerShape(20.dp),
             keyboardOptions = KeyboardOptions.Default,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource,
-                    contentDescription = null,
-                    tint = colorResource(id = R.color.primaryColor),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+
         )
     }
 }
@@ -645,10 +627,9 @@ fun UserNameEdit(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FullNameEdit(
-    labelValue: String,
-    painterResource: Painter,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    error: Boolean
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.height(8.dp))
@@ -659,23 +640,16 @@ fun FullNameEdit(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(55.dp),
-            placeholder = { Text(text = labelValue, color = Color.Gray) },
+
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = Color.Gray,
+                unfocusedBorderColor = Color.LightGray,
                 cursorColor = colorResource(id = R.color.black),
                 containerColor = colorResource(id = R.color.tfBackground),
             ),
             shape = RoundedCornerShape(20.dp),
             keyboardOptions = KeyboardOptions.Default,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource,
-                    contentDescription = null,
-                    tint = colorResource(id = R.color.primaryColor),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+
         )
     }
 }
@@ -685,10 +659,9 @@ fun FullNameEdit(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactEdit(
-    labelValue: String,
-    painterResource: Painter,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    error: Boolean
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
         Spacer(modifier = Modifier.height(8.dp))
@@ -699,23 +672,16 @@ fun ContactEdit(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(55.dp),
-            placeholder = { Text(text = labelValue, color = Color.Gray) },
+
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = Color.Gray,
+                unfocusedBorderColor = Color.LightGray,
                 cursorColor = colorResource(id = R.color.black),
                 containerColor = colorResource(id = R.color.tfBackground),
             ),
             shape = RoundedCornerShape(20.dp),
             keyboardOptions = KeyboardOptions.Default,
-            leadingIcon = {
-                Icon(
-                    painter = painterResource,
-                    contentDescription = null,
-                    tint = colorResource(id = R.color.primaryColor),
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+
         )
     }
 }

@@ -73,15 +73,7 @@ fun HomeScreen(navController: NavHostController, viewModel: ProductViewModel = v
                                 tint = Color.Black
                             )
                         }
-                        Spacer(modifier = Modifier.width(4.dp))
-                        IconButton(onClick = { /* Notifications */ }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Notifications,
-                                contentDescription = "Notifications",
-                                tint = Color.Black,
-                                modifier = Modifier.size(32.dp)
-                            )
-                        }
+
                     }
                 }
             }

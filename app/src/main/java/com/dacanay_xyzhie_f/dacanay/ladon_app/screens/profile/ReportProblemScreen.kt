@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -22,11 +23,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.dacanay_xyzhie_f.dacanay.ladon_app.R
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.TicketRequest
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.storage.TokenManager
 import com.dacanay_xyzhie_f.dacanay.ladon_app.viewmodels.TicketViewModel
@@ -83,161 +87,182 @@ fun ReportProblemScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFEAF4FA))
-            .padding(32.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        // Top bar
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 50.dp, start = 16.dp, bottom = 4.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clickable { navController.popBackStack() }
-                )
-                Spacer(modifier = Modifier.width(32.dp))
-                Text(
-                    text = "Report a Problem",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.CenterVertically)
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        Text(text = "Subject", fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = subject,
-            onValueChange = { subject = it },
-            placeholder = { Text("e.g. App crashes on login") },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(10.dp)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(text = "Ticket Type", fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp))
-
-        var expanded by remember { mutableStateOf(false) }
-
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = { expanded = !expanded }
-        ) {
-            OutlinedTextField(
-                value = selectedDisplay,
-                onValueChange = {},
-                readOnly = true,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .menuAnchor(),
-                shape = RoundedCornerShape(10.dp),
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-                colors = ExposedDropdownMenuDefaults.textFieldColors()
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("Report a Problem", fontWeight = FontWeight.Bold, fontSize = 20.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxWidth(0.8f)) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFEAF4FA))
             )
-
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                ticketOptions.forEach { (label, value) ->
-                    DropdownMenuItem(
-                        text = { Text(label) },
-                        onClick = {
-                            selectedDisplay = label
-                            selectedEnum = value
-                            expanded = false
-                        }
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(text = "Attach a Screenshot (Optional)", fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp))
+        },
+        containerColor = Color(0xFFEAF4FA)
+    ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(120.dp)
-                .clickable {
-                    filePickerLauncher.launch("image/*")
-                },
-            contentAlignment = Alignment.Center
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp, vertical = 16.dp)
+                .background(Color.White, shape = RoundedCornerShape(12.dp))
         ) {
-            if (previewBitmap != null) {
-                Image(
-                    bitmap = previewBitmap!!.asImageBitmap(),
-                    contentDescription = "Selected image",
-                    modifier = Modifier.fillMaxSize()
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(text = "Subject", fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = subject,
+                    onValueChange = { subject = it },
+                    placeholder = { Text("e.g. App crashes on login") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(55.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Gray,
+                        unfocusedBorderColor = Color.LightGray,
+                        cursorColor = colorResource(id = com.dacanay_xyzhie_f.dacanay.ladon_app.R.color.black),
+                        containerColor = colorResource(id = R.color.tfBackground),
+                    ),
+                    shape = RoundedCornerShape(20.dp),
+                    keyboardOptions = KeyboardOptions.Default,
                 )
-            } else {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Icon(Icons.Default.UploadFile, contentDescription = "Upload", modifier = Modifier.size(40.dp))
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text("IMPORT A FILE", color = Color.Black)
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(text = "Ticket Type", fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+
+                var expanded by remember { mutableStateOf(false) }
+
+                ExposedDropdownMenuBox(
+                    expanded = expanded,
+                    onExpandedChange = { expanded = !expanded }
+                ) {
+                    OutlinedTextField(
+                        value = selectedDisplay,
+                        onValueChange = {},
+                        readOnly = true,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(55.dp)
+                            .menuAnchor(),
+                        colors = TextFieldDefaults.outlinedTextFieldColors(
+                            focusedBorderColor = Color.Gray,
+                            unfocusedBorderColor = Color.LightGray,
+                            cursorColor = colorResource(id = R.color.black),
+                            containerColor = colorResource(id = R.color.tfBackground),
+                        ),
+                        shape = RoundedCornerShape(20.dp),
+                        keyboardOptions = KeyboardOptions.Default,
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) }
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        ticketOptions.forEach { (label, value) ->
+                            DropdownMenuItem(
+                                text = { Text(label) },
+                                onClick = {
+                                    selectedDisplay = label
+                                    selectedEnum = value
+                                    expanded = false
+                                }
+                            )
+                        }
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(text = "Attach a Screenshot (Optional)", fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp)
+                        .clickable {
+                            filePickerLauncher.launch("image/*")
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (previewBitmap != null) {
+                        Image(
+                            bitmap = previewBitmap!!.asImageBitmap(),
+                            contentDescription = "Selected image",
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(Icons.Default.UploadFile, contentDescription = "Upload", modifier = Modifier.size(40.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text("IMPORT A FILE", color = Color.Black)
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(text = "Additional Details", fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = description,
+                    onValueChange = { description = it },
+                    placeholder = { Text("Please describe your issue...") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Gray,
+                        unfocusedBorderColor = Color.LightGray,
+                        cursorColor = colorResource(id = R.color.black),
+                        containerColor = colorResource(id = R.color.tfBackground),
+                    ),
+                    shape = RoundedCornerShape(20.dp),
+                )
+
+                Spacer(modifier = Modifier.height(48.dp))
+
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+                            val token = tokenManager.getToken()
+                            if (token != null) {
+                                val request = TicketRequest(
+                                    subject = subject,
+                                    description = description,
+                                    ticket_type = selectedEnum,
+                                    screenshot = screenshot
+                                )
+                                ticketViewModel.submitTicket(token, request)
+                            } else {
+                                Toast.makeText(context, "User not authenticated", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(Color(0xFF3498DB)),
+                    shape = RoundedCornerShape(50.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                ) {
+                    Text("SUBMIT", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(text = "Additional Details", fontWeight = FontWeight.Bold)
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = description,
-            onValueChange = { description = it },
-            placeholder = { Text("Please describe your issue...") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(100.dp),
-            shape = RoundedCornerShape(10.dp)
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = {
-                coroutineScope.launch {
-                    val token = tokenManager.getToken()
-                    if (token != null) {
-                        val request = TicketRequest(
-                            subject = subject,
-                            description = description,
-                            ticket_type = selectedEnum,
-                            screenshot = screenshot
-                        )
-                        ticketViewModel.submitTicket(token, request)
-                    } else {
-                        Toast.makeText(context, "User not authenticated", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            },
-            colors = ButtonDefaults.buttonColors(Color(0xFF3498DB)),
-            shape = RoundedCornerShape(50.dp),
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-        ) {
-            Text("SUBMIT", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-        }
     }
 }

@@ -73,15 +73,7 @@ fun FavoriteScreen(
                                 tint = Color.Black
                             )
                         }
-                        Spacer(modifier = Modifier.width(5.dp))
-                        IconButton(onClick = { /* Navigate to Notifications */ }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Notifications,
-                                contentDescription = "Notifications",
-                                modifier = Modifier.size(32.dp),
-                                tint = Color.Black
-                            )
-                        }
+
                     }
                 }
             }

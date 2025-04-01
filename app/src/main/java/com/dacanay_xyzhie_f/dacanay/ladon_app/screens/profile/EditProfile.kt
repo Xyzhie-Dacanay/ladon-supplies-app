@@ -130,7 +130,7 @@ fun EditProfile(
                     Text(
                         text = "Edit Profile",
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(0.8f)
                     )
                 },
                 navigationIcon = {
@@ -147,137 +147,156 @@ fun EditProfile(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 16.dp, vertical = 24.dp)
+                .padding(horizontal = 8.dp, vertical = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Profile Image
-            Box(contentAlignment = Alignment.Center) {
-                Box(
-                    modifier = Modifier
-                        .size(130.dp)
-                        .clip(CircleShape)
-                        .background(Color.LightGray),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (imageBitmap != null) {
-                        Image(bitmap = imageBitmap!!, contentDescription = "Profile", modifier = Modifier.fillMaxSize())
-                    } else {
-                        Icon(Icons.Default.Person, contentDescription = "Profile", modifier = Modifier.size(80.dp))
-                    }
-                }
-
-                IconButton(
-                    onClick = { launcher.launch("image/*") },
-                    modifier = Modifier
-                        .size(32.dp)
-                        .align(Alignment.BottomEnd)
-                        .offset(x = 1.dp, y = 1.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.CameraAlt,
-                        contentDescription = "Edit Profile",
-                        tint = Color.White,
-                        modifier = Modifier
-                            .background(Color(0xFF35AEFF), shape = CircleShape)
-                            .padding(4.dp)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            LabelText("Username")
-            CustomTextField(username, onValueChange = {
-                username = it
-                usernameError = false
-            }, error = usernameError)
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            LabelText("Full Name")
-            CustomTextField(fullname, onValueChange = {
-                fullname = it
-                fullnameError = false
-            }, error = fullnameError)
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            LabelText("Email")
-            CustomTextField(email, onValueChange = {
-                email = it
-                emailError = false
-            }, error = emailError)
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            LabelText("Contact")
-            CustomTextField(contact, onValueChange = {
-                if (it.length <= 11 && it.all { char -> char.isDigit() }) {
-                    contact = it
-                    contactError = false
-                }
-            }, error = contactError)
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            Button(
-                onClick = {
-                    //  Validation
-                    usernameError = username.isBlank()
-                    fullnameError = fullname.isBlank()
-                    emailError = email.isBlank() || !email.matches(Regex("^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$"))
-                    contactError = contact.isBlank() || contact.length != 11
-
-                    if (usernameError || fullnameError || emailError || contactError) {
-                        snackbarMessage = "Please fill all fields correctly"
-                        return@Button
-                    }
-
-                    isLoading = true
-                    val updateRequest = UpdateProfileRequest(
-                        name = username,
-                        fullname = fullname,
-                        email = email,
-                        contact = contact,
-                        profile_image = if (imageBase64 != authViewModel.profileImageBase64) imageBase64 else null
-                    )
-
-                    authViewModel.updateUserProfile(
-                        tokenManager = tokenManager,
-                        request = updateRequest,
-                        onSuccess = {
-                            isLoading = false
-                            snackbarMessage = "Profile updated"
-                            authViewModel.profileImageBase64 = imageBase64
-
-                            coroutineScope.launch {
-                                tokenManager.saveUserData(
-                                    token = tokenManager.getToken() ?: "",
-                                    userId = authViewModel.loggedInUserId,
-                                    userName = authViewModel.loggedInUserName,
-                                    profileImageBase64 = imageBase64
-                                )
-                            }
-                            navController.popBackStack()
-                        },
-                        onError = {
-                            isLoading = false
-                            snackbarMessage = "Failed: $it"
-                        }
-                    )
-                },
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF35AEFF))
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(Color.White)
+                    .padding(horizontal = 16.dp, vertical = 48.dp)
             ) {
-                if (isLoading) {
-                    CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp, modifier = Modifier.size(20.dp))
-                } else {
-                    Text("SAVE", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    // Profile Image
+                    Box(contentAlignment = Alignment.Center) {
+                        Box(
+                            modifier = Modifier
+                                .size(130.dp)
+                                .clip(CircleShape)
+                                .background(Color.LightGray),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (imageBitmap != null) {
+                                Image(bitmap = imageBitmap!!, contentDescription = "Profile", modifier = Modifier.fillMaxSize())
+                            } else {
+                                Icon(Icons.Default.Person, contentDescription = "Profile", modifier = Modifier.size(80.dp))
+                            }
+                        }
+
+                        IconButton(
+                            onClick = { launcher.launch("image/*") },
+                            modifier = Modifier
+                                .size(32.dp)
+                                .align(Alignment.BottomEnd)
+                                .offset(x = 1.dp, y = 1.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.CameraAlt,
+                                contentDescription = "Edit Profile",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .background(Color(0xFF35AEFF), shape = CircleShape)
+                                    .padding(4.dp)
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(36.dp))
+
+                    // Username
+                    LabelText("Username")
+                    UserNameEdit(username, onValueChange = {
+                        username = it
+                        usernameError = false
+                    }, error = usernameError)
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Full Name
+                    LabelText("Full Name")
+                    FullNameEdit(fullname, onValueChange = {
+                        fullname = it
+                        fullnameError = false
+                    }, error = fullnameError)
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Email
+                    LabelText("Email")
+                    EmailEdit(email, onValueChange = {
+                        email = it
+                        emailError = false
+                    }, error = emailError)
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // Contact
+                    LabelText("Contact")
+                    ContactEdit(contact, onValueChange = {
+                        if (it.length <= 11 && it.all { char -> char.isDigit() }) {
+                            contact = it
+                            contactError = false
+                        }
+                    }, error = contactError)
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    // Save Button
+                    Button(
+                        onClick = {
+                            usernameError = username.isBlank()
+                            fullnameError = fullname.isBlank()
+                            emailError = email.isBlank() || !email.matches(Regex("^[^\\s@]+@[^\\s@]+\\.[^\\s@]{2,}$"))
+                            contactError = contact.isBlank() || contact.length != 11
+
+                            if (usernameError || fullnameError || emailError || contactError) {
+                                snackbarMessage = "Please fill all fields correctly"
+                                return@Button
+                            }
+
+                            isLoading = true
+                            val updateRequest = UpdateProfileRequest(
+                                name = username,
+                                fullname = fullname,
+                                email = email,
+                                contact = contact,
+                                profile_image = if (imageBase64 != authViewModel.profileImageBase64) imageBase64 else null
+                            )
+
+                            authViewModel.updateUserProfile(
+                                tokenManager = tokenManager,
+                                request = updateRequest,
+                                onSuccess = {
+                                    isLoading = false
+                                    snackbarMessage = "Profile updated"
+                                    authViewModel.profileImageBase64 = imageBase64
+
+                                    coroutineScope.launch {
+                                        tokenManager.saveUserData(
+                                            token = tokenManager.getToken() ?: "",
+                                            userId = authViewModel.loggedInUserId,
+                                            userName = authViewModel.loggedInUserName,
+                                            profileImageBase64 = imageBase64
+                                        )
+                                    }
+                                    navController.popBackStack()
+                                },
+                                onError = {
+                                    isLoading = false
+                                    snackbarMessage = "Failed: $it"
+                                }
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF35AEFF))
+                    ) {
+                        if (isLoading) {
+                            CircularProgressIndicator(color = Color.White, strokeWidth = 2.dp, modifier = Modifier.size(20.dp))
+                        } else {
+                            Text("SAVE", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                        }
+                    }
                 }
             }
         }
+
     }
 }
 
