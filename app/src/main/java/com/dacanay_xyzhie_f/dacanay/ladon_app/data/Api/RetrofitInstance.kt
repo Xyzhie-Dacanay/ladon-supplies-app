@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 object RetrofitInstance {
     val api: ApiService by lazy {
         Retrofit.Builder()
-            .baseUrl("http://192.168.100.231:8000") // ← Replace with your actual LAN IP if needed
+            .baseUrl("http://192.168.11.191:8000") // ← Replace with your actual LAN IP if needed
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ApiService::class.java)

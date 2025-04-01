@@ -38,7 +38,7 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
                     token = "Bearer $token",
                     body = mapOf(
                         "product_id" to productId,
-                        "quantity_change" to quantityChange // ✅ Send delta
+                        "quantity_change" to quantityChange
                     )
                 )
                 if (response.isSuccessful) {
@@ -96,7 +96,7 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    suspend fun getStripeCheckoutUrl(address: String): String? {
+    suspend fun getStripeCheckoutUrl(address: String, selectedItems: List<CartItemResponse>): String? {
         return try {
             val token = tokenManager.getToken()
             if (token == null) {
@@ -104,11 +104,19 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
                 return null
             }
 
-            Log.d("CartViewModel", "Using token: Bearer $token")
+            val checkoutBody = mapOf(
+                "address_id" to address,
+                "items" to selectedItems.map {
+                    mapOf(
+                        "product_id" to it.product_id,
+                        "quantity" to it.quantity
+                    )
+                }
+            )
 
             val response = RetrofitInstance.api.mobileCheckout(
                 token = "Bearer $token",
-                body = mapOf("address_id" to address)
+                body = checkoutBody
             )
 
             Log.d("CartViewModel", "Checkout response: $response")

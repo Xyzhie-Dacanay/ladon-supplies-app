@@ -101,11 +101,10 @@ interface ApiService {
     @POST("api/mobile/checkout")
     suspend fun mobileCheckout(
         @Header("Authorization") token: String,
-        @Body body: Map<String, String>
+        @Body body: Map<String, @JvmSuppressWildcards Any> // <-- this lets you mix String and List
     ): StripeCheckoutResponse
     @GET("api/mobile/orders")
     suspend fun getMobileOrders(@Header("Authorization") token: String): List<OrderResponse>
-
 }
 
 

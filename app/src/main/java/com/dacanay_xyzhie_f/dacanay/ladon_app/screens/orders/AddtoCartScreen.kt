@@ -33,6 +33,7 @@ data class AddressEntry(
     val isDefault: Boolean = false
 )
 
+
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -103,7 +104,7 @@ fun AddtoCartScreen(
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
-               colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFE6F8FF))
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFFE6F8FF))
             )
         },
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -202,24 +203,17 @@ fun AddtoCartScreen(
                 }
             }
 
-
-
-            // Fixed Bottom Checkout Section
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
-
                 Text(
                     text = "Note: Please select your address before proceeding to checkout",
                     fontSize = 14.sp,
                     textAlign = TextAlign.Justify
                 )
-
                 Spacer(Modifier.height(8.dp))
-
-
 
                 Row(
                     modifier = Modifier
@@ -244,7 +238,17 @@ fun AddtoCartScreen(
                             onClick = {
                                 if (selectedAddressId != null) {
                                     coroutineScope.launch {
-                                        val checkoutUrl = cartViewModel.getStripeCheckoutUrl(selectedAddressId!!)
+                                        val selectedItems = cartItems.filterIndexed { index, _ -> allChecked.getOrNull(index) == true }
+                                            .map {
+                                                it.copy(quantity = localQuantities[it.product_id] ?: it.quantity)
+                                            }
+
+                                        if (selectedItems.isEmpty()) {
+                                            snackbarHostState.showSnackbar("Please select at least one product.")
+                                            return@launch
+                                        }
+
+                                        val checkoutUrl = cartViewModel.getStripeCheckoutUrl(selectedAddressId!!, selectedItems)
                                         if (checkoutUrl != null) {
                                             navController.navigate("webview_checkout?url=${Uri.encode(checkoutUrl)}")
                                         } else {
