@@ -56,16 +56,16 @@ fun SignUpScreen(
                 .padding(horizontal = 36.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             HeadingText(value = stringResource(id = R.string.create))
             Spacer(modifier = Modifier.height(3.dp))
             DescriptionText(value = stringResource(id = R.string.fill))
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             LabelText(value = stringResource(id = R.string.username))
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             InputFields(
                 labelValue = stringResource(id = R.string.username_des),
                 painterResource = painterResource(id = R.drawable.user),
@@ -74,10 +74,10 @@ fun SignUpScreen(
                 errorMessage = authViewModel.usernameError
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             LabelText(value = stringResource(id = R.string.email))
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             InputFields(
                 labelValue = stringResource(id = R.string.emailInt),
                 painterResource = painterResource(id = R.drawable.envelope),
@@ -86,10 +86,10 @@ fun SignUpScreen(
                 errorMessage = authViewModel.emailError
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             LabelText(value = stringResource(id = R.string.password))
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             PassFields(
                 labelValue = stringResource(id = R.string.passwordInt),
                 painterResource = painterResource(id = R.drawable.lock_line_icon),
@@ -98,10 +98,10 @@ fun SignUpScreen(
                 errorMessage = authViewModel.passwordError
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             LabelText(value = stringResource(id = R.string.confirm_password))
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             SignUpPasswordField(
                 labelValue = stringResource(id = R.string.confirm_desc),
                 painterResource = painterResource(id = R.drawable.lock_line_icon),
@@ -110,10 +110,10 @@ fun SignUpScreen(
                 errorMessage = authViewModel.confirmPasswordError
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             LabelText(value = stringResource(id = R.string.contact))
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             ContactTextField(
                 value = authViewModel.contactNumber,
                 onValueChange = { authViewModel.contactNumber = it },
@@ -121,20 +121,20 @@ fun SignUpScreen(
                 errorMessage = authViewModel.contactNumberError
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             SignupButtonComponent(
                 value = stringResource(id = R.string.signup),
                 authViewModel = authViewModel,
                 navController = navController,
                 onSuccess = {
-                    navController.navigate(Routes.LogSign) {
+                    navController.navigate(Routes.LoginScreen) {
                         popUpTo(Routes.SignUp) { inclusive = true }
                     }
                 }
             )
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             ButtonTextComponent(navController = navController, isSignUpScreen = true)
         }

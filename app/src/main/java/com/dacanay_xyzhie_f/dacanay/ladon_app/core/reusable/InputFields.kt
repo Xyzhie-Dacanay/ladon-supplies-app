@@ -310,10 +310,13 @@ fun LoginButtonComponent(
                             tokenManager.saveToken(token)
                         }
 
-                        //  Make sure to load user data here
+
                         authViewModel.loadUserFromToken(tokenManager)
 
-                        navController.navigate(Routes.HomePage)
+
+                        navController.navigate(Routes.HomePage + "?loginSuccess=true") {
+                            popUpTo(Routes.HomePage) { inclusive = false }
+                        }
                     }
                 },
                 onError = { message ->
@@ -323,25 +326,14 @@ fun LoginButtonComponent(
         },
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(48.dp),
-        contentPadding = PaddingValues(),
-        colors = ButtonDefaults.buttonColors(Color.Transparent)
+            .height(50.dp),
+        shape = RoundedCornerShape(24.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF35AEFF))
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(50.dp)
-                .background(color = BlueLa, shape = RoundedCornerShape(50.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = value,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        Text(text = value, color = Color.White, fontWeight = FontWeight.Bold)
     }
 }
+
 
 
 
@@ -426,9 +418,20 @@ fun LoginButtonComponent(
 
         LaunchedEffect(authViewModel.registerResult) {
             authViewModel.registerResult?.let { message ->
-                Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                if (message == "Registered successfully") {
+                    // Navigate with toast trigger flag
+                    navController.navigate(Routes.LoginScreen + "?signedUp=true") {
+                        popUpTo(Routes.SignUp) { inclusive = true }
+
+
+                }
+                } else {
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                }
+                authViewModel.registerResult = null
             }
         }
+
     }
 
 
@@ -531,8 +534,8 @@ fun LoginButtonComponent(
                 },
                 placeholder = { Text(text = label, color = Color.Gray) },
                 colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = if (errorMessage == null) Color.Transparent else Color.Red,
-                    unfocusedBorderColor = if (errorMessage == null) Color.Transparent else Color.Red,
+                    focusedBorderColor = Color.Gray,
+                    unfocusedBorderColor = Color.LightGray,
                     cursorColor = colorResource(id = R.color.black),
                     containerColor = colorResource(id = R.color.tfBackground),
                 ),

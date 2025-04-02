@@ -1,6 +1,7 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.home
 
 import ProductCard
+import android.widget.Toast
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +17,7 @@ import androidx.compose.ui.*
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,13 +31,34 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.core.reusable.ProductButtons
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.ProductViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.Routes
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.productButtonList
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(navController: NavHostController, viewModel: ProductViewModel = viewModel()) {
+    val context = LocalContext.current
     val allProducts by viewModel.products
-    val randomProducts = remember(allProducts) {
-        allProducts.shuffled().take(6)
+    val randomProducts = remember(allProducts) { allProducts.shuffled().take(6) }
+
+    // Detect login success from navigation argument
+    val loginSuccess = navController.currentBackStackEntry
+        ?.arguments?.getString("loginSuccess") == "true"
+
+    // Only show toast once
+    var hasShownToast by remember { mutableStateOf(false) }
+
+    LaunchedEffect(loginSuccess) {
+        if (loginSuccess && !hasShownToast) {
+            Toast.makeText(context, "Login Successfully", Toast.LENGTH_SHORT).show()
+            hasShownToast = true
+
+            // Optional: remove argument so it doesn't trigger again
+            navController.currentBackStackEntry?.arguments?.remove("loginSuccess")
+        }
     }
+
+
+
+
 
     Scaffold(
         bottomBar = { NavBar(navController) }
@@ -49,7 +72,6 @@ fun HomeScreen(navController: NavHostController, viewModel: ProductViewModel = v
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             item {
-                // Header
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -73,7 +95,6 @@ fun HomeScreen(navController: NavHostController, viewModel: ProductViewModel = v
                                 tint = Color.Black
                             )
                         }
-
                     }
                 }
             }
@@ -167,5 +188,6 @@ fun HomeScreen(navController: NavHostController, viewModel: ProductViewModel = v
                 }
             }
         }
+
     }
 }

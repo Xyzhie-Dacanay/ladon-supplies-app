@@ -6,8 +6,10 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.AddressViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.CartViewModel
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.ViewModel.ProductViewModel
@@ -41,17 +43,31 @@ fun AuthNavigation(
             LogSignScreen(navController = navController)
         }
 
-        composable(Routes.LogIn) {
+        composable(
+            route = Routes.LogIn + "?signedUp={signedUp}",
+            arguments = listOf(navArgument("signedUp") {
+                type = NavType.StringType
+                defaultValue = "false"
+            })
+        ) {
             LoginScreen(navController = navController, authViewModel = authViewModel)
         }
+
 
         composable(Routes.SignUp) {
             SignUpScreen(navController = navController, authViewModel = authViewModel)
         }
 
-        composable(Routes.HomePage) {
+        composable(
+            route = Routes.HomePage + "?loginSuccess={loginSuccess}",
+            arguments = listOf(navArgument("loginSuccess") {
+                type = NavType.StringType
+                defaultValue = "false"
+            })
+        ) {
             HomeScreen(navController = navController)
         }
+
 
         composable(Routes.Favorites) {
             FavoriteScreen(navController = navController, viewModel = favoritesViewModel)

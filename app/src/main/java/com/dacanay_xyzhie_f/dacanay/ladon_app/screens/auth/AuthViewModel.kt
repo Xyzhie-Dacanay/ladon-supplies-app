@@ -15,7 +15,10 @@ import com.dacanay_xyzhie_f.dacanay.ladon_app.data.Model.UpdateProfileRequest
 import com.google.gson.Gson
 
 class AuthViewModel : ViewModel() {
-
+    data class LoginUiState(
+        val success: Boolean = false,
+        val message: String? = null
+    )
     var signInEmailError by mutableStateOf<String?>(null)
     var signInPasswordError by mutableStateOf<String?>(null)
 
@@ -26,6 +29,9 @@ class AuthViewModel : ViewModel() {
     var email by mutableStateOf("")
     var password by mutableStateOf("")
     var confirmPassword by mutableStateOf("")
+
+    private val _loginUiState = mutableStateOf<LoginUiState?>(null)
+    val loginUiState: State<LoginUiState?> get() = _loginUiState
 
     var usernameError by mutableStateOf<String?>(null)
     var emailError by mutableStateOf<String?>(null)
@@ -115,16 +121,24 @@ class AuthViewModel : ViewModel() {
                         loggedInUserId = userId
                         loggedInUserName = name
                         profileImageBase64 = profileImage
-                        loginResult = "Login successful"
+                        _loginUiState.value = LoginUiState(success = true, message = "Login successful")
                         onSuccess(it)
+
+
                     } ?: run {
-                        onError("Token missing in response.")
+                        val error = "Login failed: ${response.errorBody()?.string()}"
+                        _loginUiState.value = LoginUiState(success = false, message = error)
+                        onError(error)
+
                     }
                 } else {
                     onError("Login failed: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
-                onError("Error: ${e.localizedMessage}")
+                val error = "Error: ${e.localizedMessage}"
+                _loginUiState.value = LoginUiState(success = false, message = error)
+                onError(error)
+
             }
         }
     }
@@ -136,9 +150,11 @@ class AuthViewModel : ViewModel() {
             loggedInUserName = "Guest"
             loggedInUserId = ""
             profileImageBase64 = null
+            loginResult = "logout"
             onComplete()
         }
     }
+
 
     fun loadUserFromToken(tokenManager: TokenManager) {
         viewModelScope.launch {
