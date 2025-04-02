@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.*
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.dacanay_xyzhie_f.dacanay.ladon_app.data.storage.TokenManager
 import com.dacanay_xyzhie_f.dacanay.ladon_app.navigation.AuthNavigation
@@ -16,6 +17,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Install Splash Screen FIRST
+        val splashScreen = installSplashScreen()
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -23,23 +27,34 @@ class MainActivity : ComponentActivity() {
             LadonappTheme {
                 val navController = rememberNavController()
                 val context = applicationContext
-                val authViewModel: AuthViewModel = viewModel() // ✅ Create ViewModel manually
+                val authViewModel: AuthViewModel = viewModel()
+
+                // ✅ Move isLoading inside setContent
+                var isLoading by remember { mutableStateOf(true) }
                 var startDestination by remember { mutableStateOf<String?>(null) }
+
+                // ✅ Set splash screen condition here (INSIDE setContent)
+                splashScreen.setKeepOnScreenCondition { isLoading }
+
+                // Load user/token and set start destination
                 LaunchedEffect(Unit) {
                     val tokenManager = TokenManager(context)
                     authViewModel.loadUserFromToken(tokenManager)
-                    val token = tokenManager.tokenFlow.firstOrNull() // ✅ Use tokenFlow here
+                    val token = tokenManager.tokenFlow.firstOrNull()
                     startDestination = if (token != null) Routes.HomePage else Routes.LogSign
+                    isLoading = false // 🚨 triggers splash to dismiss
                 }
 
+                // Start nav only after destination is ready
                 startDestination?.let { start ->
                     AuthNavigation(
                         navController = navController,
                         startDestination = start,
-                        authViewModel = authViewModel // ✅ Pass shared instance if needed
+                        authViewModel = authViewModel
                     )
                 }
             }
         }
     }
 }
+

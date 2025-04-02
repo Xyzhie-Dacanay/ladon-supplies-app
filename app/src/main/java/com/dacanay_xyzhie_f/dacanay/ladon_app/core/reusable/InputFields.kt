@@ -92,8 +92,8 @@ fun InputFields(
             onValueChange = onValueChange,
             placeholder = { Text(text = labelValue, color = Color.Gray) },
             colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = Color.Transparent,
-                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = Color.Gray,
+                unfocusedBorderColor = Color.LightGray,
                 cursorColor = colorResource(id = R.color.black),
                 containerColor = colorResource(id = R.color.tfBackground),
             ),
@@ -161,8 +161,8 @@ fun PassFields(
         onValueChange = onValueChange,
         placeholder = { Text(text = labelValue, color = Color.Gray) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color.Transparent,
-            unfocusedBorderColor = Color.Transparent,
+            focusedBorderColor = Color.Gray,
+            unfocusedBorderColor = Color.LightGray,
             cursorColor = colorResource(id = R.color.black),
             containerColor = colorResource(id = R.color.tfBackground),
         ),
@@ -228,14 +228,14 @@ fun SignUpPasswordField(
         modifier = Modifier.fillMaxWidth(),
         value = value,
         onValueChange = onValueChange,
-        placeholder = { Text(text = labelValue, color = Color.Gray) }, // ✅ Placeholder for password
+        placeholder = { Text(text = labelValue, color = Color.Gray) },
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = Color.Transparent, // ✅ No visible border when focused
-            unfocusedBorderColor = Color.Transparent, // ✅ No border when unfocused
+            focusedBorderColor = Color.Gray,
+            unfocusedBorderColor = Color.LightGray,
             cursorColor = colorResource(id = R.color.black),
             containerColor = colorResource(id = R.color.tfBackground),
         ),
-        shape = RoundedCornerShape(20.dp), // ✅ Soft rounded corners
+        shape = RoundedCornerShape(20.dp),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         leadingIcon = {
             Icon(
@@ -439,7 +439,7 @@ fun LoginButtonComponent(
     fun ButtonTextComponent(navController: NavHostController, isSignUpScreen: Boolean) {
         val annotatedString = buildAnnotatedString {
             if (isSignUpScreen) {
-                // Sign-Up Screen: "Already have an account? Log In"
+
                 append("Already have an account? ")
                 val startIndex = length
                 append("Log In")
@@ -462,7 +462,7 @@ fun LoginButtonComponent(
                     end = endIndex
                 )
             } else {
-                // 🔹 Login Screen: "Don't have an account? Sign Up"
+
                 append("Don't have an account? ")
                 val startIndex = length
                 append("Sign Up")

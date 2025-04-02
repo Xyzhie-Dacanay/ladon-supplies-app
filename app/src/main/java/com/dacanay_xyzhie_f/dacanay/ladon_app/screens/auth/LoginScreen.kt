@@ -1,10 +1,12 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,20 +42,26 @@ fun LoginScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFFE6F7FF)
             )
-        }
+            )
+        },  containerColor = Color(0xFFE6F7FF)
+
+
     ) { paddingValues ->
         Surface(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(24.dp)
+                .background(Color(0xFFE6F7FF))
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(12.dp),
+
+                    .background(Color(0xFFE6F7FF)),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {
@@ -61,7 +69,8 @@ fun LoginScreen(
 
                 // Header
                 Column(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth()
+                        .background(Color(0xFFE6F7FF)),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     HeadingText(value = stringResource(id = R.string.welcome))
@@ -122,8 +131,26 @@ fun LoginScreen(
                     horizontalArrangement = Arrangement.End
                 ) {
                     ForgotComponent()
+
+
                 }
+                Spacer(modifier = Modifier.height(80.dp))
+
+                Column(modifier = Modifier.fillMaxWidth()
+                    .background(Color(0xFFE6F7FF)),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+
+                    ButtonTextComponent(navController = navController, isSignUpScreen = false)
+
+                }
+
             }
+
         }
+
     }
+
+
+
+
 }

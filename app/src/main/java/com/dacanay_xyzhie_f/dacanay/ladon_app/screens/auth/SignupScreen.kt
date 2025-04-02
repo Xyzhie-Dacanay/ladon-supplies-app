@@ -1,5 +1,6 @@
 package com.dacanay_xyzhie_f.dacanay.ladon_app.screens.auth
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -7,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -40,15 +42,16 @@ fun SignUpScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = Color(0xFFE6F7FF)
                 )
             )
-        }
+        }, containerColor = Color(0xFFE6F7FF)
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .background(Color(0xFFE6F7FF))
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 36.dp),
             horizontalAlignment = Alignment.CenterHorizontally
