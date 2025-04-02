@@ -107,14 +107,7 @@ fun ProductsScreen(navController: NavHostController, category: String) {
                 .padding(paddingValues)
                 .padding(horizontal = 8.dp)
         ) {
-            item {
-                Text(
-                    text = "Products for \"$category\"",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(16.dp)
-                )
-            }
+
 
             if (sortedProducts.isEmpty()) {
                 item {

@@ -125,7 +125,7 @@ fun AboutScreen(navController: NavController) {
                             painter = painterResource(id = R.drawable.primary),
                             contentDescription = "Ladon Logo",
                             modifier = Modifier
-                                .size(260.dp)
+                                .size(250.dp)
                                 .align(Alignment.CenterHorizontally)
                         )
                     }

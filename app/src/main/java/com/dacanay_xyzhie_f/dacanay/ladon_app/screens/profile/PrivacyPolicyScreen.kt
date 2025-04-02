@@ -89,10 +89,10 @@ fun PrivacyPolicyScreen(navController: NavController) {
                         4. Delays due to unforeseen circumstances (e.g., weather, customs) are not our responsibility.
                     """)
 
-                    PolicyText(title = "RETURN & REFUND POLICY", content = """
-                        1. Items must be returned in their original condition within 30 days of delivery.
-                        2. Refunds will be issued to the original payment method.
-                        3. Shipping costs for returns are the responsibility of the customer unless the item is defective or incorrect.
+                    PolicyText(title = "PAYMENT POLICY", content = """
+                        1. To ensure smooth transactions, all payments via Stripe must be at least ₱30.00 PHP (approx.$0.50 USD). Payments below this amount will be declined.
+                        2. This policy helps cover Stripe's processing fees and ensures efficient service.
+                        
                     """)
                 }
             }

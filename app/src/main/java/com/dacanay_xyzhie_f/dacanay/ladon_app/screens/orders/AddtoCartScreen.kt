@@ -78,6 +78,8 @@ fun AddtoCartScreen(
         } else 0.0
     }.sum()
 
+    val showMinAmountDialog = remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -234,9 +236,16 @@ fun AddtoCartScreen(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("Total: ₱${"%.2f".format(totalPrice)}", fontWeight = FontWeight.Bold, fontSize = 16.sp)
                         Spacer(modifier = Modifier.width(12.dp))
+
+
                         Button(
                             onClick = {
                                 if (selectedAddressId != null) {
+                                    if (totalPrice < 30.0) {
+                                        showMinAmountDialog.value = true
+                                        return@Button
+                                    }
+
                                     coroutineScope.launch {
                                         val selectedItems = cartItems.filterIndexed { index, _ -> allChecked.getOrNull(index) == true }
                                             .map {
@@ -325,6 +334,31 @@ fun AddtoCartScreen(
                         Spacer(modifier = Modifier.height(24.dp))
                     }
                 }
+
+
+
+            }
+
+
+            if (showMinAmountDialog.value) {
+                AlertDialog(
+                    onDismissRequest = { showMinAmountDialog.value = false },
+                    title = {
+                        Text("Minimum Order Required", fontWeight = FontWeight.Bold)
+                    },
+                    text = {
+                        Text("You need a minimum purchase of ₱30 to proceed to checkout.")
+                    },
+                    confirmButton = {
+                        Button(
+                            modifier = Modifier,
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF35AEFF)),
+                            onClick = { showMinAmountDialog.value = false }
+                        ) {
+                            Text("OK")
+                        }
+                    }
+                )
             }
         }
     }
