@@ -32,6 +32,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -200,14 +201,18 @@ fun PassFields(
         },
         visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation()
     )
-    if (errorMessage != null) {
+    if (!errorMessage.isNullOrBlank()) {
         Text(
             text = errorMessage,
             color = Color.Red,
             fontSize = 12.sp,
-            modifier = Modifier.padding(start = 8.dp, top = 4.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 4.dp),
+            style = LocalTextStyle.current.copy(textAlign = androidx.compose.ui.text.style.TextAlign.Start)
         )
     }
+
 }
 
 
